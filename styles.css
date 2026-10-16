@@ -54,13 +54,14 @@ header {
 }
 
 .logo {
-  font-size: 24px;
+  font-size: 35px;
   font-weight: bold;
-  color: white;
+  color: red;
 }
 
 .logo span {
-  color: rgb(0, 225, 225);
+  color: rgb(255, 215, 0);
+  font-size: 40px;
 }
 
 nav {
