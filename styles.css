@@ -30,12 +30,12 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.164);
   z-index: 0;
 }
 
 .hero-section-container {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.068);
   height: 85vh;
   width: 85%;
   border-radius: 30px;
@@ -171,7 +171,7 @@ header button:hover {
 }
 
 .left-section h1 {
-  font-size: 11rem;
+  font-size: 6rem;
   font-weight: 800;
   color: white;
   margin: -20px 0 0 0;
@@ -324,4 +324,19 @@ p {
   animation: sideInRight 1s ease-out forwards;
   opacity: 0;
   animation-delay: 0.2s;
+}
+
+a {
+  color: white;
+}
+
+.page-footer {
+  position: fixed;
+  bottom: 12px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 14px;
+  opacity: 0.6;
 }
