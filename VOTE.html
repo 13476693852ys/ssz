@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>校庆作品投票 | 麻城二中80周年</title>
+
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https:/cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: url("https://pic2.zhimg.com/v2-a53c740141ab75eb4fe16af3ef8c35c5_r.jpg")
+          no-repeat center;
+        background-size: cover;
+        min-height: 100vh;
+        font-family: sans-serif;
+        color: #fff;
+        padding: 40px 20px;
+      }
+      .nav {
+        text-align: right;
+        margin-bottom: 40px;
+      }
+      .nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 12px;
+        font-size: 16px;
+      }
+      .nav a:hover {
+        text-decoration: underline;
+      }
+      .vote-container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: rgba(0, 60, 110, 0.45);
+        border-radius: 20px;
+        padding: 30px;
+        backdrop-filter: blur(8px);
+      }
+      .title {
+        text-align: center;
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
+      .desc {
+        text-align: center;
+        opacity: 0.85;
+        margin-bottom: 35px;
+      }
+      /* ========== 自定义单选框样式【重点】 ========== */
+      .vote-item {
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .vote-item:hover {
+        background: rgba(255, 255, 255, 0.18);
+      }
+      /* 隐藏原生单选按钮 */
+      .vote-item input[type="radio"] {
+        display: none;
+      }
+      /* 自定义圆圈 */
+      .radio-circle {
+        width: 22px;
+        height: 22px;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      /* 内部选中圆点，默认透明 */
+      .radio-circle::after {
+        content: "";
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #21d0d9;
+        transform: scale(0);
+        transition: 0.2s;
+      }
+      /* 选中时，放大内部圆点 */
+      .vote-item input[type="radio"]:checked + .radio-circle::after {
+        transform: scale(1);
+      }
+      /* 选中时，卡片背景变色突出显示 */
+      .vote-item input[type="radio"]:checked ~ .text {
+        color: #21d0d9;
+        font-weight: bold;
+      }
+      .vote-btn {
+        display: block;
+        margin: 30px auto 0;
+        padding: 12px 40px;
+        border: none;
+        border-radius: 30px;
+        background: #21d0d9;
+        color: #002b49;
+        font-weight: bold;
+        font-size: 17px;
+        cursor: pointer;
+      }
+      .vote-btn:hover {
+        background: #53e1e8;
+      }
+      footer {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 14px;
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="vote.html">Vote</a>
+      <a href="contact.html">Contacts</a>
+    </div>
+    <div class="vote-container">
+      <h1 class="title">校庆作品投票</h1>
+      <p class="desc">为麻城二中80周年校庆参赛类型投票，每人限投一票</p>
+
+      <form id="voteForm">
+        <div class="vote-item">
+          <input type="radio" name="work" id="w1" value="类型1" />
+          <span class="radio-circle"></span>
+          <label for="w1" class="text">类型1：体艺节</label>
+        </div>
+        <div class="vote-item">
+          <input type="radio" name="work" id="w2" value="类型2" />
+          <span class="radio-circle"></span>
+          <label for="w2" class="text">类型2：摄影大赛</label>
+        </div>
+        <div class="vote-item">
+          <input type="radio" name="work" id="w3" value="类型3" />
+          <span class="radio-circle"></span>
+          <label for="w3" class="text">类型3：英语手抄报</label>
+        </div>
+        <div class="vote-item">
+          <input type="radio" name="work" id="w4" value="类型4" />
+          <span class="radio-circle"></span>
+          <label for="w4" class="text">类型4：美术作品</label>
+        </div>
+        <div class="vote-item">
+          <input type="radio" name="work" id="w4" value="类型5" />
+          <span class="radio-circle"></span>
+          <label for="w4" class="text">类型4：主持人大赛</label>
+        </div>
+        <div class="vote-item">
+          <input type="radio" name="work" id="w4" value="类型6" />
+          <span class="radio-circle"></span>
+          <label for="w4" class="text">类型4：电脑作品</label>
+        </div>
+        <button type="submit" class="vote-btn">提交投票</button>
+      </form>
+    </div>
+    <footer>献礼麻城二中80周年校庆 | 网页制作：你的名字</footer>
+    <script>
+      const form = document.getElementById("voteForm");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const selected = document.querySelector('input[name="work"]:checked');
+        if (!selected) {
+          alert("请选择一个作品再投票！");
+          return;
+        }
+        alert(`投票成功！你选择了：${selected.value}`);
+        form.reset();
+      });
+    </script>
+  </body>
+</html>
