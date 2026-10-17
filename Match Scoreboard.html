@@ -120,9 +120,23 @@
         margin-top: 30px;
         flex-wrap: wrap;
       }
+      .page-footer {
+        position: fixed;
+        bottom: 12px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 14px;
+        z-index: 999;
+        background-color: rgba(255, 255, 255, 0.08);
+        padding: 6px 0;
+        border-radius: 8px;
+        opacity: 0.6;
+      }
     </style>
   </head>
-  <body>
+  <div>
     <nav>
       <!--Middle Section-->
       <a
@@ -130,11 +144,17 @@
         href="https://13476693852ys.github.io/ssz/index.html"
         >Home</a
       >
-      <a class="nav-items" href="#">Query</a>
+      <a class="nav-items" href="https://13476693852ys.github.io/ssz/Query.html"
+        >Query</a
+      >
       <a class="nav-items" href="https://13476693852ys.github.io/ssz/VOTE.html"
         >Vote</a
       >
-      <a class="nav-items" href="#">Match Scoreboard</a>
+      <a
+        class="nav-items"
+        href="https://13476693852ys.github.io/ssz/Match%20Scoreboard.html"
+        >Match Scoreboard</a
+      >
     </nav>
     <div class="container">
       <h1>🏆 校庆赛事记分台</h1>
@@ -179,6 +199,7 @@
         <button onclick="createNewMatch()">➕ 新建比赛</button>
       </div>
     </div>
+    <div class="page-footer">献礼麻城二中80周年校庆 | 网页制作：杨烁</div>
     <script>
       let matchList = JSON.parse(localStorage.getItem("matchList")) || [
         {
