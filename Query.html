@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>运动损伤应急查询 | 麻城二中80周年校庆</title>
+    <style>
+        * {
+            margin:0;
+            padding:0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei",sans-serif;
+        }
+        body{
+            background: url("https://pic2.zhimg.com/v2-a53c740141ab75eb4fe16af3ef8c35c5_r.jpg") no-repeat center;
+            background-size: cover;
+            min-height:100vh;
+            padding:30px;
+        }
+        nav{
+            display:flex;
+            justify-content: center;
+            gap:24px;
+            margin-bottom:40px;
+            flex-wrap:wrap;
+        }
+        nav a{
+            color:white;
+            text-decoration:none;
+            font-size:18px;
+            padding:8px 16px;
+            border-radius:20px;
+        }
+        nav a:hover{
+            background:rgba(255,255,255,0.2);
+        }
+        .container{
+            width:90%;
+            max-width:1000px;
+            margin:0 auto;
+            background:rgba(255,255,255,0.15);
+            backdrop-filter: blur(12px);
+            border-radius:24px;
+            padding:40px;
+            border:1px solid rgba(255,255,255,0.3);
+            color:white;
+        }
+        h1{
+            text-align:center;
+            font-size:36px;
+            margin-bottom:20px;
+            text-shadow:0 0 8px #0003;
+        }
+        .search-area{
+            display:flex;
+            gap:10px;
+            justify-content:center;
+            margin-bottom:25px;
+            flex-wrap:wrap;
+        }
+        #searchInput{
+            padding:12px 16px;
+            border-radius:12px;
+            border:none;
+            width:60%;
+            min-width:220px;
+            font-size:18px;
+        }
+        button{
+            padding:12px 20px;
+            border:none;
+            border-radius:12px;
+            font-size:18px;
+            cursor:pointer;
+            background:#36e8e8;
+            color:#003333;
+            font-weight:bold;
+        }
+        button:hover{
+            background:#20d0d0;
+        }
+        /* 分类筛选栏样式 */
+        .category-area{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            justify-content:center;
+            margin-bottom:20px;
+            padding-bottom:20px;
+            border-bottom:1px solid rgba(255,255,255,0.2);
+        }
+        .category-tag{
+            padding:7px 14px;
+            background:rgba(255,255,255,0.15);
+            border-radius:16px;
+            cursor:pointer;
+            font-size:15px;
+        }
+        .category-tag.active{
+            background:#ffb84d;
+            color:#332200;
+            font-weight:bold;
+        }
+        /* 损伤快捷标签 */
+        .tag-area{
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+            justify-content:center;
+            margin-bottom:30px;
+        }
+        .tag{
+            padding:8px 14px;
+            background:rgba(255,255,255,0.2);
+            border-radius:12px;
+            cursor:pointer;
+        }
+        .tag:hover{
+            background:rgba(255,255,255,0.35);
+        }
+        /* 新增：损伤预览列表 */
+        .preview-list{
+            display:grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
+            gap:16px;
+            margin-bottom:24px;
+        }
+        .preview-card{
+            background:rgba(255,255,255,0.12);
+            border-radius:14px;
+            padding:16px;
+            cursor:pointer;
+            transition:0.2s;
+        }
+        .preview-card:hover{
+            background:rgba(255,255,255,0.22);
+        }
+        .preview-card h3{
+            color:#36e8e8;
+            margin-bottom:6px;
+        }
+        .preview-card p{
+            font-size:14px;
+            opacity:0.85;
+            line-height:1.5;
+        }
+        .result-card{
+            background:rgba(255,255,255,0.18);
+            border-radius:16px;
+            padding:24px;
+            display:none;
+        }
+        .result-card h2{
+            color:#36e8e8;
+            margin-bottom:16px;
+        }
+        .section{
+            margin:14px 0;
+            line-height:1.6;
+        }
+        .section h3{
+            margin-bottom:6px;
+        }
+        .warning{
+            color:#ffb8b8;
+        }
+        .tip-note{
+            margin-top:20px;
+            font-size:14px;
+            opacity:0.8;
+        }
+        /* ✅ 返回列表按钮样式 */
+        .back-btn{
+            margin-top:20px;
+            padding:10px 18px;
+            background:rgba(255,255,255,0.25);
+            color:white;
+            border:none;
+            border-radius:12px;
+            cursor:pointer;
+            font-size:16px;
+        }
+        .back-btn:hover{
+            background:rgba(255,255,255,0.4);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+      <!--Middle Section-->
+        <a
+         class="nav-items active"
+          href="https://13476693852ys.github.io/ssz/index.html"
+           >Home</a
+        >
+         <a class="nav-items" href="#">Query</a>
+         <a
+           class="nav-items"
+            href="https://13476693852ys.github.io/ssz/VOTE.html"
+            >Vote</a
+          >
+          <a class="nav-items" href="#">Match Scoreboard</a>
+    </nav>
+    <div class="container">
+        <h1>🩹 运动损伤应急查询</h1>
+        <div class="search-area">
+            <input id="searchInput" placeholder="输入损伤名称，如：踝关节扭伤">
+            <button onclick="searchInjury()">🔍 查询</button>
+        </div>
+        <!-- 分类筛选栏 -->
+        <div class="category-area" id="categoryBox">
+        </div>
+        <div class="tag-area" id="injuryTagBox">
+        </div>
+
+        <div class="preview-list" id="previewList"></div>
+
+        <div class="result-card" id="resultBox">
+            <h2 id="injName"></h2>
+            <div class="section">
+                <h3>📌 症状</h3>
+                <p id="symptom"></p>
+            </div>
+            <div class="section">
+                <h3>✅ 应急处理</h3>
+                <p id="handle"></p>
+            </div>
+            <div class="section warning">
+                <h3>⚠️ 禁忌</h3>
+                <p id="avoid"></p>
+            </div>
+            <div class="section">
+                <h3>🏥 就医提示</h3>
+                <p id="hospital"></p>
+            </div>
+            <div class="tip-note">
+                💡 提示：本页面仅作为应急科普参考，严重损伤务必及时就医。
+            </div>
+            <!-- ✅ 返回列表按钮 -->
+            <button class="back-btn" onclick="backToList()">⬅️ 返回损伤列表</button>
+        </div>
+    </div>
+
+    <script>
+        const injuryDB = {
+            "擦伤":{
+                category:"皮肤损伤",
+                symptom:"皮肤表皮破损，伴随渗血、疼痛，创面可能沾有泥沙污物。",
+                handle:"清水冲洗污物，碘伏消毒；轻微擦伤可暴露晾干，面积较大使用无菌纱布包扎。",
+                avoid:"不要直接用不干净的手涂抹伤口，避免使用酒精直接刺激破损创面。",
+                hospital:"伤口很深、大量出血、污染严重，需要前往医院，必要时注射破伤风。"
+            },
+            "皮肤挫伤":{
+                category:"皮肤损伤",
+                symptom:"局部皮肤淤青、肿痛，皮下出血但表皮完整。",
+                handle:"伤后48小时内冰敷，减少肿胀出血，48小时后热敷促进淤血消散。",
+                avoid:"急性期不要用力揉搓淤青部位。",
+                hospital:"挫伤范围极大、剧烈疼痛，需就医排除深层组织损伤。"
+            },
+            "踝关节扭伤":{
+                category:"关节扭伤",
+                symptom:"脚踝疼痛、迅速肿胀，局部淤青，行走困难，关节活动受限。",
+                handle:"RICE原则：休息Rest，冰敷Ice（伤后48小时内），加压Compression弹性绷带包扎，抬高Elevation患肢高于心脏。",
+                avoid:"❌不要立刻揉搓、热敷，不要强行继续走动。",
+                hospital:"无法负重站立、关节畸形、剧痛难忍，及时拍片排除骨折。"
+            },
+            "膝关节扭伤":{
+                category:"关节扭伤",
+                symptom:"膝关节肿痛、活动时卡顿，上下楼梯痛感明显。",
+                handle:"停止运动，冰敷制动，佩戴护膝，减少负重。",
+                avoid:"不要强行屈伸膝关节，避免深蹲。",
+                hospital:"关节卡住无法活动、持续肿痛，就医检查半月板/韧带。"
+            },
+            "手腕扭伤":{
+                category:"关节扭伤",
+                symptom:"手腕肿痛，发力、转动时疼痛加剧。",
+                handle:"护腕固定，急性期冰敷，减少手腕用力动作。",
+                avoid:"不要强行掰动手腕，避免提重物。",
+                hospital:"手腕变形、无法握物，就医排查骨折/脱位。"
+            },
+            "肌肉拉伤":{
+                category:"肌肉损伤",
+                symptom:"肌肉撕裂样疼痛，发力时痛感加剧，局部肿胀。",
+                handle:"停止运动，急性期冰敷，静养休息，后期可轻柔拉伸恢复。",
+                avoid:"急性期不要按摩、热敷，不要强行发力。",
+                hospital:"肌肉完全撕裂、大面积血肿，尽快就医。"
+            },
+            "肌肉抽筋":{
+                category:"肌肉损伤",
+                symptom:"肌肉突然僵硬收缩，剧烈疼痛感，常见小腿、大腿抽筋。",
+                handle:"缓慢、轻柔拉伸抽筋肌肉，配合温和按摩，补充水分和电解质。",
+                avoid:"不要暴力猛掰肌肉。",
+                hospital:"反复频繁抽筋，建议就医排查电解质/神经问题。"
+            },
+            "肌肉酸痛":{
+                category:"肌肉损伤",
+                symptom:"运动后1-2天肌肉酸胀，按压痛感明显，活动后缓解。",
+                handle:"轻度拉伸、温水放松，保证休息和蛋白质补充。",
+                avoid:"不要在酸痛期高强度训练。",
+                hospital:"酸痛持续超过3天不缓解，就医检查。"
+            },
+            "骨折":{
+                category:"骨骼损伤",
+                symptom:"剧烈疼痛，肢体畸形，肿胀迅速，无法负重，可伴随骨摩擦感。",
+                handle:"立刻停止活动，就地夹板固定，保护患处，尽快转运医院。",
+                avoid:"❌不要自行复位、随意搬动骨折部位。",
+                hospital:"立即送往医院骨科就诊。"
+            },
+            "关节脱臼":{
+                category:"骨骼损伤",
+                symptom:"关节畸形，明显肿胀，完全无法活动，剧烈疼痛。",
+                handle:"原地固定患肢，不要尝试自行复位。",
+                avoid:"不要强行拉扯脱臼部位。",
+                hospital:"立刻就医由专业医生复位。"
+            },
+            "脑震荡":{
+                category:"头部损伤",
+                symptom:"头晕、恶心呕吐、短暂失忆，头部撞击后意识恍惚。",
+                handle:"立刻停止活动，平躺休息，保持呼吸通畅，密切观察状态。",
+                avoid:"不要继续运动，不要摇晃头部。",
+                hospital:"出现反复呕吐、意识变差、剧烈头痛，立刻急诊。"
+            },
+            "腰部扭伤":{
+                category:"躯干损伤",
+                symptom:"腰部突发疼痛，弯腰、转身动作受限，常伴肌肉僵硬。",
+                handle:"硬板床上平躺休息，急性期冰敷，避免弯腰搬重物。",
+                avoid:"不要盲目按摩正骨，不要久坐久站。",
+                hospital:"出现腿麻、放射痛，就医排查腰椎间盘问题。"
+            },
+            "运动中暑":{
+                category:"其他急症",
+                symptom:"头晕、大汗、恶心、体温升高，严重时意识模糊。",
+                handle:"立刻转移到阴凉通风处，解开衣物，补充淡盐水，冰敷颈部/腋下降温。",
+                avoid:"不要继续在高温环境下运动，不要一次性大量喝纯水。",
+                hospital:"出现高热、意识不清，立刻急救送医。"
+            }
+        };
+
+        const allCategories = ["全部", "皮肤损伤", "关节扭伤", "肌肉损伤", "骨骼损伤", "头部损伤", "躯干损伤", "其他急症"];
+        let currentCategory = "全部";
+
+        const resultBox = document.getElementById("resultBox");
+        const injNameEl = document.getElementById("injName");
+        const symptomEl = document.getElementById("symptom");
+        const handleEl = document.getElementById("handle");
+        const avoidEl = document.getElementById("avoid");
+        const hospitalEl = document.getElementById("hospital");
+        const searchInput = document.getElementById("searchInput");
+        const categoryBox = document.getElementById("categoryBox");
+        const injuryTagBox = document.getElementById("injuryTagBox");
+        const previewList = document.getElementById("previewList");
+
+        function renderCategoryTags(){
+            categoryBox.innerHTML = "";
+            allCategories.forEach(cat=>{
+                const tag = document.createElement("div");
+                tag.className = "category-tag " + (cat === currentCategory ? "active":"");
+                tag.innerText = cat;
+                tag.onclick = ()=>selectCategory(cat);
+                categoryBox.appendChild(tag);
+            })
+        }
+
+        function renderInjuryTags(){
+            injuryTagBox.innerHTML = "";
+            for(let name in injuryDB){
+                const item = injuryDB[name];
+                if(currentCategory !== "全部" && item.category !== currentCategory) continue;
+                const tag = document.createElement("div");
+                tag.className = "tag";
+                tag.innerText = name;
+                tag.onclick = ()=>showResult(item, name);
+                injuryTagBox.appendChild(tag);
+            }
+        }
+
+        function renderPreviewList(){
+            previewList.innerHTML = "";
+            for(let name in injuryDB){
+                const item = injuryDB[name];
+                if(currentCategory !== "全部" && item.category !== currentCategory) continue;
+                const card = document.createElement("div");
+                card.className = "preview-card";
+                card.innerHTML = `
+                    <h3>${name}</h3>
+                    <p>📌 ${item.symptom.substring(0,60)}...</p>
+                `;
+                card.onclick = ()=>showResult(item,name);
+                previewList.appendChild(card);
+            }
+        }
+
+        function selectCategory(cat){
+            currentCategory = cat;
+            resultBox.style.display = "none";
+            previewList.style.display = "grid";
+            renderCategoryTags();
+            renderInjuryTags();
+            renderPreviewList();
+        }
+
+        function showResult(data,name){
+            previewList.style.display = "none";
+            injNameEl.innerText = name + "（" + data.category + "）";
+            symptomEl.innerText = data.symptom;
+            handleEl.innerText = data.handle;
+            avoidEl.innerText = data.avoid;
+            hospitalEl.innerText = data.hospital;
+            resultBox.style.display = "block";
+        }
+
+        // ✅ 返回列表函数
+        function backToList(){
+            resultBox.style.display = "none";
+            previewList.style.display = "grid";
+        }
+
+        function searchInjury(){
+            let keyword = searchInput.value.trim();
+            if(!keyword){
+                alert("请输入要查询的损伤名称");
+                return;
+            }
+            for(let key in injuryDB){
+                const item = injuryDB[key];
+                if(currentCategory !== "全部" && item.category !== currentCategory) continue;
+                if(key.includes(keyword) || keyword.includes(key)){
+                    showResult(item,key);
+                    return;
+                }
+            }
+            alert("当前分类下未找到该损伤，请尝试切换分类，或直接选择下方快捷标签");
+            resultBox.style.display="none";
+        }
+
+        renderCategoryTags();
+        renderInjuryTags();
+        renderPreviewList();
+    </script>
+</body>
+</html>
