@@ -4,12 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>赛程记分 | 麻城二中80周年校庆</title>
+    <!-- 【和首页完全一致：引入Fredoka字体】 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome，和首页保持一致 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
         font-family: "Microsoft Yahei", sans-serif;
+        font-family: "Fredoka", "Microsoft Yahei", sans-serif;
       }
       body {
         background: url("https://pic2.zhimg.com/v2-a53c740141ab75eb4fe16af3ef8c35c5_r.jpg")
@@ -23,6 +36,7 @@
         justify-content: center;
         gap: 24px;
         margin-bottom: 40px;
+        flex-wrap: wrap;
       }
       nav a {
         color: white;
@@ -79,13 +93,28 @@
         justify-content: space-around;
         align-items: center;
         margin: 40px 0;
+        flex-wrap: wrap;
       }
       .team {
         text-align: center;
       }
-      .team h3 {
-        font-size: 24px;
+      .team input {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        color: #fff;
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 20px;
+        text-align: center;
         margin-bottom: 12px;
+      }
+      .team input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .vs {
+        font-size: 32px;
+        font-weight: bold;
+        padding: 0 20px;
       }
       .score-num {
         font-size: 72px;
@@ -128,191 +157,196 @@
         text-align: center;
         color: white;
         font-size: 14px;
-        z-index: 999;
-        background-color: rgba(255, 255, 255, 0.08);
         padding: 6px 0;
-        border-radius: 8px;
-        opacity: 0.6;
+        opacity: 0.7;
       }
     </style>
   </head>
-  <div>
-    <nav>
-      <!--Middle Section-->
-      <a
-        class="nav-items active"
-        href="https://13476693852ys.github.io/ssz/index.html"
-        >Home</a
-      >
-      <a class="nav-items" href="https://13476693852ys.github.io/ssz/Query.html"
-        >Query</a
-      >
-      <a class="nav-items" href="https://13476693852ys.github.io/ssz/VOTE.html"
-        >Vote</a
-      >
-      <a
-        class="nav-items"
-        href="https://13476693852ys.github.io/ssz/Match%20Scoreboard.html"
-        >Match Scoreboard</a
-      >
-    </nav>
-    <div class="container">
-      <h1>🏆 校庆赛事记分台</h1>
-      <div class="match-select-area" id="matchSelectBox">
-        <!-- 赛程标签JS动态渲染 -->
-      </div>
-      <div class="match-info">
-        <p>赛事：麻城二中80周年校庆文体赛</p>
-        <p id="currentMatchName">当前比赛：比赛 1</p>
-      </div>
-      <div class="score-board">
-        <div class="team">
-          <input
-            type="text"
-            id="teamAName"
-            placeholder="输入A队名称"
-            onchange="saveTeamName()"
-          />
-          <div class="score-num" id="scoreA">0</div>
-          <div class="btn-group">
-            <button onclick="addA()">+1</button>
-            <button onclick="subA()">-1</button>
+  <body>
+    <div>
+      <nav>
+        <!--Middle Section-->
+        <a
+          class="nav-items active"
+          href="https://13476693852ys.github.io/ssz/index.html"
+          >Home</a
+        >
+        <a
+          class="nav-items"
+          href="https://13476693852ys.github.io/ssz/Query.html"
+          >Query</a
+        >
+        <a
+          class="nav-items"
+          href="https://13476693852ys.github.io/ssz/VOTE.html"
+          >Vote</a
+        >
+        <a
+          class="nav-items"
+          href="https://13476693852ys.github.io/ssz/Match%20Scoreboard.html"
+          >Match Scoreboard</a
+        >
+      </nav>
+      <div class="container">
+        <h1>🏆 校庆赛事记分台</h1>
+        <div class="match-select-area" id="matchSelectBox">
+          <!-- 赛程标签JS动态渲染 -->
+        </div>
+        <div class="match-info">
+          <p>赛事：麻城二中80周年校庆文体赛</p>
+          <p id="currentMatchName">当前比赛：比赛 1</p>
+        </div>
+        <div class="score-board">
+          <div class="team">
+            <input
+              type="text"
+              id="teamAName"
+              placeholder="输入A队名称"
+              onchange="saveTeamName()"
+            />
+            <div class="score-num" id="scoreA">0</div>
+            <div class="btn-group">
+              <button onclick="addA()">+1</button>
+              <button onclick="subA()">-1</button>
+            </div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team">
+            <input
+              type="text"
+              id="teamBName"
+              placeholder="输入B队名称"
+              onchange="saveTeamName()"
+            />
+            <div class="score-num" id="scoreB">0</div>
+            <div class="btn-group">
+              <button onclick="addB()">+1</button>
+              <button onclick="subB()">-1</button>
+            </div>
           </div>
         </div>
-        <div class="vs">VS</div>
-        <div class="team">
-          <input
-            type="text"
-            id="teamBName"
-            placeholder="输入B队名称"
-            onchange="saveTeamName()"
-          />
-          <div class="score-num" id="scoreB">0</div>
-          <div class="btn-group">
-            <button onclick="addB()">+1</button>
-            <button onclick="subB()">-1</button>
-          </div>
+        <div class="control-bar">
+          <button onclick="resetAll()">🔄 重置本场比分</button>
+          <button onclick="createNewMatch()">➕ 新建比赛</button>
         </div>
       </div>
-      <div class="control-bar">
-        <button onclick="resetAll()">🔄 重置本场比分</button>
-        <button onclick="createNewMatch()">➕ 新建比赛</button>
-      </div>
+      <div class="page-footer">献礼麻城二中80周年校庆 | 网页制作：杨烁</div>
+      <script>
+        let matchList = JSON.parse(localStorage.getItem("matchList")) || [
+          {
+            name: "比赛 1",
+            scoreA: 0,
+            scoreB: 0,
+            teamA: "代表队 A",
+            teamB: "代表队 B",
+          },
+        ];
+        let currentIndex = Number(localStorage.getItem("currentIndex")) || 0;
+
+        const elA = document.getElementById("scoreA");
+        const elB = document.getElementById("scoreB");
+        const teamAInput = document.getElementById("teamAName");
+        const teamBInput = document.getElementById("teamBName");
+        const matchSelectBox = document.getElementById("matchSelectBox");
+        const currentMatchNameEl = document.getElementById("currentMatchName");
+
+        //渲染全部赛程标签
+        function renderMatchTags() {
+          matchSelectBox.innerHTML = "";
+          matchList.forEach((item, idx) => {
+            const tag = document.createElement("div");
+            tag.className =
+              "match-tag " + (idx === currentIndex ? "active" : "");
+            tag.innerText = item.name;
+            tag.onclick = () => switchMatch(idx);
+            matchSelectBox.appendChild(tag);
+          });
+        }
+
+        //渲染当前比分
+        function renderScore() {
+          const currentMatch = matchList[currentIndex];
+          elA.innerText = currentMatch.scoreA;
+          elB.innerText = currentMatch.scoreB;
+          teamAInput.value = currentMatch.teamA;
+          teamBInput.value = currentMatch.teamB;
+          currentMatchNameEl.innerText = "当前比赛：" + currentMatch.name;
+        }
+
+        //保存全部数据到本地存储
+        function saveAllData() {
+          localStorage.setItem("matchList", JSON.stringify(matchList));
+          localStorage.setItem("currentIndex", currentIndex);
+        }
+
+        //保存队伍名称
+        function saveTeamName() {
+          const currentMatch = matchList[currentIndex];
+          currentMatch.teamA = teamAInput.value.trim();
+          currentMatch.teamB = teamBInput.value.trim();
+          saveAllData();
+        }
+
+        //切换赛程
+        function switchMatch(idx) {
+          currentIndex = idx;
+          saveAllData();
+          renderMatchTags();
+          renderScore();
+        }
+
+        //新建赛程
+        function createNewMatch() {
+          const newName = "比赛 " + (matchList.length + 1);
+          matchList.push({
+            name: newName,
+            scoreA: 0,
+            scoreB: 0,
+            teamA: "代表队 A",
+            teamB: "代表队 B",
+          });
+          //自动切到新建比赛
+          currentIndex = matchList.length - 1;
+          saveAllData();
+          renderMatchTags();
+          renderScore();
+        }
+
+        function addA() {
+          matchList[currentIndex].scoreA++;
+          renderScore();
+          saveAllData();
+        }
+        function subA() {
+          if (matchList[currentIndex].scoreA > 0) {
+            matchList[currentIndex].scoreA--;
+            renderScore();
+            saveAllData();
+          }
+        }
+        function addB() {
+          matchList[currentIndex].scoreB++;
+          renderScore();
+          saveAllData();
+        }
+        function subB() {
+          if (matchList[currentIndex].scoreB > 0) {
+            matchList[currentIndex].scoreB--;
+            renderScore();
+            saveAllData();
+          }
+        }
+        function resetAll() {
+          matchList[currentIndex].scoreA = 0;
+          matchList[currentIndex].scoreB = 0;
+          renderScore();
+          saveAllData();
+        }
+
+        //页面初始化渲染
+        renderMatchTags();
+        renderScore();
+      </script>
     </div>
-    <div class="page-footer">献礼麻城二中80周年校庆 | 网页制作：杨烁</div>
-    <script>
-      let matchList = JSON.parse(localStorage.getItem("matchList")) || [
-        {
-          name: "比赛 1",
-          scoreA: 0,
-          scoreB: 0,
-          teamA: "代表队 A",
-          teamA: "代表队 B",
-        },
-      ];
-      let currentIndex = Number(localStorage.getItem("currentIndex")) || 0;
-
-      const elA = document.getElementById("scoreA");
-      const elB = document.getElementById("scoreB");
-      const teamAInput = document.getElementById("teamAName");
-      const teamBInput = document.getElementById("teamBName");
-      const matchSelectBox = document.getElementById("matchSelectBox");
-      const currentMatchNameEl = document.getElementById("currentMatchName");
-
-      //渲染全部赛程标签
-      function renderMatchTags() {
-        matchSelectBox.innerHTML = "";
-        matchList.forEach((item, idx) => {
-          const tag = document.createElement("div");
-          tag.className = "match-tag " + (idx === currentIndex ? "active" : "");
-          tag.innerText = item.name;
-          tag.onclick = () => switchMatch(idx);
-          matchSelectBox.appendChild(tag);
-        });
-      }
-
-      //渲染当前比分
-      function renderScore() {
-        const currentMatch = matchList[currentIndex];
-        elA.innerText = currentMatch.scoreA;
-        elB.innerText = currentMatch.scoreB;
-        teamAInput.value = currentMatch.teamA;
-        teamBInput.value = currentMatch.teamB;
-        currentMatchNameEl.innerText = "当前比赛：" + currentMatch.name;
-      }
-
-      //保存全部数据到本地存储
-      function saveAllData() {
-        localStorage.setItem("matchList", JSON.stringify(matchList));
-        localStorage.setItem("currentIndex", currentIndex);
-      }
-
-      //保存修改后的队伍名称
-      function swichMatch(idx) {
-        currentIndex = idx;
-        saveALLData();
-        renderMatchTags();
-        renderScore();
-      }
-
-      //切换赛程
-      function createNewMatch() {
-        const newName = "比赛" + (matchList.length + 1);
-        matchList.push({ name: newName, scoreA: 0, scoreB: 0, teamA: "" });
-        saveAllData();
-        renderMatchTags();
-        renderScore();
-      }
-
-      //新建赛程
-      function createNewMatch() {
-        const newName = "比赛 " + (matchList.length + 1);
-        matchList.push({
-          name: newName,
-          scoreA: 0,
-          scoreB: 0,
-          teamA: "代表队 A",
-          teamB: "代表队 B",
-        });
-        saveAllData();
-        renderMatchTags();
-        renderScore();
-      }
-
-      function addA() {
-        matchList[currentIndex].scoreA++;
-        renderScore();
-        saveAllData();
-      }
-      function subA() {
-        if (matchList[currentIndex].scoreA > 0) {
-          matchList[currentIndex].scoreA--;
-          renderScore();
-          saveAllData();
-        }
-      }
-      function addB() {
-        matchList[currentIndex].scoreB++;
-        renderScore();
-        saveAllData();
-      }
-      function subB() {
-        if (matchList[currentIndex].scoreB > 0) {
-          matchList[currentIndex].scoreB--;
-          renderScore();
-          saveAllData();
-        }
-      }
-      function resetAll() {
-        matchList[currentIndex].scoreA = 0;
-        matchList[currentIndex].scoreB = 0;
-        renderScore();
-        saveAllData();
-      }
-
-      //页面初始化渲染
-      renderMatchTags();
-      renderScore();
-    </script>
   </body>
 </html>
