@@ -4,12 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>运动损伤应急查询 | 麻城二中80周年校庆</title>
+    <!-- 【和首页完全一致：引入Fredoka字体】 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome，和首页保持一致 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: "Microsoft Yahei", sans-serif;
+        /* ✅ 修改字体，和首页保持相同 */
+        font-family: "Fredoka", "Microsoft Yahei", sans-serif;
       }
       body {
         background: url("https://pic2.zhimg.com/v2-a53c740141ab75eb4fe16af3ef8c35c5_r.jpg")
@@ -34,6 +47,9 @@
       }
       nav a:hover {
         background: rgba(255, 255, 255, 0.2);
+      }
+      nav a.active {
+        background: rgba(255, 255, 255, 0.25);
       }
       .container {
         width: 90%;
@@ -62,10 +78,15 @@
       #searchInput {
         padding: 12px 16px;
         border-radius: 12px;
-        border: none;
+        border: 1px solid rgba(255, 255, 255, 0.3);
         width: 60%;
         min-width: 220px;
         font-size: 18px;
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+      }
+      #searchInput::placeholder {
+        color: rgba(255, 255, 255, 0.7);
       }
       button {
         padding: 12px 20px;
@@ -119,7 +140,7 @@
       .tag:hover {
         background: rgba(255, 255, 255, 0.35);
       }
-      /* 新增：损伤预览列表 */
+      /* 损伤预览列表 */
       .preview-list {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -170,7 +191,7 @@
         font-size: 14px;
         opacity: 0.8;
       }
-      /* ✅ 返回列表按钮样式 */
+      /* 返回列表按钮样式 */
       .back-btn {
         margin-top: 20px;
         padding: 10px 18px;
@@ -184,7 +205,7 @@
       .back-btn:hover {
         background: rgba(255, 255, 255, 0.4);
       }
-            .page-footer {
+      .page-footer {
         position: fixed;
         bottom: 12px;
         left: 0;
@@ -193,7 +214,6 @@
         color: white;
         font-size: 14px;
         z-index: 999;
-        background-color: rgba(255, 255, 255, 0.08);
         padding: 6px 0;
         border-radius: 8px;
         opacity: 0.6;
@@ -202,21 +222,12 @@
   </head>
   <body>
     <nav>
-      <!--Middle Section-->
-      <a
-        class="nav-items active"
-        href="https://13476693852ys.github.io/ssz/index.html"
-        >Home</a
-      >
-      <a class="nav-items" href="https://13476693852ys.github.io/ssz/Query.html"
+      <a href="https://13476693852ys.github.io/ssz/index.html">Home</a>
+      <a class="active" href="https://13476693852ys.github.io/ssz/Query.html"
         >Query</a
       >
-      <a class="nav-items" href="https://13476693852ys.github.io/ssz/VOTE.html"
-        >Vote</a
-      >
-      <a
-        class="nav-items"
-        href="https://13476693852ys.github.io/ssz/Match%20Scoreboard.html"
+      <a href="https://13476693852ys.github.io/ssz/VOTE.html">Vote</a>
+      <a href="https://13476693852ys.github.io/ssz/Match%20Scoreboard.html"
         >Match Scoreboard</a
       >
     </nav>
@@ -253,9 +264,9 @@
         <div class="tip-note">
           💡 提示：本页面仅作为应急科普参考，严重损伤务必及时就医。
         </div>
-        <!-- ✅ 返回列表按钮 -->
         <button class="back-btn" onclick="backToList()">⬅️ 返回损伤列表</button>
       </div>
+    </div>
     <div class="page-footer">献礼麻城二中80周年校庆 | 网页制作：杨烁</div>
     <script>
       const injuryDB = {
@@ -441,7 +452,6 @@
         resultBox.style.display = "block";
       }
 
-      // ✅ 返回列表函数
       function backToList() {
         resultBox.style.display = "none";
         previewList.style.display = "grid";
