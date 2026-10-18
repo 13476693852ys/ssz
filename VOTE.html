@@ -2,67 +2,77 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>校庆作品投票 | 麻城二中80周年</title>
-
-    <!--Fonts-->
+    <!--Fredoka字体，和首页一致-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
       rel="stylesheet"
     />
-
     <link
       rel="stylesheet"
-      href="https:/cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        /* ✅ 字体同步首页 */
+        font-family: "Fredoka", "Microsoft Yahei", sans-serif;
       }
       body {
         background: url("https://pic2.zhimg.com/v2-a53c740141ab75eb4fe16af3ef8c35c5_r.jpg")
           no-repeat center;
         background-size: cover;
         min-height: 100vh;
-        font-family: sans-serif;
-        color: #fff;
-        padding: 40px 20px;
+        padding: 30px;
       }
-      .nav {
-        text-align: right;
+      nav {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
         margin-bottom: 40px;
+        flex-wrap: wrap;
       }
-      .nav a {
-        color: #fff;
+      nav a {
+        color: white;
         text-decoration: none;
-        margin: 0 12px;
-        font-size: 16px;
+        font-size: 18px;
+        padding: 8px 16px;
+        border-radius: 20px;
       }
-      .nav a:hover {
-        text-decoration: underline;
+      nav a:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      nav a.active {
+        background: rgba(255, 255, 255, 0.25);
       }
       .vote-container {
-        max-width: 900px;
+        width: 90%;
+        max-width: 1000px;
         margin: 0 auto;
-        background: rgba(0, 60, 110, 0.45);
-        border-radius: 20px;
-        padding: 30px;
-        backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        border-radius: 24px;
+        padding: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
       }
       .title {
         text-align: center;
-        font-size: 32px;
+        font-size: 36px;
         margin-bottom: 10px;
+        text-shadow: 0 0 8px #0003;
       }
       .desc {
         text-align: center;
         opacity: 0.85;
         margin-bottom: 35px;
+        font-size: 20px;
       }
-      /* ========== 自定义单选框样式【重点】 ========== */
       .vote-item {
         background: rgba(255, 255, 255, 0.12);
         border-radius: 14px;
@@ -77,11 +87,9 @@
       .vote-item:hover {
         background: rgba(255, 255, 255, 0.18);
       }
-      /* 隐藏原生单选按钮 */
       .vote-item input[type="radio"] {
         display: none;
       }
-      /* 自定义圆圈 */
       .radio-circle {
         width: 22px;
         height: 22px;
@@ -92,23 +100,20 @@
         align-items: center;
         flex-shrink: 0;
       }
-      /* 内部选中圆点，默认透明 */
       .radio-circle::after {
         content: "";
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background: #21d0d9;
+        background: #36e8e8;
         transform: scale(0);
         transition: 0.2s;
       }
-      /* 选中时，放大内部圆点 */
       .vote-item input[type="radio"]:checked + .radio-circle::after {
         transform: scale(1);
       }
-      /* 选中时，卡片背景变色突出显示 */
       .vote-item input[type="radio"]:checked ~ .text {
-        color: #21d0d9;
+        color: #36e8e8;
         font-weight: bold;
       }
       .vote-btn {
@@ -117,49 +122,79 @@
         padding: 12px 40px;
         border: none;
         border-radius: 30px;
-        background: #21d0d9;
-        color: #002b49;
+        background: #36e8e8;
+        color: #003333;
         font-weight: bold;
-        font-size: 17px;
+        font-size: 18px;
         cursor: pointer;
       }
       .vote-btn:hover {
-        background: #53e1e8;
+        background: #20d0d0;
+      }
+      .vote-btn:disabled {
+        background: #77aaaa;
+        cursor: not-allowed;
+      }
+      .result-box {
+        margin-top: 35px;
+        padding: 28px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .result-box h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+      }
+      .result-item {
+        margin-bottom: 18px;
+      }
+      .result-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+        font-size: 18px;
+      }
+      .progress-wrap {
+        width: 100%;
+        height: 14px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 99px;
+        overflow: hidden;
+      }
+      .progress-bar {
+        height: 100%;
+        background: #36e8e8;
+        border-radius: 99px;
+        transition: 0.4s width ease;
       }
       footer {
+        position: fixed;
+        bottom: 12px;
+        left: 0;
+        width: 100%;
         text-align: center;
-        margin-top: 40px;
+        color: white;
         font-size: 14px;
+        padding: 6px 0;
         opacity: 0.7;
       }
     </style>
   </head>
   <body>
-    <div class="nav">
- <!--Middle Section-->
-            <a
-              class="nav-items active"
-              href="https://13476693852ys.github.io/ssz/index.html"
-              >Home</a
-            >
-            <a
-              class="nav-items"
-              href="https://13476693852ys.github.io/ssz/Query.html"
-              >Query</a
-            >
-            <a
-              class="nav-items"
-              href="https://13476693852ys.github.io/ssz/VOTE.html"
-              >Vote</a
-            >
-            <a
-              class="nav-items"
-              href="https://13476693852ys.github.io/ssz/Match%20Scoreboard.html"
-              >Match Scoreboard</a
-            >
-    </div>
+    <nav>
+      <a href="https://13476693852ys.github.io/ssz/index.html">Home</a>
+      <a href="https://13476693852ys.github.io/ssz/Query.html">Query</a>
+      <a class="active" href="https://13476693852ys.github.io/ssz/VOTE.html"
+        >Vote</a
+      >
+      <a href="https://13476693852ys.github.io/ssz/Match%20Scoreboard.html"
+        >Match Scoreboard</a
+      >
+    </nav>
     <div class="vote-container">
-      <h1 class="title">校庆作品投票</h1>
+      <h1 class="title">🏆 校庆作品投票</h1>
       <p class="desc">为麻城二中80周年校庆参赛类型投票，每人限投一票</p>
 
       <form id="voteForm">
@@ -184,21 +219,78 @@
           <label for="w4" class="text">类型4：美术作品</label>
         </div>
         <div class="vote-item">
-          <input type="radio" name="work" id="w4" value="类型5" />
+          <input type="radio" name="work" id="w5" value="类型5" />
           <span class="radio-circle"></span>
-          <label for="w4" class="text">类型5：主持人大赛</label>
+          <label for="w5" class="text">类型5：主持人大赛</label>
         </div>
         <div class="vote-item">
-          <input type="radio" name="work" id="w4" value="类型6" />
+          <input type="radio" name="work" id="w6" value="类型6" />
           <span class="radio-circle"></span>
-          <label for="w4" class="text">类型6：电脑作品</label>
+          <label for="w6" class="text">类型6：电脑作品</label>
         </div>
-        <button type="submit" class="vote-btn">提交投票</button>
+        <button type="submit" class="vote-btn" id="submitBtn">提交投票</button>
       </form>
+
+      <div class="result-box">
+        <h3>📊 当前投票结果</h3>
+        <div id="resultList"></div>
+      </div>
     </div>
     <footer>献礼麻城二中80周年校庆 | 网页制作：杨烁</footer>
     <script>
       const form = document.getElementById("voteForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const resultListEl = document.getElementById("resultList");
+
+      let voteData = JSON.parse(localStorage.getItem("voteData")) || {
+        类型1: 0,
+        类型2: 0,
+        类型3: 0,
+        类型4: 0,
+        类型5: 0,
+        类型6: 0,
+      };
+      let hasVoted = localStorage.getItem("hasVoted") === "true";
+
+      function renderResult() {
+        resultListEl.innerHTML = "";
+        const nameMap = {
+          类型1: "类型1：体艺节",
+          类型2: "类型2：摄影大赛",
+          类型3: "类型3：英语手抄报",
+          类型4: "类型4：美术作品",
+          类型5: "类型5：主持人大赛",
+          类型6: "类型6：电脑作品",
+        };
+        const total = Object.values(voteData).reduce(
+          (sum, val) => sum + val,
+          0,
+        );
+
+        for (let key in voteData) {
+          const itemVotes = voteData[key];
+          const percent =
+            total === 0 ? 0 : ((itemVotes / total) * 100).toFixed(1);
+          const div = document.createElement("div");
+          div.className = "result-item";
+          div.innerHTML = `
+            <div class="result-top">
+              <span>${nameMap[key]}</span>
+              <span>${itemVotes} 票（${percent}%）</span>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-bar" style="width:${percent}%"></div>
+            </div>
+          `;
+          resultListEl.appendChild(div);
+        }
+      }
+
+      if (hasVoted) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = "✅ 您已完成投票";
+      }
+
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         const selected = document.querySelector('input[name="work"]:checked');
@@ -206,9 +298,18 @@
           alert("请选择一个作品再投票！");
           return;
         }
+        voteData[selected.value] += 1;
+        localStorage.setItem("voteData", JSON.stringify(voteData));
+        localStorage.setItem("hasVoted", "true");
+        hasVoted = true;
         alert(`投票成功！你选择了：${selected.value}`);
         form.reset();
+        submitBtn.disabled = true;
+        submitBtn.innerText = "✅ 您已完成投票";
+        renderResult();
       });
+
+      renderResult();
     </script>
   </body>
 </html>
