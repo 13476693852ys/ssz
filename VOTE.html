@@ -1,15 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/bmob-js-sdk@2.4.1/dist/bmob-browser.min.js"></script>
-    <script>
-      // 初始化，放在SDK加载之后！
-      Bmob.initialize(
-        "bf71c609c411b3d3de77105a775e18e1",
-        "09f4c7212fc6bd8129dada3d5f783dc8",
-      );
-    </script>
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>校庆作品投票 | 麻城二中80周年</title>
@@ -23,8 +14,15 @@
       rel="stylesheet"
       href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <!--Bmob Hydrogen JS SDK-->
-    <script src="https://cdn.jsdelivr.net/npm/hydrogen-js-sdk@2.4.1/dist/bmob-browser.js"></script>
+    <!-- Bmob Hydrogen 新版SDK：改用unpkg镜像，避开浏览器拦截 -->
+    <script src="https://unpkg.com/hydrogen-js-sdk@2.4.1/dist/bmob-browser.min.js"></script>
+    <script>
+      // 全局只初始化一次！填入你的Bmob Application ID 和 REST API Key
+      Bmob.initialize(
+        "bf71c609c411b3d3de77105a775e18e1",
+        "09f4c7212fc6bd8129dada3d5f783dc8",
+      );
+    </script>
     <style>
       * {
         margin: 0;
@@ -240,35 +238,40 @@
       </form>
       <div class="result-box">
         <h3>当前投票结果</h3>
-        <div id="resultList"></div>
+        <div id="resultList">加载中...</div>
       </div>
     </div>
     <footer>献礼麻城二中80周年校庆 | 网页制作：杨烁</footer>
+
     <script>
-      // ============填入你的Bmob Secret Key============
-      Bmob.initialize("3034757fb05e7275");
       const form = document.getElementById("voteForm");
       const submitBtn = document.getElementById("submitBtn");
       const resultListEl = document.getElementById("resultList");
       let hasVoted = localStorage.getItem("hasVoted") === "true";
 
-      //从云端读取投票数据
+      // 从云端读取投票数据
       async function loadVoteResult() {
         try {
           const res = await Bmob.query("VoteTotal").find();
+          if (!res || res.length === 0) {
+            resultListEl.innerHTML =
+              "<p style='text-align:center'>暂无投票数据</p>";
+            return;
+          }
           const data = res[0];
           const voteData = {
-            类型1: data.type1,
-            类型2: data.type2,
-            类型3: data.type3,
-            类型4: data.type4,
-            类型5: data.type5,
-            类型6: data.type6,
+            类型1: data.type1 || 0,
+            类型2: data.type2 || 0,
+            类型3: data.type3 || 0,
+            类型4: data.type4 || 0,
+            类型5: data.type5 || 0,
+            类型6: data.type6 || 0,
           };
           renderResult(voteData);
         } catch (e) {
-          alert("读取投票数据失败，请刷新页面重试");
-          console.error(e);
+          resultListEl.innerHTML =
+            "<p style='text-align:center;color:#ffdddd'>读取投票数据失败</p>";
+          console.error("读取票数错误：", e);
         }
       }
 
@@ -305,12 +308,15 @@
         }
       }
 
+      // 页面加载自动读取票数
+      loadVoteResult();
+
       if (hasVoted) {
         submitBtn.disabled = true;
         submitBtn.innerText = "您已完成投票";
       }
 
-      //提交投票，调用云端云函数
+      // 提交投票
       form.addEventListener("submit", async function (e) {
         e.preventDefault();
         const selected = document.querySelector('input[name="work"]:checked');
@@ -332,7 +338,7 @@
             submitBtn.innerText = "您已完成投票";
             await loadVoteResult();
           } else {
-            alert("投票失败：" + cloudRes.msg);
+            alert("投票失败：" + (cloudRes.msg || "未知错误"));
             submitBtn.disabled = false;
             submitBtn.innerText = "提交投票";
           }
@@ -340,15 +346,9 @@
           alert("网络异常，提交失败，请稍后重试");
           submitBtn.disabled = false;
           submitBtn.innerText = "提交投票";
-          console.error(err);
+          console.error("投票错误：", err);
         }
       });
-
-      //页面加载读取云端票数
-      loadVoteResult();
-      window.onload = function () {
-        getVoteData;
-      };
     </script>
   </body>
 </html>
