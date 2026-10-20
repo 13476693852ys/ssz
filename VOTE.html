@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>校庆作品投票 | 麻城二中80周年</title>
-    <!--Fredoka字体，和首页一致-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,12 +14,13 @@
       rel="stylesheet"
       href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <!--Bmob Hydrogen JS SDK-->
+    <script src="https://cdn.jsdelivr.net/npm/hydrogen-js-sdk@2.4.1/dist/bmob-browser.js"></script>
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        /* ✅ 字体同步首页 */
         font-family: "Fredoka", "Microsoft Yahei", sans-serif;
       }
       body {
@@ -196,7 +196,6 @@
     <div class="vote-container">
       <h1 class="title">🏆 校庆作品投票</h1>
       <p class="desc">为麻城二中80周年校庆参赛类型投票，每人限投一票</p>
-
       <form id="voteForm">
         <div class="vote-item">
           <input type="radio" name="work" id="w1" value="类型1" />
@@ -230,29 +229,42 @@
         </div>
         <button type="submit" class="vote-btn" id="submitBtn">提交投票</button>
       </form>
-
       <div class="result-box">
-        <h3>📊 当前投票结果</h3>
+        <h3>当前投票结果</h3>
         <div id="resultList"></div>
       </div>
     </div>
     <footer>献礼麻城二中80周年校庆 | 网页制作：杨烁</footer>
     <script>
+      // ============填入你的Bmob Secret Key============
+      Bmob.initialize("3034757fb05e7275");
+
       const form = document.getElementById("voteForm");
       const submitBtn = document.getElementById("submitBtn");
       const resultListEl = document.getElementById("resultList");
-
-      let voteData = JSON.parse(localStorage.getItem("voteData")) || {
-        类型1: 0,
-        类型2: 0,
-        类型3: 0,
-        类型4: 0,
-        类型5: 0,
-        类型6: 0,
-      };
       let hasVoted = localStorage.getItem("hasVoted") === "true";
 
-      function renderResult() {
+      //从云端读取投票数据
+      async function loadVoteResult() {
+        try {
+          const res = await Bmob.query("VoteTotal").find();
+          const data = res[0];
+          const voteData = {
+            类型1: data.type1,
+            类型2: data.type2,
+            类型3: data.type3,
+            类型4: data.type4,
+            类型5: data.type5,
+            类型6: data.type6,
+          };
+          renderResult(voteData);
+        } catch (e) {
+          alert("读取投票数据失败，请刷新页面重试");
+          console.error(e);
+        }
+      }
+
+      function renderResult(voteData) {
         resultListEl.innerHTML = "";
         const nameMap = {
           类型1: "类型1：体艺节",
@@ -266,7 +278,6 @@
           (sum, val) => sum + val,
           0,
         );
-
         for (let key in voteData) {
           const itemVotes = voteData[key];
           const percent =
@@ -288,28 +299,45 @@
 
       if (hasVoted) {
         submitBtn.disabled = true;
-        submitBtn.innerText = "✅ 您已完成投票";
+        submitBtn.innerText = "您已完成投票";
       }
 
-      form.addEventListener("submit", function (e) {
+      //提交投票，调用云端云函数
+      form.addEventListener("submit", async function (e) {
         e.preventDefault();
         const selected = document.querySelector('input[name="work"]:checked');
         if (!selected) {
           alert("请选择一个作品再投票！");
           return;
         }
-        voteData[selected.value] += 1;
-        localStorage.setItem("voteData", JSON.stringify(voteData));
-        localStorage.setItem("hasVoted", "true");
-        hasVoted = true;
-        alert(`投票成功！你选择了：${selected.value}`);
-        form.reset();
         submitBtn.disabled = true;
-        submitBtn.innerText = "✅ 您已完成投票";
-        renderResult();
+        submitBtn.innerText = "提交中...";
+        try {
+          const cloudRes = await Bmob.runCloud("addVote", {
+            voteType: selected.value,
+          });
+          if (cloudRes.success) {
+            localStorage.setItem("hasVoted", "true");
+            hasVoted = true;
+            alert(`投票成功！你选择了：${selected.value}`);
+            form.reset();
+            submitBtn.innerText = "您已完成投票";
+            await loadVoteResult();
+          } else {
+            alert("投票失败：" + cloudRes.msg);
+            submitBtn.disabled = false;
+            submitBtn.innerText = "提交投票";
+          }
+        } catch (err) {
+          alert("网络异常，提交失败，请稍后重试");
+          submitBtn.disabled = false;
+          submitBtn.innerText = "提交投票";
+          console.error(err);
+        }
       });
 
-      renderResult();
+      //页面加载读取云端票数
+      loadVoteResult();
     </script>
   </body>
 </html>
