@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
+    <script src="https://cdn.jsdelivr.net/npm/bmob-js-sdk@2.4.1/dist/bmob-browser.min.js"></script>
+    <script>
+      // 初始化，放在SDK加载之后！
+      Bmob.initialize(
+        "bf71c609c411b3d3de77105a775e18e1",
+        "09f4c7212fc6bd8129dada3d5f783dc8",
+      );
+    </script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>校庆作品投票 | 麻城二中80周年</title>
@@ -337,6 +346,9 @@
 
       //页面加载读取云端票数
       loadVoteResult();
+      window.onload = function () {
+        getVoteData;
+      };
     </script>
   </body>
 </html>
