@@ -3,15 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>运动损伤应急查询 | 麻城二中80周年校庆</title>
-    <!-- 【和首页完全一致：引入Fredoka字体】 -->
+    <title>校庆作品投票 | 麻城二中80周年</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
       rel="stylesheet"
     />
-    <!-- Font Awesome，和首页保持一致 -->
     <link
       rel="stylesheet"
       href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -21,7 +19,6 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        /* ✅ 修改字体，和首页保持相同 */
         font-family: "Fredoka", "Microsoft Yahei", sans-serif;
       }
       body {
@@ -51,7 +48,7 @@
       nav a.active {
         background: rgba(255, 255, 255, 0.25);
       }
-      .container {
+      .vote-container {
         width: 90%;
         max-width: 1000px;
         margin: 0 auto;
@@ -62,150 +59,142 @@
         border: 1px solid rgba(255, 255, 255, 0.3);
         color: white;
       }
-      h1 {
+      .title {
         text-align: center;
         font-size: 36px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         text-shadow: 0 0 8px #0003;
       }
-      .search-area {
+      .desc {
+        text-align: center;
+        opacity: 0.85;
+        margin-bottom: 35px;
+        font-size: 20px;
+      }
+      .vote-item {
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 16px;
         display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-bottom: 25px;
-        flex-wrap: wrap;
-      }
-      #searchInput {
-        padding: 12px 16px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        width: 60%;
-        min-width: 220px;
-        font-size: 18px;
-        background: rgba(255, 255, 255, 0.18);
-        color: #fff;
-      }
-      #searchInput::placeholder {
-        color: rgba(255, 255, 255, 0.7);
-      }
-      button {
-        padding: 12px 20px;
-        border: none;
-        border-radius: 12px;
-        font-size: 18px;
+        align-items: center;
+        gap: 16px;
         cursor: pointer;
+        transition: 0.25s;
+      }
+      .vote-item:hover {
+        background: rgba(255, 255, 255, 0.18);
+      }
+      .vote-item input[type="radio"] {
+        display: none;
+      }
+      .radio-circle {
+        width: 22px;
+        height: 22px;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .radio-circle::after {
+        content: "";
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #36e8e8;
+        transform: scale(0);
+        transition: 0.2s;
+      }
+      .vote-item input[type="radio"]:checked + .radio-circle::after {
+        transform: scale(1);
+      }
+      .vote-item input[type="radio"]:checked ~ .text {
+        color: #36e8e8;
+        font-weight: bold;
+      }
+      .vote-btn {
+        display: block;
+        margin: 30px auto 0;
+        padding: 12px 40px;
+        border: none;
+        border-radius: 30px;
         background: #36e8e8;
         color: #003333;
         font-weight: bold;
+        font-size: 18px;
+        cursor: pointer;
       }
-      button:hover {
+      .vote-btn:hover {
         background: #20d0d0;
       }
-      /* 分类筛选栏样式 */
-      .category-area {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: center;
+      .vote-btn:disabled {
+        background: #77aaaa;
+        cursor: not-allowed;
+      }
+      .result-box {
+        margin-top: 35px;
+        padding: 28px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .result-box h3 {
+        text-align: center;
         margin-bottom: 20px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 24px;
       }
-      .category-tag {
-        padding: 7px 14px;
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        cursor: pointer;
-        font-size: 15px;
+      .result-item {
+        margin-bottom: 18px;
       }
-      .category-tag.active {
-        background: #ffb84d;
-        color: #332200;
-        font-weight: bold;
-      }
-      /* 损伤快捷标签 */
-      .tag-area {
+      .result-top {
         display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-bottom: 30px;
-      }
-      .tag {
-        padding: 8px 14px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        cursor: pointer;
-      }
-      .tag:hover {
-        background: rgba(255, 255, 255, 0.35);
-      }
-      /* 损伤预览列表 */
-      .preview-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 16px;
-        margin-bottom: 24px;
-      }
-      .preview-card {
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 14px;
-        padding: 16px;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-      .preview-card:hover {
-        background: rgba(255, 255, 255, 0.22);
-      }
-      .preview-card h3 {
-        color: #36e8e8;
+        justify-content: space-between;
         margin-bottom: 6px;
+        font-size: 18px;
       }
-      .preview-card p {
-        font-size: 14px;
-        opacity: 0.85;
-        line-height: 1.5;
+      .progress-wrap {
+        width: 100%;
+        height: 14px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 99px;
+        overflow: hidden;
       }
-      .result-card {
-        background: rgba(255, 255, 255, 0.18);
-        border-radius: 16px;
-        padding: 24px;
-        display: none;
+      .progress-bar {
+        height: 100%;
+        background: #36e8e8;
+        border-radius: 99px;
+        transition: 0.4s width ease;
       }
-      .result-card h2 {
-        color: #36e8e8;
-        margin-bottom: 16px;
-      }
-      .section {
-        margin: 14px 0;
-        line-height: 1.6;
-      }
-      .section h3 {
-        margin-bottom: 6px;
-      }
-      .warning {
-        color: #ffb8b8;
-      }
-      .tip-note {
-        margin-top: 20px;
-        font-size: 14px;
-        opacity: 0.8;
-      }
-      /* 返回列表按钮样式 */
-      .back-btn {
-        margin-top: 20px;
-        padding: 10px 18px;
-        background: rgba(255, 255, 255, 0.25);
-        color: white;
-        border: none;
+      .toast {
+        position: fixed;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 24px;
         border-radius: 12px;
-        cursor: pointer;
-        font-size: 16px;
+        color: #003333;
+        font-weight: bold;
+        z-index: 999;
+        opacity: 0;
+        transition: 0.3s;
+        pointer-events: none;
       }
-      .back-btn:hover {
-        background: rgba(255, 255, 255, 0.4);
+      .toast.show {
+        opacity: 1;
       }
-      .page-footer {
+      .toast.success {
+        background: #36e8e8;
+      }
+      .toast.error {
+        background: #ff8a8a;
+        color: #330000;
+      }
+      .toast.info {
+        background: #ffe08a;
+      }
+      footer {
         position: fixed;
         bottom: 12px;
         left: 0;
@@ -213,272 +202,281 @@
         text-align: center;
         color: white;
         font-size: 14px;
-        z-index: 999;
         padding: 6px 0;
-        border-radius: 8px;
-        opacity: 0.6;
+        opacity: 0.7;
+      }
+      .debug-panel {
+        width: 90%;
+        max-width: 1000px;
+        margin: 20px auto 0;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 16px;
+        padding: 16px 20px;
+        color: #ccc;
+        font-size: 13px;
+        font-family: monospace;
+      }
+      .debug-panel summary {
+        cursor: pointer;
+        color: #36e8e8;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      .debug-panel pre {
+        white-space: pre-wrap;
+        word-break: break-all;
       }
     </style>
   </head>
   <body>
     <nav>
       <a href="https://13476693852ys.github.io/ssz/index.html">Home</a>
-      <a class="active" href="https://13476693852ys.github.io/ssz/Query.html"
-        >Query</a
+      <a href="https://13476693852ys.github.io/ssz/Query.html">Query</a>
+      <a class="active" href="https://13476693852ys.github.io/ssz/VOTE.html"
+        >Vote</a
       >
-      <a href="https://13476693852ys.github.io/ssz/VOTE.html">Vote</a>
       <a href="https://13476693852ys.github.io/ssz/Match%20Scoreboard.html"
         >Match Scoreboard</a
       >
     </nav>
-    <div class="container">
-      <h1>🩹 运动损伤应急查询</h1>
-      <div class="search-area">
-        <input id="searchInput" placeholder="输入损伤名称，如：踝关节扭伤" />
-        <button onclick="searchInjury()">🔍 查询</button>
-      </div>
-      <!-- 分类筛选栏 -->
-      <div class="category-area" id="categoryBox"></div>
-      <div class="tag-area" id="injuryTagBox"></div>
 
-      <div class="preview-list" id="previewList"></div>
+    <div class="vote-container">
+      <h1 class="title">🏆 校庆作品投票</h1>
+      <p class="desc">为麻城二中80周年校庆参赛类型投票，每人限投一票</p>
+      <form id="voteForm">
+        <div class="vote-item">
+          <input type="radio" name="work" id="w1" value="类型1" />
+          <span class="radio-circle"></span>
+          <label for="w1" class="text">类型1：体艺节</label>
+        </div>
+        <div class="vote-item">
+          <input type="radio" name="work" id="w2" value="类型2" />
+          <span class="radio-circle"></span>
+          <label for="w2" class="text">类型2：摄影大赛</label>
+        </div>
+        <div class="vote-item">
+          <input type="radio" name="work" id="w3" value="类型3" />
+          <span class="radio-circle"></span>
+          <label for="w3" class="text">类型3：英语手抄报</label>
+        </div>
+        <div class="vote-item">
+          <input type="radio" name="work" id="w4" value="类型4" />
+          <span class="radio-circle"></span>
+          <label for="w4" class="text">类型4：美术作品</label>
+        </div>
+        <div class="vote-item">
+          <input type="radio" name="work" id="w5" value="类型5" />
+          <span class="radio-circle"></span>
+          <label for="w5" class="text">类型5：主持人大赛</label>
+        </div>
+        <div class="vote-item">
+          <input type="radio" name="work" id="w6" value="类型6" />
+          <span class="radio-circle"></span>
+          <label for="w6" class="text">类型6：电脑作品</label>
+        </div>
+        <button type="submit" class="vote-btn" id="submitBtn">提交投票</button>
+      </form>
 
-      <div class="result-card" id="resultBox">
-        <h2 id="injName"></h2>
-        <div class="section">
-          <h3>📌 症状</h3>
-          <p id="symptom"></p>
-        </div>
-        <div class="section">
-          <h3>✅ 应急处理</h3>
-          <p id="handle"></p>
-        </div>
-        <div class="section warning">
-          <h3>⚠️ 禁忌</h3>
-          <p id="avoid"></p>
-        </div>
-        <div class="section">
-          <h3>🏥 就医提示</h3>
-          <p id="hospital"></p>
-        </div>
-        <div class="tip-note">
-          💡 提示：本页面仅作为应急科普参考，严重损伤务必及时就医。
-        </div>
-        <button class="back-btn" onclick="backToList()">⬅️ 返回损伤列表</button>
+      <div class="result-box">
+        <h3>当前投票结果</h3>
+        <div id="resultList">加载中...</div>
       </div>
     </div>
-    <div class="page-footer">献礼麻城二中80周年校庆 | 网页制作：杨烁</div>
+
+    <!-- 调试面板：可折叠，方便排查 -->
+    <details class="debug-panel">
+      <summary>🛠 调试面板（点击展开）</summary>
+      <p>当前存储键：<span id="dbgKey"></span></p>
+      <p>原始数据：</p>
+      <pre id="dbgRaw"></pre>
+      <button
+        id="dbgReset"
+        style="margin-top:10px;padding:6px 14px;border:none;border-radius:8px;background:#ff8a8a;color:#330000;font-weight:bold;cursor:pointer;"
+      >
+        清空本地投票数据 & 重置投票状态
+      </button>
+    </details>
+
+    <div class="toast" id="toast"></div>
+    <footer>献礼麻城二中80周年校庆 | 网页制作：杨烁</footer>
+
     <script>
-      const injuryDB = {
-        擦伤: {
-          category: "皮肤损伤",
-          symptom: "皮肤表皮破损，伴随渗血、疼痛，创面可能沾有泥沙污物。",
-          handle:
-            "清水冲洗污物，碘伏消毒；轻微擦伤可暴露晾干，面积较大使用无菌纱布包扎。",
-          avoid: "不要直接用不干净的手涂抹伤口，避免使用酒精直接刺激破损创面。",
-          hospital:
-            "伤口很深、大量出血、污染严重，需要前往医院，必要时注射破伤风。",
-        },
-        皮肤挫伤: {
-          category: "皮肤损伤",
-          symptom: "局部皮肤淤青、肿痛，皮下出血但表皮完整。",
-          handle: "伤后48小时内冰敷，减少肿胀出血，48小时后热敷促进淤血消散。",
-          avoid: "急性期不要用力揉搓淤青部位。",
-          hospital: "挫伤范围极大、剧烈疼痛，需就医排除深层组织损伤。",
-        },
-        踝关节扭伤: {
-          category: "关节扭伤",
-          symptom: "脚踝疼痛、迅速肿胀，局部淤青，行走困难，关节活动受限。",
-          handle:
-            "RICE原则：休息Rest，冰敷Ice（伤后48小时内），加压Compression弹性绷带包扎，抬高Elevation患肢高于心脏。",
-          avoid: "❌不要立刻揉搓、热敷，不要强行继续走动。",
-          hospital: "无法负重站立、关节畸形、剧痛难忍，及时拍片排除骨折。",
-        },
-        膝关节扭伤: {
-          category: "关节扭伤",
-          symptom: "膝关节肿痛、活动时卡顿，上下楼梯痛感明显。",
-          handle: "停止运动，冰敷制动，佩戴护膝，减少负重。",
-          avoid: "不要强行屈伸膝关节，避免深蹲。",
-          hospital: "关节卡住无法活动、持续肿痛，就医检查半月板/韧带。",
-        },
-        手腕扭伤: {
-          category: "关节扭伤",
-          symptom: "手腕肿痛，发力、转动时疼痛加剧。",
-          handle: "护腕固定，急性期冰敷，减少手腕用力动作。",
-          avoid: "不要强行掰动手腕，避免提重物。",
-          hospital: "手腕变形、无法握物，就医排查骨折/脱位。",
-        },
-        肌肉拉伤: {
-          category: "肌肉损伤",
-          symptom: "肌肉撕裂样疼痛，发力时痛感加剧，局部肿胀。",
-          handle: "停止运动，急性期冰敷，静养休息，后期可轻柔拉伸恢复。",
-          avoid: "急性期不要按摩、热敷，不要强行发力。",
-          hospital: "肌肉完全撕裂、大面积血肿，尽快就医。",
-        },
-        肌肉抽筋: {
-          category: "肌肉损伤",
-          symptom: "肌肉突然僵硬收缩，剧烈疼痛感，常见小腿、大腿抽筋。",
-          handle: "缓慢、轻柔拉伸抽筋肌肉，配合温和按摩，补充水分和电解质。",
-          avoid: "不要暴力猛掰肌肉。",
-          hospital: "反复频繁抽筋，建议就医排查电解质/神经问题。",
-        },
-        肌肉酸痛: {
-          category: "肌肉损伤",
-          symptom: "运动后1-2天肌肉酸胀，按压痛感明显，活动后缓解。",
-          handle: "轻度拉伸、温水放松，保证休息和蛋白质补充。",
-          avoid: "不要在酸痛期高强度训练。",
-          hospital: "酸痛持续超过3天不缓解，就医检查。",
-        },
-        骨折: {
-          category: "骨骼损伤",
-          symptom: "剧烈疼痛，肢体畸形，肿胀迅速，无法负重，可伴随骨摩擦感。",
-          handle: "立刻停止活动，就地夹板固定，保护患处，尽快转运医院。",
-          avoid: "❌不要自行复位、随意搬动骨折部位。",
-          hospital: "立即送往医院骨科就诊。",
-        },
-        关节脱臼: {
-          category: "骨骼损伤",
-          symptom: "关节畸形，明显肿胀，完全无法活动，剧烈疼痛。",
-          handle: "原地固定患肢，不要尝试自行复位。",
-          avoid: "不要强行拉扯脱臼部位。",
-          hospital: "立刻就医由专业医生复位。",
-        },
-        脑震荡: {
-          category: "头部损伤",
-          symptom: "头晕、恶心呕吐、短暂失忆，头部撞击后意识恍惚。",
-          handle: "立刻停止活动，平躺休息，保持呼吸通畅，密切观察状态。",
-          avoid: "不要继续运动，不要摇晃头部。",
-          hospital: "出现反复呕吐、意识变差、剧烈头痛，立刻急诊。",
-        },
-        腰部扭伤: {
-          category: "躯干损伤",
-          symptom: "腰部突发疼痛，弯腰、转身动作受限，常伴肌肉僵硬。",
-          handle: "硬板床上平躺休息，急性期冰敷，避免弯腰搬重物。",
-          avoid: "不要盲目按摩正骨，不要久坐久站。",
-          hospital: "出现腿麻、放射痛，就医排查腰椎间盘问题。",
-        },
-        运动中暑: {
-          category: "其他急症",
-          symptom: "头晕、大汗、恶心、体温升高，严重时意识模糊。",
-          handle:
-            "立刻转移到阴凉通风处，解开衣物，补充淡盐水，冰敷颈部/腋下降温。",
-          avoid: "不要继续在高温环境下运动，不要一次性大量喝纯水。",
-          hospital: "出现高热、意识不清，立刻急救送医。",
-        },
+      /* ========== 配置 ========== */
+      const STORAGE_KEY = "mcez80_vote_data"; // 各类型票数
+      const VOTED_KEY = "mcez80_has_voted"; // 是否已投过票
+      const TYPE_KEYS = ["类型1", "类型2", "类型3", "类型4", "类型5", "类型6"];
+      const NAME_MAP = {
+        类型1: "类型1：体艺节",
+        类型2: "类型2：摄影大赛",
+        类型3: "类型3：英语手抄报",
+        类型4: "类型4：美术作品",
+        类型5: "类型5：主持人大赛",
+        类型6: "类型6：电脑作品",
       };
 
-      const allCategories = [
-        "全部",
-        "皮肤损伤",
-        "关节扭伤",
-        "肌肉损伤",
-        "骨骼损伤",
-        "头部损伤",
-        "躯干损伤",
-        "其他急症",
-      ];
-      let currentCategory = "全部";
+      /* ========== DOM ========== */
+      const form = document.getElementById("voteForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const resultListEl = document.getElementById("resultList");
+      const toastEl = document.getElementById("toast");
 
-      const resultBox = document.getElementById("resultBox");
-      const injNameEl = document.getElementById("injName");
-      const symptomEl = document.getElementById("symptom");
-      const handleEl = document.getElementById("handle");
-      const avoidEl = document.getElementById("avoid");
-      const hospitalEl = document.getElementById("hospital");
-      const searchInput = document.getElementById("searchInput");
-      const categoryBox = document.getElementById("categoryBox");
-      const injuryTagBox = document.getElementById("injuryTagBox");
-      const previewList = document.getElementById("previewList");
+      /* ========== 工具函数 ========== */
+      function showToast(msg, type = "info", duration = 2200) {
+        toastEl.textContent = msg;
+        toastEl.className = "toast show " + type;
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => {
+          toastEl.className = "toast " + type;
+        }, duration);
+      }
 
-      function renderCategoryTags() {
-        categoryBox.innerHTML = "";
-        allCategories.forEach((cat) => {
-          const tag = document.createElement("div");
-          tag.className =
-            "category-tag " + (cat === currentCategory ? "active" : "");
-          tag.innerText = cat;
-          tag.onclick = () => selectCategory(cat);
-          categoryBox.appendChild(tag);
+      // 读取票数（纯本地，无需网络）
+      function getVoteData() {
+        let raw = null;
+        try {
+          raw = localStorage.getItem(STORAGE_KEY);
+        } catch (e) {
+          console.error("读取 localStorage 失败：", e);
+        }
+        const data = {};
+        TYPE_KEYS.forEach((k) => (data[k] = 0));
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            TYPE_KEYS.forEach((k) => {
+              if (typeof parsed[k] === "number") data[k] = parsed[k];
+            });
+          } catch (e) {
+            console.warn("投票数据解析失败，将重置：", e);
+          }
+        }
+        return data;
+      }
+
+      // 保存票数
+      function saveVoteData(data) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {
+          console.error("保存 localStorage 失败：", e);
+          showToast("保存失败（浏览器存储不可用）", "error");
+        }
+      }
+
+      /* ========== 渲染结果 ========== */
+      function renderResult(voteData) {
+        const total = TYPE_KEYS.reduce((s, k) => s + (voteData[k] || 0), 0);
+        resultListEl.innerHTML = "";
+        TYPE_KEYS.forEach((key) => {
+          const itemVotes = voteData[key] || 0;
+          const percent = total === 0 ? 0 : ((itemVotes / total) * 100).toFixed(1);
+          const div = document.createElement("div");
+          div.className = "result-item";
+          div.innerHTML = `
+            <div class="result-top">
+              <span>${NAME_MAP[key]}</span>
+              <span>${itemVotes} 票（${percent}%）</span>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-bar" style="width:${percent}%"></div>
+            </div>
+          `;
+          resultListEl.appendChild(div);
         });
       }
 
-      function renderInjuryTags() {
-        injuryTagBox.innerHTML = "";
-        for (let name in injuryDB) {
-          const item = injuryDB[name];
-          if (currentCategory !== "全部" && item.category !== currentCategory)
-            continue;
-          const tag = document.createElement("div");
-          tag.className = "tag";
-          tag.innerText = name;
-          tag.onclick = () => showResult(item, name);
-          injuryTagBox.appendChild(tag);
+      // 加载并渲染（这里不会失败，纯本地）
+      function loadVoteResult() {
+        try {
+          const data = getVoteData();
+          renderResult(data);
+          updateDebug(data);
+        } catch (e) {
+          resultListEl.innerHTML =
+            "<p style='text-align:center;color:#ffdddd'>读取投票数据失败</p>";
+          console.error("读取票数错误：", e);
         }
       }
 
-      function renderPreviewList() {
-        previewList.innerHTML = "";
-        for (let name in injuryDB) {
-          const item = injuryDB[name];
-          if (currentCategory !== "全部" && item.category !== currentCategory)
-            continue;
-          const card = document.createElement("div");
-          card.className = "preview-card";
-          card.innerHTML = `
-                    <h3>${name}</h3>
-                    <p>📌 ${item.symptom.substring(0, 60)}...</p>
-                `;
-          card.onclick = () => showResult(item, name);
-          previewList.appendChild(card);
-        }
+      /* ========== 调试面板 ========== */
+      function updateDebug(data) {
+        document.getElementById("dbgKey").textContent = STORAGE_KEY;
+        document.getElementById("dbgRaw").textContent = JSON.stringify(
+          data,
+          null,
+          2
+        );
       }
 
-      function selectCategory(cat) {
-        currentCategory = cat;
-        resultBox.style.display = "none";
-        previewList.style.display = "grid";
-        renderCategoryTags();
-        renderInjuryTags();
-        renderPreviewList();
+      document.getElementById("dbgReset").addEventListener("click", () => {
+        if (!confirm("确定要清空本地投票数据并允许重新投票吗？")) return;
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem(VOTED_KEY);
+        } catch (e) {}
+        submitBtn.disabled = false;
+        submitBtn.innerText = "提交投票";
+        loadVoteResult();
+        showToast("已重置，可以重新投票", "success");
+      });
+
+      /* ========== 初始化状态 ========== */
+      let hasVoted = false;
+      try {
+        hasVoted = localStorage.getItem(VOTED_KEY) === "true";
+      } catch (e) {}
+
+      loadVoteResult();
+
+      if (hasVoted) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = "您已完成投票";
       }
 
-      function showResult(data, name) {
-        previewList.style.display = "none";
-        injNameEl.innerText = name + "（" + data.category + "）";
-        symptomEl.innerText = data.symptom;
-        handleEl.innerText = data.handle;
-        avoidEl.innerText = data.avoid;
-        hospitalEl.innerText = data.hospital;
-        resultBox.style.display = "block";
-      }
+      /* ========== 提交投票 ========== */
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
 
-      function backToList() {
-        resultBox.style.display = "none";
-        previewList.style.display = "grid";
-      }
-
-      function searchInjury() {
-        let keyword = searchInput.value.trim();
-        if (!keyword) {
-          alert("请输入要查询的损伤名称");
+        if (hasVoted) {
+          showToast("您已经投过票了，每人限投一票", "info");
           return;
         }
-        for (let key in injuryDB) {
-          const item = injuryDB[key];
-          if (currentCategory !== "全部" && item.category !== currentCategory)
-            continue;
-          if (key.includes(keyword) || keyword.includes(key)) {
-            showResult(item, key);
-            return;
-          }
-        }
-        alert("当前分类下未找到该损伤，请尝试切换分类，或直接选择下方快捷标签");
-        resultBox.style.display = "none";
-      }
 
-      renderCategoryTags();
-      renderInjuryTags();
-      renderPreviewList();
+        const selected = document.querySelector('input[name="work"]:checked');
+        if (!selected) {
+          showToast("请选择一个作品再投票！", "info");
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "提交中...";
+
+        // 模拟一点提交延迟，体验更真实（纯本地，无需网络）
+        setTimeout(() => {
+          try {
+            const data = getVoteData();
+            data[selected.value] = (data[selected.value] || 0) + 1;
+            saveVoteData(data);
+
+            hasVoted = true;
+            try {
+              localStorage.setItem(VOTED_KEY, "true");
+            } catch (e) {}
+
+            showToast("投票成功！你选择了：" + selected.value, "success");
+            form.reset();
+            submitBtn.innerText = "您已完成投票";
+            renderResult(data);
+            updateDebug(data);
+          } catch (err) {
+            // 纯本地操作几乎不会失败，这里保留兜底提示
+            showToast("提交失败：" + (err && err.message ? err.message : "未知错误"), "error");
+            submitBtn.disabled = false;
+            submitBtn.innerText = "提交投票";
+            console.error("投票错误：", err);
+          }
+        }, 300);
+      });
     </script>
   </body>
 </html>
