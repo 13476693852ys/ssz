@@ -10,19 +10,10 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
       rel="stylesheet"
     />
-    <link>
+    <link
       rel="stylesheet"
       href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <!-- Bmob Hydrogen 新版SDK：改用unpkg镜像，避开浏览器拦截 -->
-    <script src="./bmob-browser.min.js"></script>
-    <script>
-      // 全局只初始化一次！填入你的Bmob Application ID 和 REST API Key
-      Bmob.initialize(
-        "bf71c609c411b3d3de77105a775e18e1",
-        "09f4c7212fc6bd8129dada3d5f783dc8",
-      );
-    </script>
     <style>
       * {
         margin: 0;
@@ -176,6 +167,33 @@
         border-radius: 99px;
         transition: 0.4s width ease;
       }
+      .toast {
+        position: fixed;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 24px;
+        border-radius: 12px;
+        color: #003333;
+        font-weight: bold;
+        z-index: 999;
+        opacity: 0;
+        transition: 0.3s;
+        pointer-events: none;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+      .toast.success {
+        background: #36e8e8;
+      }
+      .toast.error {
+        background: #ff8a8a;
+        color: #330000;
+      }
+      .toast.info {
+        background: #ffe08a;
+      }
       footer {
         position: fixed;
         bottom: 12px;
@@ -186,6 +204,44 @@
         font-size: 14px;
         padding: 6px 0;
         opacity: 0.7;
+      }
+      .debug-panel {
+        width: 90%;
+        max-width: 1000px;
+        margin: 20px auto 0;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 16px;
+        padding: 16px 20px;
+        color: #ccc;
+        font-size: 13px;
+        font-family: monospace;
+      }
+      .debug-panel summary {
+        cursor: pointer;
+        color: #36e8e8;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      .debug-panel pre {
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .reset-btn {
+        position: relative;
+        z-index: 10;
+        display: block;
+        margin: 24px auto 0;
+        padding: 10px 28px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 30px;
+        background: transparent;
+        color: #ffffff;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .reset-btn:hover {
+        background: rgba(255, 255, 255, 0.18);
       }
     </style>
   </head>
@@ -200,6 +256,7 @@
         >Match Scoreboard</a
       >
     </nav>
+
     <div class="vote-container">
       <h1 class="title">🏆 校庆作品投票</h1>
       <p class="desc">为麻城二中80周年校庆参赛类型投票，每人限投一票</p>
@@ -236,68 +293,109 @@
         </div>
         <button type="submit" class="vote-btn" id="submitBtn">提交投票</button>
       </form>
+
       <div class="result-box">
         <h3>当前投票结果</h3>
         <div id="resultList">加载中...</div>
       </div>
+
+      <button type="button" class="reset-btn" id="resetBtn">
+        <i class="fa-solid fa-rotate-right"></i> 重置投票状态（可重新投票）
+      </button>
     </div>
+
+    <!-- 调试面板：可折叠，方便排查 -->
+    <details class="debug-panel">
+      <summary>🛠 调试面板（点击展开）</summary>
+      <p>当前存储键：<span id="dbgKey"></span></p>
+      <p>原始数据：</p>
+      <pre id="dbgRaw"></pre>
+      <button
+        id="dbgReset"
+        style="margin-top:10px;padding:6px 14px;border:none;border-radius:8px;background:#ff8a8a;color:#330000;font-weight:bold;cursor:pointer;"
+      >
+        清空本地投票数据 & 重置投票状态
+      </button>
+    </details>
+
+    <div class="toast" id="toast"></div>
     <footer>献礼麻城二中80周年校庆 | 网页制作：杨烁</footer>
 
     <script>
+      /* ========== 配置 ========== */
+      const STORAGE_KEY = "mcez80_vote_data"; // 各类型票数
+      const VOTED_KEY = "mcez80_has_voted"; // 是否已投过票
+      const TYPE_KEYS = ["类型1", "类型2", "类型3", "类型4", "类型5", "类型6"];
+      const NAME_MAP = {
+        类型1: "类型1：体艺节",
+        类型2: "类型2：摄影大赛",
+        类型3: "类型3：英语手抄报",
+        类型4: "类型4：美术作品",
+        类型5: "类型5：主持人大赛",
+        类型6: "类型6：电脑作品",
+      };
+
+      /* ========== DOM ========== */
       const form = document.getElementById("voteForm");
       const submitBtn = document.getElementById("submitBtn");
       const resultListEl = document.getElementById("resultList");
-      let hasVoted = localStorage.getItem("hasVoted") === "true";
+      const toastEl = document.getElementById("toast");
 
-      // 从云端读取投票数据
-      async function loadVoteResult() {
+      /* ========== 工具函数 ========== */
+      function showToast(msg, type = "info", duration = 2200) {
+        toastEl.textContent = msg;
+        toastEl.className = "toast show " + type;
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => {
+          toastEl.className = "toast " + type;
+        }, duration);
+      }
+
+      // 读取票数（纯本地，无需网络）
+      function getVoteData() {
+        let raw = null;
         try {
-          const res = await Bmob.query("VoteTotal").find();
-          if (!res || res.length === 0) {
-            resultListEl.innerHTML =
-              "<p style='text-align:center'>暂无投票数据</p>";
-            return;
-          }
-          const data = res[0];
-          const voteData = {
-            类型1: data.type1 || 0,
-            类型2: data.type2 || 0,
-            类型3: data.type3 || 0,
-            类型4: data.type4 || 0,
-            类型5: data.type5 || 0,
-            类型6: data.type6 || 0,
-          };
-          renderResult(voteData);
+          raw = localStorage.getItem(STORAGE_KEY);
         } catch (e) {
-          resultListEl.innerHTML =
-            "<p style='text-align:center;color:#ffdddd'>读取投票数据失败</p>";
-          console.error("读取票数错误：", e);
+          console.error("读取 localStorage 失败：", e);
+        }
+        const data = {};
+        TYPE_KEYS.forEach((k) => (data[k] = 0));
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            TYPE_KEYS.forEach((k) => {
+              if (typeof parsed[k] === "number") data[k] = parsed[k];
+            });
+          } catch (e) {
+            console.warn("投票数据解析失败，将重置：", e);
+          }
+        }
+        return data;
+      }
+
+      // 保存票数
+      function saveVoteData(data) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {
+          console.error("保存 localStorage 失败：", e);
+          showToast("保存失败（浏览器存储不可用）", "error");
         }
       }
 
+      /* ========== 渲染结果 ========== */
       function renderResult(voteData) {
+        const total = TYPE_KEYS.reduce((s, k) => s + (voteData[k] || 0), 0);
         resultListEl.innerHTML = "";
-        const nameMap = {
-          类型1: "类型1：体艺节",
-          类型2: "类型2：摄影大赛",
-          类型3: "类型3：英语手抄报",
-          类型4: "类型4：美术作品",
-          类型5: "类型5：主持人大赛",
-          类型6: "类型6：电脑作品",
-        };
-        const total = Object.values(voteData).reduce(
-          (sum, val) => sum + val,
-          0,
-        );
-        for (let key in voteData) {
-          const itemVotes = voteData[key];
-          const percent =
-            total === 0 ? 0 : ((itemVotes / total) * 100).toFixed(1);
+        TYPE_KEYS.forEach((key) => {
+          const itemVotes = voteData[key] || 0;
+          const percent = total === 0 ? 0 : ((itemVotes / total) * 100).toFixed(1);
           const div = document.createElement("div");
           div.className = "result-item";
           div.innerHTML = `
             <div class="result-top">
-              <span>${nameMap[key]}</span>
+              <span>${NAME_MAP[key]}</span>
               <span>${itemVotes} 票（${percent}%）</span>
             </div>
             <div class="progress-wrap">
@@ -305,10 +403,67 @@
             </div>
           `;
           resultListEl.appendChild(div);
+        });
+      }
+
+      // 加载并渲染（这里不会失败，纯本地）
+      function loadVoteResult() {
+        try {
+          const data = getVoteData();
+          renderResult(data);
+          updateDebug(data);
+        } catch (e) {
+          resultListEl.innerHTML =
+            "<p style='text-align:center;color:#ffdddd'>读取投票数据失败</p>";
+          console.error("读取票数错误：", e);
         }
       }
 
-      // 页面加载自动读取票数
+      /* ========== 调试面板 ========== */
+      function updateDebug(data) {
+        document.getElementById("dbgKey").textContent = STORAGE_KEY;
+        document.getElementById("dbgRaw").textContent = JSON.stringify(
+          data,
+          null,
+          2
+        );
+      }
+
+      // 执行重置（清空票数 + 允许重新投票），供多个按钮复用
+      function doReset() {
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem(VOTED_KEY);
+        } catch (e) {}
+        hasVoted = false;
+        submitBtn.disabled = false;
+        submitBtn.innerText = "提交投票";
+        loadVoteResult();
+        showToast("已重置，可以重新投票", "success");
+      }
+
+      document.getElementById("dbgReset").addEventListener("click", () => {
+        if (!confirm("确定要清空本地投票数据并允许重新投票吗？")) return;
+        doReset();
+      });
+
+      // 主界面的重置按钮
+      document.getElementById("resetBtn").addEventListener("click", () => {
+        if (
+          !confirm(
+            "确定要重置投票状态吗？重置后你可以重新投一票（所有人的票数也会被清空）。"
+          )
+        )
+          return;
+        doReset();
+      });
+
+      /* ========== 初始化状态 ========== */
+      let hasVoted = false;
+      try {
+        hasVoted = localStorage.getItem(VOTED_KEY) === "true";
+      } catch (e) {}
+
       loadVoteResult();
 
       if (hasVoted) {
@@ -316,38 +471,49 @@
         submitBtn.innerText = "您已完成投票";
       }
 
-      // 提交投票
-      form.addEventListener("submit", async function (e) {
+      /* ========== 提交投票 ========== */
+      form.addEventListener("submit", function (e) {
         e.preventDefault();
-        const selected = document.querySelector('input[name="work"]:checked');
-        if (!selected) {
-          alert("请选择一个作品再投票！");
+
+        if (hasVoted) {
+          showToast("您已经投过票了，每人限投一票", "info");
           return;
         }
+
+        const selected = document.querySelector('input[name="work"]:checked');
+        if (!selected) {
+          showToast("请选择一个作品再投票！", "info");
+          return;
+        }
+
         submitBtn.disabled = true;
         submitBtn.innerText = "提交中...";
-        try {
-          const cloudRes = await Bmob.runCloud("addVote", {
-            voteType: selected.value,
-          });
-          if (cloudRes.success) {
-            localStorage.setItem("hasVoted", "true");
+
+        // 模拟一点提交延迟，体验更真实（纯本地，无需网络）
+        setTimeout(() => {
+          try {
+            const data = getVoteData();
+            data[selected.value] = (data[selected.value] || 0) + 1;
+            saveVoteData(data);
+
             hasVoted = true;
-            alert(`投票成功！你选择了：${selected.value}`);
+            try {
+              localStorage.setItem(VOTED_KEY, "true");
+            } catch (e) {}
+
+            showToast("投票成功！你选择了：" + selected.value, "success");
             form.reset();
             submitBtn.innerText = "您已完成投票";
-            await loadVoteResult();
-          } else {
-            alert("投票失败：" + (cloudRes.msg || "未知错误"));
+            renderResult(data);
+            updateDebug(data);
+          } catch (err) {
+            // 纯本地操作几乎不会失败，这里保留兜底提示
+            showToast("提交失败：" + (err && err.message ? err.message : "未知错误"), "error");
             submitBtn.disabled = false;
             submitBtn.innerText = "提交投票";
+            console.error("投票错误：", err);
           }
-        } catch (err) {
-          alert("网络异常，提交失败，请稍后重试");
-          submitBtn.disabled = false;
-          submitBtn.innerText = "提交投票";
-          console.error("投票错误：", err);
-        }
+        }, 300);
       });
     </script>
   </body>
