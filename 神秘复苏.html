@@ -1,0 +1,3672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>驭鬼者暗网 · 总部</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0c;--panel:#101014;--panel2:#0c0c10;--hover:#16161c;
+  --border:#242430;--border2:#1a1a22;--red:#e03030;--red-dim:#7a1a1a;
+  --green:#3ddc84;--gold:#d4af37;--text:#c9c9d1;--muted:#6b6b78;--dim:#44444e;
+}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:"HarmonyOS Sans SC","PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+  font-size:14px;line-height:1.6;overflow:hidden;-webkit-font-smoothing:antialiased;
+}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#2a2a36;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#3a3a48}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;outline:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;outline:none}
+.hidden{display:none!important}
+
+.scanlines{position:fixed;inset:0;pointer-events:none;z-index:999;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px);
+  mix-blend-mode:overlay}
+
+.toast-wrap{position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:2000;
+  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{padding:9px 22px;font-size:12.5px;letter-spacing:1px;background:#14141a;
+  border:1px solid #2a2a36;color:#c9c9d1;box-shadow:0 8px 30px rgba(0,0,0,.7);
+  animation:toastIn .25s ease;max-width:80vw;text-align:center}
+.toast.ok{border-color:#1d5c3a;color:#8fe0ad;background:#0d1a13}
+.toast.err{border-color:#5c1a1a;color:#f0b0b0;background:#1a0d0d}
+.toast.gold{border-color:#5c4a1a;color:#e6cd7a;background:#1a160d}
+@keyframes toastIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+.toast.out{opacity:0;transform:translateY(-12px);transition:.3s}
+
+/* 登录 */
+#loginPage{display:flex;align-items:center;justify-content:center;height:100vh;
+  position:relative;overflow:auto;
+  background:radial-gradient(ellipse at 50% 40%,rgba(120,10,10,.13) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 80%,rgba(20,40,80,.08) 0%,transparent 60%),#08080a}
+#loginPage::before{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(ellipse at center,#000 20%,transparent 78%);
+  mask-image:radial-gradient(ellipse at center,#000 20%,transparent 78%)}
+.login-box{position:relative;z-index:2;width:440px;max-width:92vw;padding:38px 40px 30px;margin:24px 0;
+  background:rgba(12,12,16,.86);border:1px solid #1e1e28;backdrop-filter:blur(8px);
+  box-shadow:0 0 70px rgba(0,0,0,.85),inset 0 0 60px rgba(120,10,10,.05)}
+.brand{text-align:center;margin-bottom:30px}
+.eye-outer{width:120px;height:64px;margin:0 auto 20px;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 50%,#3a0505 0%,#180202 65%,#0a0000 100%);
+  border:1px solid #40100f;box-shadow:0 0 40px rgba(200,20,20,.45),inset 0 0 26px rgba(180,20,20,.28);
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+  animation:eyeGlow 4s ease-in-out infinite}
+.eye-outer::after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:linear-gradient(140deg,rgba(255,255,255,.07) 0%,transparent 45%)}
+.iris{width:42px;height:42px;border-radius:50%;
+  background:radial-gradient(circle at 42% 38%,#ff4040 0%,#9b0000 55%,#300 100%);
+  box-shadow:0 0 22px rgba(255,45,45,.85),inset 0 0 12px rgba(0,0,0,.9);
+  display:flex;align-items:center;justify-content:center;position:relative;
+  animation:irisMove 7s ease-in-out infinite}
+.pupil{width:16px;height:16px;border-radius:50%;background:#000;box-shadow:inset 0 0 6px #000;position:relative}
+.pupil::after{content:"";position:absolute;top:8px;left:9px;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55)}
+@keyframes eyeGlow{0%,100%{box-shadow:0 0 30px rgba(200,20,20,.35),inset 0 0 26px rgba(180,20,20,.22)}50%{box-shadow:0 0 55px rgba(255,30,30,.6),inset 0 0 30px rgba(220,30,30,.35)}}
+@keyframes irisMove{0%,100%{transform:translateX(0)}30%{transform:translateX(9px)}65%{transform:translateX(-9px)}}
+.login-title{font-size:38px;font-weight:800;letter-spacing:10px;color:#ededf2;
+  text-shadow:0 0 22px rgba(224,48,48,.55),0 0 44px rgba(224,48,48,.25);margin-left:10px}
+.login-sub{font-size:12px;color:#5a5a66;letter-spacing:3px;margin-top:10px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:11.5px;color:var(--muted);letter-spacing:1px;margin-bottom:7px}
+.form-group input,.form-group select{width:100%;height:42px;padding:0 14px;background:#0a0a0e;
+  border:1px solid #23232e;color:#e2e2ea;font-size:13.5px;letter-spacing:.5px;transition:.2s}
+.form-group select{cursor:pointer;color:#c9c9d1}
+.form-group input::placeholder{color:#3c3c46}
+.form-group input:focus,.form-group select:focus{border-color:#5c1a1a;
+  box-shadow:0 0 0 3px rgba(224,48,48,.08);background:#0c0c11}
+.btn-row{display:flex;gap:10px;margin-top:22px}
+.btn{flex:1;height:44px;font-size:14px;letter-spacing:2px;font-weight:600;border:1px solid transparent;transition:.2s}
+.btn-red{background:linear-gradient(180deg,#8f1d1d,#6b1414);border-color:#a32626;color:#ffe9e9;
+  box-shadow:0 0 20px rgba(180,30,30,.35),inset 0 1px 0 rgba(255,255,255,.08)}
+.btn-red:hover{background:linear-gradient(180deg,#a82424,#7d1818);box-shadow:0 0 30px rgba(220,40,40,.5)}
+.btn-dark{background:#14141a;border-color:#282833;color:#a8a8b6}
+.btn-dark:hover{background:#1b1b23;border-color:#3a3a48;color:#d0d0da}
+.btn-gold{background:linear-gradient(180deg,#7d6420,#5c4814);border-color:#9b7d2a;color:#fff4d0}
+.btn-gold:hover{background:linear-gradient(180deg,#94782a,#6b5518);box-shadow:0 0 22px rgba(212,175,55,.4)}
+.btn-sm{height:30px;font-size:12px;letter-spacing:1px;padding:0 14px;flex:none;border-radius:2px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.login-note{font-size:11px;color:#43434e;line-height:1.75;margin-top:22px;padding-top:16px;
+  border-top:1px solid #1a1a22;text-align:justify}
+
+/* 主应用 */
+#app{display:flex;flex-direction:column;height:100vh}
+.topbar{height:50px;flex-shrink:0;display:flex;align-items:center;padding:0 16px;gap:14px;
+  background:linear-gradient(180deg,#0e0e13,#0a0a0e);border-bottom:1px solid var(--border);
+  position:relative;z-index:60}
+.brand-mini{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.logo-mark{color:var(--red);font-size:13px;text-shadow:0 0 10px rgba(224,48,48,.8)}
+.logo-text{font-size:16px;font-weight:800;letter-spacing:4px;color:#eaeaf0;text-shadow:0 0 14px rgba(224,48,48,.4)}
+.menu-btn{display:none;align-items:center;justify-content:center;width:30px;height:30px;
+  color:#8a8a96;font-size:17px;border:1px solid #23232e;background:#0f0f14;flex-shrink:0}
+.topnav{display:flex;gap:1px;overflow-x:auto;flex:1;scrollbar-width:none}
+.topnav::-webkit-scrollbar{display:none}
+.topnav a{padding:6px 11px;font-size:13px;color:#63636f;white-space:nowrap;border-radius:3px;
+  transition:.15s;letter-spacing:.5px;position:relative;cursor:pointer}
+.topnav a:hover{color:#a8a8b8;background:#16161c}
+.topnav a.active{color:#fff}
+.topnav a.active::after{content:"";position:absolute;left:11px;right:11px;bottom:-1px;height:2px;
+  background:var(--red);box-shadow:0 0 8px rgba(224,48,48,.9)}
+.clock{font-family:"SFMono-Regular",Consolas,"Courier New",monospace;font-size:11.5px;
+  color:#4f6f57;white-space:nowrap;flex-shrink:0;letter-spacing:.3px}
+.clock::before{content:"● ";color:var(--green);animation:blinkDot 2s infinite}
+@keyframes blinkDot{0%,100%{opacity:1}50%{opacity:.25}}
+
+.layout{flex:1;display:grid;grid-template-columns:206px 1fr 296px;min-height:0}
+.sidebar{background:var(--panel2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;padding:10px 0;overflow-y:auto}
+.sidebar a{display:flex;align-items:center;gap:9px;padding:9px 16px;font-size:13px;color:#75757f;
+  border-left:2px solid transparent;transition:.15s;cursor:pointer}
+.sidebar a i{font-style:normal;font-size:12px;opacity:.7;width:14px;text-align:center}
+.sidebar a:hover{background:var(--hover);color:#b4b4c0}
+.sidebar a.active{color:#f0f0f6;background:linear-gradient(90deg,rgba(224,48,48,.11),transparent);
+  border-left-color:var(--red)}
+.sidebar-foot{margin-top:auto;padding:14px 16px 6px;border-top:1px solid var(--border2)}
+.user-chip{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#d0d0da;font-weight:600}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);
+  animation:blinkDot 2s infinite;flex-shrink:0}
+.user-sub{font-size:10.5px;color:#4a4a56;margin:5px 0 11px;letter-spacing:.3px}
+.btn-logout{width:100%;height:28px;font-size:11.5px;color:#7a7a86;border:1px solid #23232e;
+  background:#0f0f14;transition:.2s;letter-spacing:1px}
+.btn-logout:hover{color:#ff8080;border-color:#5c1a1a;background:#1a0e0e}
+
+.content{display:flex;flex-direction:column;min-height:0;overflow:hidden;background:var(--bg)}
+.rightbar{background:var(--panel2);border-left:1px solid var(--border);padding:14px;overflow-y:auto}
+.view{flex:1;min-height:0;overflow-y:auto;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.panel{border:1px solid var(--border);background:var(--panel);margin-bottom:14px}
+.panel-head{padding:9px 13px;font-size:12.5px;color:#9a9aa8;letter-spacing:1px;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;
+  background:linear-gradient(180deg,#131318,#0f0f14)}
+.panel-head::before{content:"";width:3px;height:12px;background:var(--red);
+  box-shadow:0 0 7px rgba(224,48,48,.8);flex-shrink:0}
+.panel-head .right{margin-left:auto;font-size:11px;color:#4a4a56;font-family:Consolas,monospace}
+.panel-body{padding:13px}
+
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:1000px){.grid-3,.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+
+.stat{background:#0d0d12;border:1px solid var(--border2);padding:12px 14px}
+.stat .sl{font-size:11px;color:#5a5a68;letter-spacing:1px}
+.stat .sv{font-size:21px;font-weight:800;color:#eaeaf0;font-family:Consolas,monospace;margin-top:4px;line-height:1.2}
+.stat .sv.gold{color:var(--gold);text-shadow:0 0 14px rgba(212,175,55,.4)}
+.stat .sv.green{color:var(--green);text-shadow:0 0 14px rgba(61,220,132,.35)}
+.stat .sv.red{color:#e08080}
+
+.wave{display:flex;align-items:flex-end;gap:3px;height:78px;padding:4px 0}
+.wave .bar{flex:1;background:linear-gradient(180deg,#7a1a1a,#3a0d0d);min-height:4px;transition:.3s}
+.wave .bar.now{background:linear-gradient(180deg,#e03030,#7a1a1a);box-shadow:0 0 12px rgba(224,48,48,.7)}
+.wave-axis{display:flex;justify-content:space-between;font-family:Consolas,monospace;font-size:10px;
+  color:#3f3f4a;margin-top:5px}
+
+/* 聊天 */
+.chat-wrap{display:flex;flex-direction:column;height:100%;min-height:0}
+.chat-head{flex-shrink:0;padding:10px 16px;border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,#101015,#0c0c10);display:flex;align-items:center;
+  justify-content:space-between;font-family:Consolas,monospace;font-size:11.5px}
+.chat-head .ch{color:var(--green);letter-spacing:1px}
+.chat-head .ch::before{content:"● ";animation:blinkDot 2s infinite}
+.chat-head .enc{color:#4a4a56;letter-spacing:1px}
+.chat-body{flex:1;overflow-y:auto;padding:18px 18px 8px;min-height:0}
+.msg{margin-bottom:20px;animation:fadeIn .25s ease}
+.msg .who{font-size:12px;color:var(--gold);margin-bottom:7px;display:flex;align-items:center;
+  gap:7px;letter-spacing:.5px}
+.msg .who::before{content:"◆";font-size:8px;color:var(--gold);opacity:.7}
+.msg .bubble{display:inline-block;max-width:76%;padding:11px 15px;border:1px solid #1d3327;
+  background:rgba(20,45,32,.28);color:#8fe0ad;font-size:13px;line-height:1.75;border-radius:2px;
+  box-shadow:inset 0 0 24px rgba(61,220,132,.05);word-break:break-word}
+.msg.me{text-align:right}
+.msg.me .who{justify-content:flex-end;color:#8b4a4a}
+.msg.me .who::before{color:var(--red)}
+.msg.me .bubble{border-color:#4a1a1a;background:rgba(70,18,18,.35);color:#f0b0b0;
+  box-shadow:inset 0 0 24px rgba(224,48,48,.07);text-align:left}
+.msg .time{font-family:Consolas,monospace;font-size:10.5px;color:#3a3a44;margin-top:6px;letter-spacing:.5px}
+.msg.sys{text-align:center}
+.msg.sys .bubble{border-color:#2a2a36;background:#101016;color:#5a5a68;font-family:Consolas,monospace;
+  font-size:11px;padding:5px 14px}
+.typing-row{margin-bottom:20px;display:flex;align-items:center;gap:9px}
+.typing-box{border:1px solid #1d3327;background:rgba(20,45,32,.28);padding:12px 18px;
+  display:inline-flex;gap:5px;align-items:center}
+.typing-box span{width:5px;height:5px;border-radius:50%;background:var(--green);animation:typeDot 1.4s infinite}
+.typing-box span:nth-child(2){animation-delay:.18s}
+.typing-box span:nth-child(3){animation-delay:.36s}
+@keyframes typeDot{0%,60%,100%{opacity:.2;transform:scale(.8)}30%{opacity:1;transform:scale(1)}}
+.typing-label{font-size:11.5px;color:#4a6f58}
+.chat-foot{flex-shrink:0;border-top:1px solid var(--border);background:var(--panel2)}
+.quick-row{display:flex;gap:7px;padding:9px 14px 0;flex-wrap:wrap}
+.quick{padding:4px 11px;font-size:11.5px;color:#6b8a76;border:1px solid #22302a;
+  background:#0d130f;border-radius:2px;transition:.18s}
+.quick:hover{color:var(--green);border-color:#2d5c40;background:#101a14}
+.chat-input-row{display:flex;gap:9px;padding:11px 14px 14px}
+.chat-input-row input{flex:1;height:40px;padding:0 14px;background:#0a0a0e;border:1px solid #23232e;
+  color:#dcdce6;font-size:13px;transition:.2s}
+.chat-input-row input:focus{border-color:#2d5c40;box-shadow:0 0 0 3px rgba(61,220,132,.07)}
+.btn-send{width:88px;height:40px;font-size:13px;letter-spacing:2px;font-weight:600;
+  background:linear-gradient(180deg,#8f1d1d,#6b1414);border:1px solid #a32626;color:#ffe9e9;transition:.2s}
+.btn-send:hover{background:linear-gradient(180deg,#a82424,#7d1818);box-shadow:0 0 18px rgba(220,40,40,.45)}
+
+.sched-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.sched-cell{background:#0d0d12;border:1px solid var(--border2);padding:6px 2px 7px;text-align:center;transition:.2s}
+.sched-cell .h{font-family:Consolas,monospace;font-size:10px;color:#3f3f4a;display:block;margin-bottom:3px}
+.sched-cell .n{font-size:11px;color:#82828e;display:block}
+.sched-cell.now{border-color:#5c1a1a;background:#180d0d;box-shadow:0 0 12px rgba(224,48,48,.22)}
+.sched-cell.now .h{color:var(--red)}
+.sched-cell.now .n{color:#f0b0b0;font-weight:600}
+.notice-line{font-size:11.5px;color:#5a5a68;line-height:1.9;display:flex;gap:7px;padding:3px 0}
+.notice-line i{font-style:normal;color:#8a6a2a;flex-shrink:0}
+.notice-line.danger i{color:var(--red)}
+.freq{font-family:Consolas,monospace;font-size:11px;color:#4a4a56;margin-top:10px;padding-top:10px;
+  border-top:1px solid var(--border2)}
+
+/* 档案库 */
+.arch-cats{display:flex;gap:2px;border-bottom:1px solid var(--border);padding:12px 16px 0;
+  flex-wrap:wrap;flex-shrink:0}
+.arch-cat{padding:8px 15px;font-size:12.5px;color:#6b6b78;cursor:pointer;
+  border-bottom:2px solid transparent;transition:.15s;white-space:nowrap}
+.arch-cat:hover{color:#a0a0ac}
+.arch-cat.active{color:#fff;border-bottom-color:var(--red)}
+.arch-cat .cnt{color:#3f3f4a;font-size:11px;margin-left:5px}
+.arch-cat.active .cnt{color:#8a5a5a}
+.arch-toolbar{display:flex;gap:10px;padding:12px 16px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.arch-search{flex:1;min-width:150px;height:34px;padding:0 13px;background:#0a0a0e;
+  border:1px solid #23232e;color:#dcdce6;font-size:12.5px}
+.arch-search::placeholder{color:#3c3c46}
+.arch-search:focus{border-color:#3a3a48}
+.arch-sel{height:34px;padding:0 11px;background:#0a0a0e;border:1px solid #23232e;
+  color:#8a8a96;font-size:12.5px;cursor:pointer}
+.arch-body{flex:1;display:grid;grid-template-columns:250px 1fr;min-height:0;border-top:1px solid var(--border)}
+.arch-list{overflow-y:auto;border-right:1px solid var(--border);background:var(--panel2)}
+.arch-list-head{padding:9px 13px;font-size:11px;color:#4a4a56;letter-spacing:1.5px;
+  border-bottom:1px solid var(--border2);font-family:Consolas,monospace;position:sticky;top:0;
+  background:#0c0c10;z-index:2}
+.arch-item{padding:11px 14px;border-bottom:1px solid var(--border2);border-left:2px solid transparent;
+  cursor:pointer;transition:.15s}
+.arch-item:hover{background:#121218}
+.arch-item.active{background:linear-gradient(90deg,rgba(224,48,48,.1),transparent);border-left-color:var(--red)}
+.arch-item .name{font-size:13.5px;color:#dcdce6;margin-bottom:4px;letter-spacing:.5px}
+.arch-item.active .name{color:#fff}
+.arch-item .meta{font-size:11px;color:#4f4f5c;font-family:Consolas,monospace}
+.arch-detail{overflow-y:auto;padding:22px 26px}
+.arch-tags{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.tag{padding:2px 9px;font-size:11px;border:1px solid #3a1a1a;background:rgba(90,20,20,.3);
+  color:#e08080;font-family:Consolas,monospace}
+.tag.gray{border-color:#2a2a36;background:#14141a;color:#6b6b78}
+.arch-detail h2{font-size:27px;font-weight:800;color:#f0f0f6;letter-spacing:2px;margin-bottom:6px;
+  text-shadow:0 0 20px rgba(224,48,48,.25)}
+.arch-hash{font-family:Consolas,monospace;font-size:11.5px;color:#4a4a56;margin-bottom:20px}
+.field{display:grid;grid-template-columns:104px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--border2)}
+.field:last-child{border-bottom:none}
+.field .k{font-size:12.5px;color:#5a5a68;letter-spacing:.5px;padding-top:1px}
+.field .v{font-size:13px;color:#b8b8c4;line-height:1.8;word-break:break-word}
+.field .v.hot{color:#e8a0a0}
+.field .v.warn{color:#e0b060}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;
+  color:#3f3f4a;gap:10px;font-size:13px;text-align:center;padding:40px 16px}
+.empty .big{font-size:40px;opacity:.35}
+
+/* 论坛 */
+.post{border:1px solid var(--border);background:var(--panel);padding:14px 17px;margin-bottom:10px;
+  cursor:pointer;transition:.18s;border-left:2px solid transparent;position:relative}
+.post:hover{background:var(--hover);border-left-color:var(--red);transform:translateX(2px)}
+.post .ptitle{font-size:14.5px;color:#d8d8e2;margin-bottom:7px;letter-spacing:.3px;padding-right:60px}
+.post:hover .ptitle{color:#fff}
+.post .pmeta{font-size:11px;color:#4f4f5c;display:flex;gap:16px;font-family:Consolas,monospace;flex-wrap:wrap}
+.post .pmeta .cat{color:#8a6a2a}
+.post .badge-live{position:absolute;top:12px;right:14px;padding:1px 7px;font-size:10px;
+  border:1px solid #5c1a1a;background:rgba(90,20,20,.35);color:#ff8080;font-family:Consolas,monospace;
+  letter-spacing:1px;animation:blinkDot 2s infinite}
+.post-detail{border:1px solid var(--border);background:var(--panel);padding:26px 30px}
+.post-detail h2{font-size:20px;color:#eaeaf0;margin-bottom:14px;line-height:1.5;letter-spacing:.5px}
+.post-detail .pmeta{font-size:11.5px;color:#4f4f5c;padding-bottom:16px;margin-bottom:20px;
+  border-bottom:1px solid var(--border2);font-family:Consolas,monospace;display:flex;gap:18px;flex-wrap:wrap}
+.post-detail p{margin-bottom:15px;color:#b0b0bc;line-height:2;font-size:13.5px;text-align:justify}
+.post-detail p.hl{color:#e0a0a0}
+.back-btn{padding:6px 15px;font-size:12.5px;color:#7a7a86;border:1px solid #23232e;background:#0f0f14;
+  margin-bottom:16px;transition:.2s;letter-spacing:1px}
+.back-btn:hover{color:#d0d0da;border-color:#3a3a48}
+.reply-box{border-top:1px solid var(--border2);margin-top:22px;padding-top:18px}
+.reply-box .rb-title{font-size:12px;color:#6b6b78;letter-spacing:1.5px;margin-bottom:12px;
+  font-family:Consolas,monospace}
+.reply-opts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.reply-item{padding:11px 14px;border-left:2px solid #2d5c40;background:#0d130f;margin-bottom:9px}
+.reply-item .rw{font-size:11.5px;color:#6b8a76;margin-bottom:5px;font-family:Consolas,monospace;
+  display:flex;justify-content:space-between;gap:10px}
+.reply-item .rt{font-size:12.5px;color:#9aa8a0;line-height:1.8}
+.reply-empty{font-size:12px;color:#3f3f4a;padding:6px 0 14px}
+
+/* 悬赏 / 交易 */
+.bounty{border:1px solid var(--border);background:var(--panel);padding:14px 18px;margin-bottom:10px;
+  display:flex;gap:16px;align-items:flex-start;transition:.18s}
+.bounty:hover{background:var(--hover)}
+.bounty-rank{flex-shrink:0;width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+  font-family:Consolas,monospace;font-size:15px;font-weight:700;border:1px solid #3a1a1a;
+  background:rgba(90,20,20,.25);color:#e08080}
+.bounty-rank.a{border-color:#3a2f1a;background:rgba(90,70,20,.22);color:#e0b060}
+.bounty-rank.b{border-color:#1a2f3a;background:rgba(20,70,90,.2);color:#60b0e0}
+.bounty-rank.c{border-color:#2a2a36;background:#14141a;color:#7a7a86}
+.bounty-main{flex:1;min-width:0}
+.bounty-main .bt{font-size:14px;color:#dcdce6;margin-bottom:6px}
+.bounty-main .bd{font-size:12.5px;color:#6b6b78;line-height:1.8}
+.bounty-reward{flex-shrink:0;text-align:right;font-family:Consolas,monospace}
+.bounty-reward .num{font-size:17px;color:var(--gold);font-weight:700;text-shadow:0 0 12px rgba(212,175,55,.35)}
+.bounty-reward .unit{font-size:11px;color:#5a5a68;display:block;margin-top:2px}
+.bounty-act{flex-shrink:0;display:flex;flex-direction:column;gap:6px;justify-content:center}
+.pill{display:inline-block;padding:1px 8px;font-size:10.5px;font-family:Consolas,monospace;
+  border:1px solid #2a5c3d;background:rgba(20,60,40,.3);color:#6fd39a;letter-spacing:1px}
+.pill.warn{border-color:#5c4a1a;background:rgba(60,48,20,.3);color:#d8b45a}
+
+.notice-item{border:1px solid var(--border);background:var(--panel);padding:14px 18px;margin-bottom:10px;
+  border-left:3px solid #3a3a48}
+.notice-item.danger{border-left-color:var(--red);background:linear-gradient(90deg,rgba(224,48,48,.05),var(--panel))}
+.notice-item.warn{border-left-color:#8a6a2a}
+.notice-item .nt{font-size:13.5px;color:#d8d8e2;margin-bottom:7px;display:flex;align-items:center;
+  gap:9px;flex-wrap:wrap}
+.notice-item .nt .badge{font-size:10px;padding:1px 7px;border:1px solid #3a1a1a;color:#e08080;
+  background:rgba(90,20,20,.3);font-family:Consolas,monospace;letter-spacing:1px}
+.notice-item .nd{font-size:12.5px;color:#6b6b78;line-height:1.9}
+.notice-item .nd-time{font-family:Consolas,monospace;font-size:11px;color:#3f3f4a;margin-top:8px}
+
+/* 签到 */
+.sign-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:16px 0}
+.sign-day{border:1px solid var(--border2);background:#0d0d12;padding:12px 4px;text-align:center;transition:.2s}
+.sign-day .d{font-size:10.5px;color:#4a4a56;font-family:Consolas,monospace}
+.sign-day .g{font-size:13px;color:#8a8a96;margin-top:5px;font-family:Consolas,monospace}
+.sign-day.done{border-color:#2a5c3d;background:#0d1a13}
+.sign-day.done .g{color:var(--green)}
+.sign-day.today{border-color:#5c1a1a;box-shadow:0 0 14px rgba(224,48,48,.25)}
+.sign-day.today .d{color:#e08080}
+
+/* 地图 */
+.map-canvas{position:relative;height:420px;overflow:hidden;border:1px solid var(--border);
+  background:radial-gradient(ellipse at 50% 50%,rgba(60,10,10,.16),transparent 70%),
+    linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px) 0 0/40px 40px,
+    linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px) 0 0/40px 40px,#08080b}
+.map-node{position:absolute;transform:translate(-50%,-50%);cursor:pointer;text-align:center;transition:.2s}
+.map-node:hover{transform:translate(-50%,-50%) scale(1.14)}
+.map-node .pt{width:9px;height:9px;border-radius:50%;margin:0 auto 5px;background:#7a7a86;
+  box-shadow:0 0 10px rgba(255,255,255,.3)}
+.map-node .lb{font-size:11px;color:#8a8a96;white-space:nowrap;letter-spacing:.5px}
+.map-node.lv-s .pt{background:#ff3a3a;box-shadow:0 0 14px rgba(255,58,58,.95)}
+.map-node.lv-a .pt{background:#e0a030;box-shadow:0 0 12px rgba(224,160,48,.8)}
+.map-node.lv-b .pt{background:#3d9cdc;box-shadow:0 0 12px rgba(61,156,220,.7)}
+.map-node.lv-c .pt{background:#5c8a6a;box-shadow:0 0 10px rgba(92,138,106,.6)}
+.map-node.sel .lb{color:#fff}
+
+.item-card{border:1px solid var(--border);background:var(--panel);padding:14px 16px;transition:.18s}
+.item-card:hover{background:var(--hover);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.item-card .in{font-size:14px;color:#dcdce6;margin-bottom:6px;letter-spacing:.3px}
+.item-card .id{font-size:12px;color:#6b6b78;line-height:1.8;min-height:44px}
+.item-card .im{font-size:11px;color:#4f4f5c;font-family:Consolas,monospace;margin-top:9px;
+  display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+
+/* MUD */
+.mud-layout{display:grid;grid-template-columns:1fr 280px;gap:14px}
+@media(max-width:960px){.mud-layout{grid-template-columns:1fr}}
+.mud-stage{border:1px solid var(--border);background:#08080b;padding:22px 24px;min-height:250px}
+.mud-title{font-size:16px;color:#eaeaf0;letter-spacing:2px;margin-bottom:14px}
+.mud-title::before{content:"▸ ";color:var(--red)}
+.mud-desc{font-size:13.5px;color:#9a9aa8;line-height:2;white-space:pre-wrap}
+.mud-exits{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+.mud-log{font-family:Consolas,monospace;font-size:11.5px;color:#4a5a50;max-height:150px;overflow-y:auto;
+  border-top:1px solid var(--border2);margin-top:16px;padding-top:12px;line-height:1.9}
+.mud-log div::before{content:"› ";color:#2d5c40}
+.mud-san{height:6px;background:#1a1a22;margin-top:10px;position:relative;overflow:hidden}
+.mud-san i{display:block;height:100%;background:linear-gradient(90deg,#3ddc84,#e0b060,#e03030);
+  transition:width .3s}
+.hist-item{padding:10px 12px;border:1px solid var(--border2);background:#0d0d12;margin-bottom:8px;
+  transition:.2s;cursor:pointer}
+.hist-item:hover{background:#121218;border-color:#3a3a48;transform:translateX(2px)}
+.hist-item .ht{font-size:12px;color:#d0d0da;margin-bottom:5px;line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hist-item .hm{font-size:10.5px;color:#5a5a68;font-family:Consolas,monospace;
+  display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.hist-item .hm .done{color:#3ddc84}
+.hist-item .hm .prog{color:#e0b060}
+.hist-empty{font-size:12px;color:#3f3f4a;padding:14px 4px;text-align:center;line-height:1.8}
+
+.form-row{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;padding:10px 0;
+  border-bottom:1px solid var(--border2)}
+.form-row:last-child{border-bottom:none}
+.form-row .k{font-size:12.5px;color:#5a5a68}
+.form-row input,.form-row select{height:34px;padding:0 11px;background:#0a0a0e;border:1px solid #23232e;
+  color:#dcdce6;font-size:12.5px;width:100%}
+
+/* 动态流 */
+.feed-item{padding:10px 0;border-bottom:1px solid #1a1a22;animation:feedIn .4s ease}
+@keyframes feedIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.feed-item .fw{font-size:12px;color:#d4af37;margin-bottom:5px;display:flex;justify-content:space-between;
+  gap:10px;flex-wrap:wrap}
+.feed-item .fw .ft{color:#3f3f4a;font-size:11px;font-family:Consolas,monospace}
+.feed-item .fx{font-size:12.5px;color:#8a8a96;line-height:1.8}
+.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#e03030;
+  box-shadow:0 0 8px #e03030;animation:blinkDot 1.4s infinite;margin-right:6px}
+
+@media(max-width:1180px){.layout{grid-template-columns:190px 1fr}.rightbar{display:none}}
+@media(max-width:820px){
+  .layout{grid-template-columns:1fr}
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;left:0;top:50px;bottom:0;width:212px;z-index:55;
+    transform:translateX(-100%);transition:transform .25s ease;box-shadow:20px 0 50px rgba(0,0,0,.8)}
+  .sidebar.open{transform:none}
+  .arch-body{grid-template-columns:1fr}
+  .arch-list{max-height:220px;border-right:none;border-bottom:1px solid var(--border)}
+  .arch-detail{padding:18px}
+  .arch-detail h2{font-size:22px}
+  .field{grid-template-columns:88px 1fr;gap:10px}
+  .post-detail{padding:18px}
+  .login-title{font-size:30px;letter-spacing:6px}
+  .clock{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<div id="loginPage">
+  <div class="login-box">
+    <div class="brand">
+      <div class="eye-outer"><div class="iris"><div class="pupil"></div></div></div>
+      <h1 class="login-title">驭鬼者暗网</h1>
+      <p class="login-sub">—— 明网之下 · 鬼的买卖与悬赏 ——</p>
+    </div>
+    <div class="form-group">
+      <label>驭鬼者代号 / 档案编号</label>
+      <input id="loginName" type="text" placeholder="例：鬼眼杨间 / GH-0413" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>暗网密钥（黄金密钥）</label>
+      <input id="loginKey" type="password" placeholder="输入六位黄金密钥" maxlength="6" autocomplete="off">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-red" data-action="login" data-anon="0">进入暗网</button>
+      <button class="btn btn-dark" data-action="login" data-anon="1">匿名潜入（体验）</button>
+    </div>
+    <p class="login-note">
+      登录即代表您已知晓并接受以下条款：本网络仅对通过"国际网站"实名认证的驭鬼者开放；
+      所有厉鬼交易均以黄金结算，总部与黑市共同担保；交易标的若发生"厉鬼复苏"，风险由买家自行承担；
+      暗网将记录您的每一次访问与操作，供"鬼眼"溯源。
+      制作人：3863398494
+    </p>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header class="topbar">
+    <button class="menu-btn" data-action="toggle-menu">☰</button>
+    <div class="brand-mini"><span class="logo-mark">◆</span><span class="logo-text">总部</span></div>
+    <nav class="topnav" id="topnav">
+      <a data-nav="home" class="active">总部</a>
+      <a data-nav="register">驭鬼者注册</a>
+      <a data-nav="contract">合同与待遇</a>
+      <a data-nav="item">灵异物品库</a>
+      <a data-nav="map">灵异地图</a>
+      <a data-nav="archive">绝密档案</a>
+      <a data-nav="chat">接线员通讯</a>
+      <a data-nav="mud">MUD游戏</a>
+      <a data-nav="sign">每日签到</a>
+      <a data-nav="social">社交中心</a>
+      <a data-nav="me">个人中心</a>
+    </nav>
+    <div class="clock" id="clock">总部标准时间</div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <a data-view="home" class="active"><i>◈</i>暗网总览</a>
+      <a data-view="forum"><i>◎</i>灵异论坛</a>
+      <a data-view="bounty"><i>⛨</i>悬赏大厅</a>
+      <a data-view="trade"><i>⚖</i>厉鬼交易</a>
+      <a data-view="archive"><i>▤</i>档案库</a>
+      <a data-view="driverPanel"><i>◉</i>驭鬼者面板</a>
+      <a data-view="notice"><i>⚠</i>暗网通告</a>
+      <a data-view="chat"><i>✆</i>接线员通讯</a>
+      <a data-view="mud"><i>⌘</i>深夜探索</a>
+      <div class="sidebar-foot">
+        <div class="user-chip"><span class="dot"></span><span id="userName">匿名潜入者</span></div>
+        <div class="user-sub" id="userStatus">暗网连接状态：已加密</div>
+        <button class="btn-logout" data-action="logout">退出暗网</button>
+      </div>
+    </aside>
+    <main class="content" id="content"></main>
+    <aside class="rightbar" id="rightbar"></aside>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   0. 工具
+============================================================ */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const pad = n => String(n).padStart(2, '0');
+const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function timeStr(){
+  const d = new Date();
+  return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+}
+function dateKey(d = new Date()){
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+}
+function dateStr(d = new Date()){
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function seeded(seed){
+  const x = Math.sin(seed * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+}
+function toast(msg, type = 'info'){
+  const wrap = $('#toastWrap');
+  if(!wrap) return;
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, 2500);
+}
+
+/* ============================================================
+   1. 厉鬼档案（50 条）
+============================================================ */
+const GHOSTS = [
+  /* ---------- S 级 · 无解级 ---------- */
+  { name:'饿死鬼', tag:'#starving', level:'S级 · 无解级', status:'关押中', secrecy:'绝密',
+    appearance:'皮肤青黑、形如死婴；大昌市饿死鬼事件源头。',
+    ability:'吞噬厉鬼并呈现其特征与能力，持续成长越战越强；鬼域可封锁一座城市；吞吃棺材钉后一切灵异手段对其失效。',
+    rule:'无差别吞噬，传染性强，可制造大量鬼奴。',
+    counter:'用棺材钉钉住脑门使其失去行动能力（唯一已知压制手段）。' },
+  { name:'鬼差', tag:'#bailiff', level:'S级 · 无解级', status:'未知', secrecy:'绝密',
+    appearance:'身着古旧皂衣，面覆铁面具，行走时伴有锁链拖地声。',
+    ability:'可强行"拘拿"厉鬼与驭鬼者，被拘者灵异力量将被封印；鬼域内规则绝对。',
+    rule:'遵循自身认知中的"律法"，对违反者执行拘捕。',
+    counter:'暂无有效压制手段，建议规避其鬼域范围。' },
+  { name:'鬼画', tag:'#painting', level:'S级 · 无解级', status:'关押中', secrecy:'绝密',
+    appearance:'一幅无框油画，画面内容随观察者变化。',
+    ability:'将现实空间转化为画中世界，被困者将成为画中一笔；鬼域边界即画布边界。',
+    rule:'以"观赏"为触发条件，注视超过三秒即被拉入。',
+    counter:'闭眼撤离，禁止任何形式的视觉接触。' },
+  { name:'鬼湖', tag:'#lake', level:'S级 · 无解级', status:'关押中', secrecy:'绝密',
+    appearance:'一片无源死水，水面漆黑如墨，倒映之物皆非原貌。',
+    ability:'倒影即实体，可复制进入湖区的一切生灵并替换本体；鬼域覆盖范围极广。',
+    rule:'凡在水面留下倒影者，皆视为"自愿献祭"。',
+    counter:'严禁接近水域，禁止任何形式的倒影接触。' },
+  { name:'幽灵船船长', tag:'#captain', level:'S级 · 无解级', status:'未知', secrecy:'绝密',
+    appearance:'破败远洋货轮，甲板常年弥漫浓雾，船长室灯火不灭。',
+    ability:'操控"幽灵船"航行于现实与灵异空间的夹缝；被船捕获者将永久滞留。',
+    rule:'以"航行"为存在方式，途经之处必有人失踪。',
+    counter:'暂无。发现幽灵船踪迹请立即上报总部并撤离港口区域。' },
+  { name:'时间鬼', tag:'#clock', level:'S级 · 无解级', status:'未知', secrecy:'绝密',
+    appearance:'一枚停摆的挂钟，指针永远指向凌晨三点。',
+    ability:'在鬼域内可局部回溯或加速时间，被卷入者会在数秒内经历数年。',
+    rule:'只在"无人注视"时移动，一旦被直视即刻定格。',
+    counter:'持续注视并保持录像设备开启，可延缓其行动；无法收容。' },
+  { name:'镜鬼', tag:'#mirror-king', level:'S级 · 无解级', status:'未知', secrecy:'绝密',
+    appearance:'没有本体，只是所有镜面反射中出现的一个"多余的人"。',
+    ability:'可同时存在于所有反射面中，并将镜中世界与现实空间暂时互换。',
+    rule:'只要有反射面存在，它就无法被彻底消灭。',
+    counter:'以绝对黑暗封锁整个区域；已知唯一切实有效的手段。' },
+  { name:'回声鬼', tag:'#echo', level:'S级 · 无解级', status:'未确认', secrecy:'绝密',
+    appearance:'没有任何形态，只表现为一个不断重复的、属于你自己的声音。',
+    ability:'复制进入者的一切行为与能力，并在数小时后替代其存在。',
+    rule:'只在有声音回响的空间中活动。',
+    counter:'未确认。推测在完全吸音的环境下可使其失去载体。' },
+  { name:'空棺鬼', tag:'#empty-coffin', level:'S级 · 无解级', status:'关押中', secrecy:'绝密',
+    appearance:'一口空棺。棺材本身没有重量，也没有任何气味。',
+    ability:'可让躺在附近的人"消失"——不是死亡，是从世界上被移除。',
+    rule:'只在有人主动靠近棺沿时发动。',
+    counter:'用铅板固定棺盖并保持距离；已知唯一有效方案。' },
+  { name:'复写鬼', tag:'#copy', level:'S级 · 无解级', status:'未知', secrecy:'绝密',
+    appearance:'无固定形体，可完全复制一个人的外观、记忆与能力。',
+    ability:'复制体与原体无法从外部区分，只有原体自身能察觉"另一个自己"存在。',
+    rule:'每复制一次，原体的存在感就会削弱一分。',
+    counter:'保持书面通讯习惯，口头信息可能被复制体截取。' },
+
+  /* ---------- A 级 ---------- */
+  { name:'哭丧鬼', tag:'#mourning', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'披麻戴孝的老妇形象，面部模糊，双手常年捧着一只空碗。',
+    ability:'哭声可引发半径两百米内所有人心力衰竭；哭声传播不依赖空气。',
+    rule:'仅在夜间活动，天亮前必须回到栖身之所。',
+    counter:'佩戴总部制式隔音耳塞，或使用B级以上驭鬼者的鬼域隔绝。' },
+  { name:'敲门鬼', tag:'#knock', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'无固定形体，仅表现为连续不断的三下敲门声。',
+    ability:'敲门声一旦被听见，三次之内若有人应答，应答者将被标记。',
+    rule:'必须获得"应答"才能进入。',
+    counter:'无人应答即可规避；已标记者需在四十八小时内前往总部接受隔离。' },
+  { name:'鬼婴', tag:'#baby', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'约一臂长的婴孩形体，皮肤半透明，哭声极细。',
+    ability:'哭声可穿透墙体与耳塞，被听见者会产生强烈的"抱起它"的冲动。',
+    rule:'以"被抱起"为触发条件，抱起者将被寄生。',
+    counter:'佩戴铅制耳罩；已寄生者需在二十四小时内接受剥离手术。' },
+  { name:'棺材鬼', tag:'#coffin', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'一口黑漆木棺，棺盖缝隙会渗出灰白色的雾。',
+    ability:'可将附近生物强行"装入"棺中，被装入者会在数分钟内失去意识。',
+    rule:'只在有人靠近一米内时开棺。',
+    counter:'保持一米以上距离；用重物压住棺盖可暂时封锁。' },
+  { name:'红衣鬼', tag:'#reddress', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'穿红色嫁衣的女性轮廓，面部被红盖头遮住。',
+    ability:'红盖头掀开即视为"成亲"，被盖者将在三日内死亡。',
+    rule:'只在雨天出现，且必须找到"新郎"。',
+    counter:'雨天避免独行；如遇红衣者，闭眼后退，切勿掀盖头。' },
+  { name:'门鬼', tag:'#door', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'没有任何形体，只表现为一扇不应该存在的门。',
+    ability:'门后是独立的鬼域，进入者会被困在无限重复的走廊中。',
+    rule:'只在有人主动开门时生效。',
+    counter:'不要打开任何你不认识的、位置不对的门。' },
+  { name:'稻草人', tag:'#scarecrow', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'田间的稻草人，穿着破旧的蓝布衫，头部是一个倒扣的陶罐。',
+    ability:'可操控方圆一公里内的农作物生长，被缠住者将在数小时内被"种"进土里。',
+    rule:'只在夜间移动，天亮前必须回到原位。',
+    counter:'白天破坏其陶罐头部即可解除；夜间禁止进入田间。' },
+  { name:'双生鬼', tag:'#twins', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'两个完全相同的孩童形体，始终手拉手。',
+    ability:'一个负责"标记"，一个负责"收取"，被标记者无论逃到哪里都会被找到。',
+    rule:'必须先有标记，才能收取。',
+    counter:'切断标记（洗去皮肤上的手印）可中断追踪。' },
+  { name:'空号鬼', tag:'#nullcall', level:'A级', status:'未知', secrecy:'机密',
+    appearance:'无实体，表现为一串不存在的电话号码。',
+    ability:'接听者会在通话结束后听见自己的声音从听筒另一端传来。',
+    rule:'必须在铃响三声内接听。',
+    counter:'不要接听陌生号码，尤其是显示为空号的来电。' },
+  { name:'镜魔', tag:'#mirror-demon', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'镜面深处的一双眼睛，只在你眨眼时出现。',
+    ability:'可在多个反射面之间跳跃，将目标切割为"半个自己"。',
+    rule:'必须在有至少两面镜子的空间内活动。',
+    counter:'撤走所有镜面；破碎的镜片需用黑布分别包裹。' },
+  { name:'灯下鬼', tag:'#lampshadow', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'路灯下多出来的一道影子，永远站在光的边缘。',
+    ability:'可将影子的主人拖入灯与影的夹缝中。',
+    rule:'只在灯亮着时活动，灯一灭就消失。',
+    counter:'关闭所有照明，或直接在强光下将其驱散。' },
+  { name:'镜窗鬼', tag:'#window', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'夜色中的窗玻璃上，会浮现一张与住户相同的脸。',
+    ability:'可将屋内的人拉入玻璃另一侧的世界。',
+    rule:'只在夜间无月光的窗口出现。',
+    counter:'拉上窗帘；或贴哑光膜消除反射。' },
+  { name:'披风鬼', tag:'#cloak', level:'A级', status:'已收容', secrecy:'机密',
+    appearance:'一件悬空的黑色大衣，领口处没有头颅。',
+    ability:'覆盖目标后可短暂"替换"其存在——被覆盖者会消失在原地。',
+    rule:'只在无风的环境中悬停。',
+    counter:'制造强风可使其无法接近；已有成功收容记录。' },
+  { name:'名字鬼', tag:'#name', level:'A级', status:'未知', secrecy:'机密',
+    appearance:'无实体，表现为一段被人低语的、属于你的名字。',
+    ability:'被叫到名字并回头者，其"存在"会被逐步抹除。',
+    rule:'必须在三秒内回头才生效。',
+    counter:'无论听见什么，只要不是熟悉的声音，就不要回头。' },
+
+  /* ---------- B 级 ---------- */
+  { name:'无脸鬼', tag:'#faceless', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'人形轮廓，面部为一片空白，可模仿任何人的相貌。',
+    ability:'夺取他人面容并取而代之，被夺面者将失去自我认知。',
+    rule:'每隔七日必须更换一次面容，否则形体会溃散。',
+    counter:'设置口令暗语，非口令者一律视为无脸鬼。' },
+  { name:'镜中鬼', tag:'#mirror', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'仅在镜面反射中出现的人形阴影。',
+    ability:'可透过任何反射面移动，能将镜外的物体拖入镜中世界。',
+    rule:'无法在完全无反射的环境中活动。',
+    counter:'用黑布遮盖所有镜面，或使用磨砂材质替代。' },
+  { name:'纸人', tag:'#paperghost', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'黄纸扎成的人形，五官用墨点画成。',
+    ability:'可复制被其触碰者的外貌，但复制体行为僵硬、不会说话。',
+    rule:'必须在被触碰者熟睡时才能复制。',
+    counter:'辨别方法：观察其是否眨眼。纸人不会眨眼。' },
+  { name:'影子鬼', tag:'#shadow', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'没有本体，只是一团比正常影子更深、更慢的黑色。',
+    ability:'附着于人的影子上，逐渐取代其本体。',
+    rule:'只在有光源的环境下活动。',
+    counter:'关闭全部光源，在绝对黑暗中可使其脱离。' },
+  { name:'无头鬼', tag:'#headless', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'穿着旧式长衫的无头人形，颈口整齐如刀切。',
+    ability:'被其"摸过头顶"的人，会在七日内失去头部。',
+    rule:'只在凌晨一点到三点之间活动。',
+    counter:'戴帽子或头盔可延缓；根治需找到其头颅。' },
+  { name:'蜡像鬼', tag:'#wax', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'与真人等高的蜡像，表面永远泛着湿润的光。',
+    ability:'将靠近者逐渐"蜡化"，过程无痛且不可逆。',
+    rule:'只在室温低于十五度时活跃。',
+    counter:'提高环境温度至二十度以上即可使其休眠。' },
+  { name:'血手印', tag:'#bloodyhand', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'墙上的一枚暗红色手印，擦不掉、盖不住。',
+    ability:'被手印标记的房间，其内所有人会在三日内失血。',
+    rule:'只在夜间扩散。',
+    counter:'用石灰粉覆盖并保持通风；找到来源墙面铲除。' },
+  { name:'井鬼', tag:'#well', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'古井水面下的一张人脸，永远朝上看着井口。',
+    ability:'可将井口附近的人拖入井中，井底连接未知空间。',
+    rule:'只在有人向下看时发动。',
+    counter:'封井；或保持井口完全黑暗，禁止任何照明。' },
+  { name:'照相机鬼', tag:'#camera', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'一台老式胶卷相机，镜头内有微弱的红光。',
+    ability:'被其拍下的人，照片中会多出一个不该存在的身影。',
+    rule:'每卷胶片必须拍满三十六张，否则相机将自行寻找目标。',
+    counter:'不要使用来历不明的相机；已拍摄者需销毁全部底片。' },
+  { name:'焚化鬼', tag:'#incinerator', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'焚化炉内的灰烬，会自行聚成人形。',
+    ability:'可点燃半径五十米内的一切可燃物，包括人体。',
+    rule:'只在有明火的环境下活动。',
+    counter:'彻底熄灭火源并洒水降温。' },
+  { name:'旧硬币鬼', tag:'#coin', level:'B级', status:'观察中', secrecy:'秘密',
+    appearance:'一枚面值不可辨的旧硬币，边缘光滑发亮。',
+    ability:'被其"找零"的人会在当晚收到属于自己的、已不在人世的亲人的声音。',
+    rule:'只在有交易行为时出现。',
+    counter:'不要收取任何找零的硬币；已收取者请立刻转交给总部。' },
+  { name:'录音鬼', tag:'#recorder', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'一台老式磁带录音机，红色录制灯常亮。',
+    ability:'会录下房间内未来一小时将要发生的声音。',
+    rule:'只在没人按下停止键时持续录制。',
+    counter:'听到异常录音内容后立刻按下停止；并拆除磁带销毁。' },
+  { name:'雪鬼', tag:'#snow', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'仅在落雪天气出现，形态为雪地中一串无主的脚印。',
+    ability:'沿着脚印走的人会在雪中迷失方向，直至冻僵。',
+    rule:'只在降雪时出现，雪停即消失。',
+    counter:'雪天不要顺着不明脚印行走。' },
+  { name:'水管鬼', tag:'#pipe', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'老式水管中传出的一种规律敲击声。',
+    ability:'三长两短的敲击代表即将"供水"——而水管里流出的是黑水。',
+    rule:'只在老旧居民楼的水管中出现。',
+    counter:'关闭总水阀；或直接更换整段水管。' },
+  { name:'油漆鬼', tag:'#paint', level:'B级', status:'已收容', secrecy:'秘密',
+    appearance:'墙上未干的一块深红色油漆，散发着铁锈味。',
+    ability:'被其溅到的人，皮肤会在一天内被"刷"成同样的红色，随后剥落。',
+    rule:'只在深夜施工的墙面出现。',
+    counter:'不要靠近未干的深色墙面；已沾染者需立刻用石灰粉覆盖。' },
+
+  /* ---------- C 级 ---------- */
+  { name:'电梯鬼', tag:'#elevator', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'不存在。它只是电梯里多出来的一个楼层按钮。',
+    ability:'按下按钮者会被送往不存在的楼层，那里没有出口。',
+    rule:'只在电梯超载时出现。',
+    counter:'不要按不认识的楼层按钮；发现多出按钮立刻拆除。' },
+  { name:'楼梯鬼', tag:'#stair', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'楼梯拐角处的一团模糊轮廓。',
+    ability:'使楼梯无限循环，被困者永远走不到下一层。',
+    rule:'只在有人数台阶时发动。',
+    counter:'停止数数，闭眼扶墙直行；或直接从窗口呼救。' },
+  { name:'电话鬼', tag:'#phone', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'一部老式转盘电话，听筒永远微微发烫。',
+    ability:'接听者可听见自己未来的声音，但内容多为死亡预告。',
+    rule:'只在整点响起。',
+    counter:'拔掉电话线；已接听者需接受心理评估。' },
+  { name:'收音机鬼', tag:'#radio', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'一台调不到任何频道的旧收音机，只有沙沙声。',
+    ability:'沙沙声中夹杂着下一名死者的姓名。',
+    rule:'只在午夜后播放。',
+    counter:'关闭电源并拆除电池。' },
+  { name:'水鬼', tag:'#drown', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'湿漉漉的溺亡者形态，长发遮面，浑身滴落黑水。',
+    ability:'可在水域间快速移动，将岸边的人拖入水中。',
+    rule:'只在有水的地方出没。',
+    counter:'远离水域，普通驭鬼者即可压制。' },
+  { name:'雨伞鬼', tag:'#umbrella', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'雨天里的一把空伞，会自己撑开跟随路人。',
+    ability:'被伞跟随的人会在当天内淋到"雨"——但雨只落在他一个人身上。',
+    rule:'只在雨天出现。',
+    counter:'不要接受陌生人递来的伞；发现被跟随时立刻丢弃自己的伞。' },
+  { name:'冰箱鬼', tag:'#fridge', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'老式冰箱，内部温度异常低，食物会自行"消失"。',
+    ability:'每晚会在冰箱深处传来咀嚼声。',
+    rule:'只在断电后重新通电的冰箱中活动。',
+    counter:'保持冰箱通电；或彻底断电并搬离。' },
+  { name:'蜡烛鬼', tag:'#candle', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'一根永远烧不完的白色蜡烛，火焰是蓝色的。',
+    ability:'在其照亮范围内说出的谎话，会变成真实。',
+    rule:'只在蜡烛点燃时生效。',
+    counter:'吹熄蜡烛；已生效的谎言需要用真话在同一位置覆盖。' },
+  { name:'玩具鬼', tag:'#toy', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'一个旧布娃娃，眼睛会在夜里变成黑色。',
+    ability:'会在主人睡着后自行移动，并在第二天早上回到原位。',
+    rule:'只在主人睡着后活动。',
+    counter:'用铅盒封存；或直接转交给总部收容科。' },
+  { name:'影子电话鬼', tag:'#shadowphone', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'影子中偶尔出现的一只手的轮廓，握着一部不存在的电话。',
+    ability:'在影子电话中"接通"的人，第二天会失声。',
+    rule:'只在有手机屏幕反光时出现。',
+    counter:'避免在有强烈反光处使用手机。' },
+  { name:'过期快递鬼', tag:'#parcel', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'一只没有寄件人信息的旧纸箱，边角泛黄。',
+    ability:'打开箱子的人会在三日内收到一份"属于自己"的、从未寄出的包裹。',
+    rule:'只在深夜送达。',
+    counter:'不要签收任何不明的深夜快递。' },
+  { name:'地铁末班鬼', tag:'#lasttrain', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'末班地铁多出来的一节车厢，灯是暗的。',
+    ability:'上车的人会连续七晚梦见同一节车厢。',
+    rule:'只在末班车时出现。',
+    counter:'不要乘坐没有乘客的车厢；已知唯一有效规避方式。' },
+  { name:'香烟鬼', tag:'#cigarette', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'夜路中一个独自抽烟的模糊人形，火光忽明忽暗。',
+    ability:'借火的人会在三天内失去味觉。',
+    rule:'只在深夜无路灯的路段出现。',
+    counter:'不要向陌生人借火。' },
+  { name:'空信封鬼', tag:'#envelope', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'一个没有任何文字的白色信封，静静躺在门口。',
+    ability:'拆开信封的人，会在三日内收到自己已经遗忘的旧照片。',
+    rule:'只在早晨六点前出现。',
+    counter:'不要拆开不明信封；直接交给总部处理。' },
+  { name:'天线鬼', tag:'#antenna', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'老式电视天线顶端的一小团黑色，像一只停驻的鸟。',
+    ability:'会让附近所有电视出现同一段雪花画面——画面中有人正在看你。',
+    rule:'只在雷雨天出现。',
+    counter:'拔掉电视电源；或直接更换天线。' },
+  { name:'冷饮柜鬼', tag:'#freezer', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'小卖部里的一台老式冰柜，冰柜玻璃内侧总有一层薄霜。',
+    ability:'购买冰柜里最后一支冷饮的人，会在当晚梦见冰柜深处有人叫他的名字。',
+    rule:'只在夏季营业时段活动。',
+    counter:'不要购买最后一支冷饮。' },
+  { name:'钥匙鬼', tag:'#key', level:'C级', status:'已收容', secrecy:'内部',
+    appearance:'一串没有锁可以匹配的旧钥匙，挂在门后。',
+    ability:'捡起钥匙的人，会在当晚发现自家门锁被"换"过。',
+    rule:'只出现在夜晚无人经过的楼道。',
+    counter:'不要拾取不明的旧钥匙。' }
+];
+
+/* ============================================================
+   2. 档案数据
+============================================================ */
+const ARCHIVES = {
+  ghost: GHOSTS,
+
+  driver: [
+    { name:'杨间', tag:'#ghosteye', level:'S级驭鬼者', status:'在役', secrecy:'绝密',
+      appearance:'代号"鬼眼"，大昌市事件核心人物。',
+      ability:'驾驭"鬼眼"，可洞察灵异本质、预判鬼域变化；同时拥有复数厉鬼能力。',
+      rule:'——', counter:'——' },
+    { name:'王小明', tag:'#faceless-man', level:'A级驭鬼者', status:'在役', secrecy:'机密',
+      appearance:'代号"无面"，擅长伪装与潜入。',
+      ability:'驾驭"无脸鬼"部分能力，可短暂改变自身面容特征。',
+      rule:'——', counter:'——' },
+    { name:'李阳', tag:'#paperman', level:'A级驭鬼者', status:'在役', secrecy:'机密',
+      appearance:'代号"纸人"，身形单薄，常携带一叠黄纸。',
+      ability:'以纸人替身规避伤害，可同时操控三具替身。',
+      rule:'——', counter:'——' },
+    { name:'周琳', tag:'#broker', level:'B级驭鬼者', status:'在役', secrecy:'秘密',
+      appearance:'代号"账房"，黑市与总部之间的中间人。',
+      ability:'对灵异物品的评级与溯源有极高准确率，自身战力有限。',
+      rule:'——', counter:'——' },
+    { name:'徐茗', tag:'#archivist', level:'B级驭鬼者', status:'在役', secrecy:'秘密',
+      appearance:'代号"档案"，档案科外勤记录员。',
+      ability:'可在灵异现场留下无法被篡改的观测记录。',
+      rule:'——', counter:'——' },
+    { name:'李梦琪', tag:'#operator', level:'B级驭鬼者', status:'在役', secrecy:'秘密',
+      appearance:'代号"接线"，CH-07 频道主接线员。',
+      ability:'能在通讯中感知对方的情绪波动，判断其是否说谎。',
+      rule:'——', counter:'——' },
+    { name:'赵锐', tag:'#blade', level:'A级驭鬼者', status:'在役', secrecy:'机密',
+      appearance:'代号"刀"，外勤收容队队长，右臂缠满绷带。',
+      ability:'驾驭一把无鞘长刀，刀身可短暂切开鬼域边界。',
+      rule:'——', counter:'——' },
+    { name:'马骏', tag:'#runner', level:'B级驭鬼者', status:'在役', secrecy:'秘密',
+      appearance:'代号"跑腿"，负责跨区物资运输。',
+      ability:'短距离瞬移，每次使用后需休息数小时。',
+      rule:'——', counter:'——' },
+    { name:'沈墨', tag:'#ink', level:'A级驭鬼者', status:'在役', secrecy:'机密',
+      appearance:'代号"墨"，档案科科长，常年戴着一副黑框眼镜。',
+      ability:'书写的内容会在一定程度上成为现实，但有严格字数限制。',
+      rule:'——', counter:'——' },
+    { name:'许峰', tag:'#silence', level:'B级驭鬼者', status:'在役', secrecy:'秘密',
+      appearance:'代号"静默"，从不开口说话，只用纸笔交流。',
+      ability:'其所在区域内的声音会被压制，可有效对抗听觉类厉鬼。',
+      rule:'——', counter:'——' },
+    { name:'孙晨', tag:'#clock-man', level:'A级驭鬼者', status:'在役', secrecy:'机密',
+      appearance:'代号"刻度"，总戴着一块停摆的老式手表。',
+      ability:'可在短时间内"冻结"周围小范围的时间，时长不超过三秒。',
+      rule:'——', counter:'——' },
+    { name:'林雨', tag:'#rain', level:'B级驭鬼者', status:'在役', secrecy:'秘密',
+      appearance:'代号"落雨"，雨天战力显著提升。',
+      ability:'可在雨中感知方圆数百米内的灵异波动。',
+      rule:'——', counter:'——' }
+  ],
+
+  place: [
+    { name:'大昌市 · 饿死鬼旧址', tag:'#dachang', level:'S级禁区', status:'永久封锁', secrecy:'绝密',
+      fields:[
+        {k:'地理位置', v:'原大昌市老城区，现已在行政地图上被抹除。'},
+        {k:'事件等级', v:'S级 · 无解级事件', cls:'hot'},
+        {k:'现状', v:'鬼域残留，半径约十一公里，任何电子设备进入后即刻失效。'},
+        {k:'已知危险', v:'饿死鬼本体、大量鬼奴残留、不稳定的空间褶皱。', cls:'warn'},
+        {k:'进入许可', v:'仅限总部核心成员及S级驭鬼者，需三重授权。'}
+      ]},
+    { name:'城南废旧医院', tag:'#hospital', level:'A级禁区', status:'临时禁区', secrecy:'机密',
+      fields:[
+        {k:'地理位置', v:'城南工业区东侧，废弃已逾十二年。'},
+        {k:'事件等级', v:'A级', cls:'hot'},
+        {k:'现状', v:'灵异波动持续异常，强度稳定在A级上限。'},
+        {k:'已知危险', v:'未登记厉鬼活动痕迹、夜间持续的低频震动。', cls:'warn'},
+        {k:'进入许可', v:'需总部派遣令，建议双人以上行动。'}
+      ]},
+    { name:'城东旧居民区', tag:'#eastblock', level:'A级警戒区', status:'已收容', secrecy:'机密',
+      fields:[
+        {k:'地理位置', v:'城东幸福里小区，建于上世纪八十年代。'},
+        {k:'事件等级', v:'A级'},
+        {k:'现状', v:'哭丧鬼已被收容，区域正在做净化处理。'},
+        {k:'已知危险', v:'残留哭声回响，夜间仍有幻听报告。', cls:'warn'},
+        {k:'进入许可', v:'常规巡查即可，建议佩戴隔音耳塞。'}
+      ]},
+    { name:'幽灵航道', tag:'#ghostlane', level:'S级海域', status:'无法封锁', secrecy:'绝密',
+      fields:[
+        {k:'地理位置', v:'东海某段，坐标随潮汐变化，无法固定标注。'},
+        {k:'事件等级', v:'S级 · 无解级', cls:'hot'},
+        {k:'现状', v:'幽灵船出没记录累计二十七次，无一例成功拦截。'},
+        {k:'已知危险', v:'幽灵船本体、空间夹缝、被捕获者永久滞留。', cls:'warn'},
+        {k:'进入许可', v:'无。发现即上报，禁止任何船只靠近。'}
+      ]},
+    { name:'镜城商场', tag:'#mirrorcity', level:'B级', status:'清理中', secrecy:'秘密',
+      fields:[
+        {k:'地理位置', v:'城西商业中心地下二层。'},
+        {k:'事件等级', v:'B级'},
+        {k:'现状', v:'镜中鬼气息残留，镜像清理作业进行中。'},
+        {k:'已知危险', v:'反射面残留、拖拽现象偶发。', cls:'warn'},
+        {k:'进入许可', v:'需携带遮蔽布，禁止使用任何反光器材。'}
+      ]},
+    { name:'城郊水库群', tag:'#reservoir', level:'C级', status:'例行排查', secrecy:'内部',
+      fields:[
+        {k:'地理位置', v:'城郊三处水库，呈三角分布。'},
+        {k:'事件等级', v:'C级'},
+        {k:'现状', v:'水鬼活动低强度，按季度排查。'},
+        {k:'已知危险', v:'近岸拖拽、夜间水面异响。'},
+        {k:'进入许可', v:'普通驭鬼者即可，结伴前往。'}
+      ]},
+    { name:'总部地下九层', tag:'#underground', level:'绝密区', status:'仅限授权', secrecy:'绝密',
+      fields:[
+        {k:'地理位置', v:'总部大楼地下，普通电梯只能到达负二。'},
+        {k:'事件等级', v:'——'},
+        {k:'现状', v:'封印间、收容间、档案原件库均设于此。'},
+        {k:'已知危险', v:'封印失效风险、地下空间褶皱。', cls:'warn'},
+        {k:'进入许可', v:'需总部核心成员陪同，且不得携带任何电子设备。'}
+      ]},
+    { name:'老城区三号院', tag:'#yard3', level:'B级', status:'观察中', secrecy:'秘密',
+      fields:[
+        {k:'地理位置', v:'老城区北部，一栋六层砖混居民楼。'},
+        {k:'事件等级', v:'B级'},
+        {k:'现状', v:'夜间频繁出现三下敲门声，居民已疏散。'},
+        {k:'已知危险', v:'敲门鬼疑似活动、楼道声控灯异常。', cls:'warn'},
+        {k:'进入许可', v:'需佩戴隔音耳塞，禁止应答任何敲门声。'}
+      ]},
+    { name:'城郊古井群', tag:'#wells', level:'B级', status:'封井中', secrecy:'秘密',
+      fields:[
+        {k:'地理位置', v:'城郊东部七口古井，呈线状分布。'},
+        {k:'事件等级', v:'B级'},
+        {k:'现状', v:'五口已完成封井，剩余两口待处理。'},
+        {k:'已知危险', v:'井鬼活动、井口无照明、围挡易被翻越。', cls:'warn'},
+        {k:'进入许可', v:'需两人以上同行，禁止向下看。'}
+      ]}
+  ],
+
+  power: [
+    { name:'总部（国际网站）', tag:'#hq', level:'最高权力机构', status:'运作中', secrecy:'公开',
+      fields:[
+        {k:'性质', v:'全球驭鬼者登记、调度、收容与结算的中枢。'},
+        {k:'核心职能', v:'厉鬼收容 · 悬赏发布 · 档案管理 · 黄金结算 · 接线员体系'},
+        {k:'掌控力量', v:'在册驭鬼者逾三千人，S级驭鬼者七人。', cls:'hot'},
+        {k:'对外态度', v:'维持秩序，必要时可对城市级事件实施封锁。'},
+        {k:'弱点', v:'情报依赖底层驭鬼者上报，存在盲区。', cls:'warn'}
+      ]},
+    { name:'黑市', tag:'#blackmarket', level:'灰色势力', status:'半公开', secrecy:'内部',
+      fields:[
+        {k:'性质', v:'游离于总部监管之外的厉鬼与灵异物品交易网络。'},
+        {k:'核心职能', v:'违禁品流通 · 情报买卖 · 赏金中介'},
+        {k:'掌控力量', v:'不明。已知有多名A级以上驭鬼者为其服务。', cls:'hot'},
+        {k:'对外态度', v:'唯利是图，与总部维持微妙平衡。'},
+        {k:'弱点', v:'内部派系林立，相互倾轧。'}
+      ]},
+    { name:'民间驭鬼者', tag:'#civil', level:'松散群体', status:'不可控', secrecy:'内部',
+      fields:[
+        {k:'性质', v:'未登记或拒绝登记的驭鬼者，数量无法统计。'},
+        {k:'核心职能', v:'自发处理身边灵异事件，或以此牟利。'},
+        {k:'掌控力量', v:'个体实力差异极大，多为C至B级。'},
+        {k:'对外态度', v:'对总部普遍缺乏信任。', cls:'warn'},
+        {k:'弱点', v:'缺乏装备与情报支持，伤亡率极高。'}
+      ]},
+    { name:'国王', tag:'#kings', level:'传说级', status:'未知', secrecy:'绝密',
+      fields:[
+        {k:'性质', v:'传闻中驾驭了复数无解级厉鬼的极少数存在。'},
+        {k:'核心职能', v:'——'},
+        {k:'掌控力量', v:'推定可单独对抗一支S级收容小队。', cls:'hot'},
+        {k:'对外态度', v:'未知。'},
+        {k:'弱点', v:'未知。任何关于"国王"的情报均按绝密处理。', cls:'warn'}
+      ]}
+  ],
+
+  hq: [
+    { name:'三大铁律', tag:'#threelaws', level:'最高条例', status:'生效中', secrecy:'绝密',
+      fields:[
+        {k:'第一铁律', v:'厉鬼不死。任何"击杀"都只是暂时压制或转移，必须确认收容。', cls:'hot'},
+        {k:'第二铁律', v:'驭鬼者不可直视厉鬼本体。凡是直视者，必被标记。', cls:'hot'},
+        {k:'第三铁律', v:'鬼域之内，规则优先。进入鬼域前必须确认其规则并严格遵守。', cls:'hot'},
+        {k:'违反后果', v:'视情节移交收容科，最高处以永久隔离。', cls:'warn'},
+        {k:'备注', v:'三大铁律不对外公开，仅登记驭鬼者可见。'}
+      ]},
+    { name:'接线员制度', tag:'#operator', level:'内部制度', status:'生效中', secrecy:'机密',
+      fields:[
+        {k:'职能', v:'二十四小时值守加密频道，为外勤驭鬼者提供情报与调度支持。'},
+        {k:'编制', v:'共 24 名接线员，按小时轮班。'},
+        {k:'纪律', v:'接线员不得主动询问驭鬼者真实身份。'},
+        {k:'风险', v:'通讯内容存在被灵异力量监听的可能。', cls:'warn'},
+        {k:'频道', v:'CH-07 为公开频道，CH-3656 为绝密频道。'}
+      ]},
+    { name:'黄金结算体系', tag:'#gold', level:'经济制度', status:'生效中', secrecy:'公开',
+      fields:[
+        {k:'结算单位', v:'黄金，以克计。'},
+        {k:'汇率', v:'1 克黄金 ≈ 普通市民三个月收入。'},
+        {k:'担保方', v:'总部与黑市共同担保，双方各承担一半风险。'},
+        {k:'风险条款', v:'交易标的若发生"厉鬼复苏"，风险由买家自行承担。', cls:'warn'},
+        {k:'溯源', v:'所有交易记录均接入"鬼眼"系统，可追溯。'}
+      ]},
+    { name:'档案分级制度', tag:'#classify', level:'内部制度', status:'生效中', secrecy:'内部',
+      fields:[
+        {k:'公开', v:'普通市民可查阅，如安全须知。'},
+        {k:'内部', v:'在册驭鬼者可查阅。'},
+        {k:'秘密', v:'B级以上驭鬼者可查阅。'},
+        {k:'机密', v:'A级以上驭鬼者或总部成员可查阅。'},
+        {k:'绝密', v:'需提交书面申请并通过三级审核。', cls:'warn'}
+      ]},
+    { name:'收容科', tag:'#containment', level:'内部机构', status:'运作中', secrecy:'机密',
+      fields:[
+        {k:'职能', v:'负责已收容厉鬼的日常看护、封印维护与异常处置。'},
+        {k:'编制', v:'约一百二十人，多数不具备驭鬼能力。'},
+        {k:'纪律', v:'收容科人员不得与收容对象产生任何形式的情感联系。', cls:'warn'},
+        {k:'风险', v:'封印失效是收容科的首要死因。'},
+        {k:'位置', v:'总部地下三至九层。'}
+      ]},
+    { name:'深夜探索协议', tag:'#mud-protocol', level:'内部制度', status:'生效中', secrecy:'机密',
+      fields:[
+        {k:'目的', v:'用于外勤驭鬼者在受控环境中演练封印作业。'},
+        {k:'形式', v:'以"探索记录"方式呈现，每次探索可独立存档与重玩。'},
+        {k:'核心目标', v:'在总部大楼中找到三枚封印钉，封住地下封印间的青铜棺。'},
+        {k:'风险', v:'探索过程中理智值会持续消耗，理智耗尽将被强制送回前厅。', cls:'warn'},
+        {k:'奖励', v:'完成封棺者获得 100 克黄金；部分房间会掉落物品。'}
+      ]}
+  ],
+
+  king: [
+    { name:'饿死鬼 · 王', tag:'#king-starving', level:'无解级', status:'已关押', secrecy:'绝密',
+      fields:[
+        {k:'封号', v:'吞食之王', cls:'hot'},
+        {k:'形态', v:'形如死婴，体表覆有类似棺材钉的金属刺。'},
+        {k:'能力', v:'吞噬一切灵异存在，并叠加其能力；理论上没有上限。'},
+        {k:'鬼域', v:'可覆盖一座中等城市，域内所有生命被标记为"食物"。', cls:'warn'},
+        {k:'唯一弱点', v:'棺材钉。钉入脑门可使其失去行动能力。'},
+        {k:'现状', v:'被三枚棺材钉固定于总部地下封印间。'}
+      ]},
+    { name:'鬼画 · 王', tag:'#king-painting', level:'无解级', status:'已关押', secrecy:'绝密',
+      fields:[
+        {k:'封号', v:'画中之王', cls:'hot'},
+        {k:'形态', v:'无框油画，画面内容随观察者记忆变化。'},
+        {k:'能力', v:'将现实改写为画中世界，被拉入者成为画中一笔。'},
+        {k:'鬼域', v:'鬼域边界即画布边界，域内一切遵循"构图"逻辑。', cls:'warn'},
+        {k:'唯一弱点', v:'闭眼。任何形式的视觉接触都是触发条件。'},
+        {k:'现状', v:'以黑布覆盖封存，禁止任何影像记录。'}
+      ]},
+    { name:'鬼湖 · 王', tag:'#king-lake', level:'无解级', status:'已关押', secrecy:'绝密',
+      fields:[
+        {k:'封号', v:'倒影之王', cls:'hot'},
+        {k:'形态', v:'无源死水，水面漆黑如墨。'},
+        {k:'能力', v:'倒影即实体，可复制并替换本体，复制体拥有原主全部记忆。'},
+        {k:'鬼域', v:'水域所及之处皆为鬼域，扩张速度不可预测。', cls:'warn'},
+        {k:'唯一弱点', v:'——'},
+        {k:'现状', v:'以干燥剂与隔水结界封锁于地下三层。'}
+      ]},
+    { name:'幽灵船 · 船长', tag:'#king-captain', level:'无解级', status:'在逃', secrecy:'绝密',
+      fields:[
+        {k:'封号', v:'航行之王', cls:'hot'},
+        {k:'形态', v:'破败远洋货轮，甲板常年浓雾弥漫。'},
+        {k:'能力', v:'航行于现实与灵异空间的夹缝，可携带整艘船穿越鬼域。'},
+        {k:'鬼域', v:'船体本身即鬼域，登船者无法自行离开。', cls:'warn'},
+        {k:'唯一弱点', v:'未知。'},
+        {k:'现状', v:'在逃。累计二十七次目击，无一例成功拦截。', cls:'warn'}
+      ]},
+    { name:'鬼差 · 判官', tag:'#king-bailiff', level:'无解级', status:'未知', secrecy:'绝密',
+      fields:[
+        {k:'封号', v:'律法之王', cls:'hot'},
+        {k:'形态', v:'古旧皂衣，铁面具，锁链拖地声。'},
+        {k:'能力', v:'强行"拘拿"厉鬼与驭鬼者，被拘者灵异力量被永久封印。'},
+        {k:'鬼域', v:'域内规则绝对，违反者即刻被拘。', cls:'warn'},
+        {k:'唯一弱点', v:'未知。其"律法"的边界尚在推演中。'},
+        {k:'现状', v:'未知。总部推定其仍在活动。'}
+      ]},
+    { name:'时间鬼 · 王', tag:'#king-clock', level:'无解级', status:'未确认', secrecy:'绝密',
+      fields:[
+        {k:'封号', v:'刻度之王', cls:'hot'},
+        {k:'形态', v:'一座巨大的落地钟，钟摆从不停歇。'},
+        {k:'能力', v:'可将鬼域内的时间线任意折叠，使同一空间叠加无数"此刻"。'},
+        {k:'鬼域', v:'域内时间流速由它决定，进入者可能一去不返。', cls:'warn'},
+        {k:'唯一弱点', v:'未确认。有推测认为"同步注视"可使其停滞。'},
+        {k:'现状', v:'未确认。仅在三次观测记录中被间接提及。'}
+      ]},
+    { name:'镜鬼 · 王', tag:'#king-mirror', level:'无解级', status:'未知', secrecy:'绝密',
+      fields:[
+        {k:'封号', v:'反射之王', cls:'hot'},
+        {k:'形态', v:'同时存在于所有反射面中的同一个"多余的人"。'},
+        {k:'能力', v:'可将现实与镜中世界整体互换，并以此困住整座城市。'},
+        {k:'鬼域', v:'只要有反射面，鬼域就存在。', cls:'warn'},
+        {k:'唯一弱点', v:'绝对黑暗。已知唯一在其鬼域内自保的手段。'},
+        {k:'现状', v:'未知。总部推测其仍潜伏于某处未撤除的镜面之中。'}
+      ]}
+  ]
+};
+
+/* ============================================================
+   3. 论坛固定帖（50 条）
+============================================================ */
+const RAW_POSTS = [
+[1,'【求助】','求助！我在夜班时遇到的东西，有没有懂行的帮忙看看','匿名潜入者','2026-09-03 02:14',47,2381,
+ ['先说明一下，我不是驭鬼者，只是个普通医院的实习医生。',
+  '上周我们科收了一个老人，送进来的时候就已经没有生命体征了。但我检查的时候发现不对劲——老人的体温比常温低了至少十度。人死后十小时内体温一小时大概下降一度，可这个老人已经死了不止一天。',
+  '第二天上午我还没上班，就听同事说：昨晚送来那具老人的尸体，在停尸间神秘失踪了。警方把整个医院监控都调了出来，可最后既没找到尸体，也没找到凶手。',
+  '有位病人说他看见那老人的尸体了——不是被人背出去的，是自己走出去的。',
+  '那天凌晨两点一刻，我正玩着游戏，突然感觉到一股寒意。那个老人，不知道什么时候出现在了急诊室外。他没有死，而是一步、一步，行动很迟缓地往医院外走去。',
+  '我脑子里瞬间闪过很多念头，但最后只剩下一个——我得跟上去看看。'],
+ [['顶一下','reply','兄弟，先别跟。真的，先别跟。'],
+  ['上报接线员','reply','已帮你转CH-07，接线员说会派人。'],
+  ['前往停尸间探查','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[2,'【情报】','关于A级厉鬼"哭丧鬼"的最新观测记录（附规避建议）','档案科-徐茗','2026-09-02 19:40',12,890,
+ ['本贴内容已经过总部审核，可对外公开部分摘录如下。',
+  '一、活动规律：哭丧鬼仅在日落后至次日日出前活动，白天无法确认其藏身地点。',
+  '二、触发条件：其哭声不依赖空气传播，普通隔音手段无效。',
+  '三、危险半径：实测约两百米，半径内所有生物均会出现不同程度的心力衰竭症状。',
+  '四、最新观测：城东旧居民区出现疑似活动痕迹，已收容。',
+  '五、建议：夜间听到类似老妇哭泣的声音，请勿靠近、勿应答、勿录音。'],
+ [['感谢情报','reply','已转给城东的同事，感谢。'],
+  ['前往城东探查','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[3,'【交易】','出售：鬼画碎片（指甲盖大小），接受黄金结算','黑市-周琳','2026-09-01 23:11',31,1567,
+ ['物品来源合法，有总部备案编号。鬼画碎片，指甲盖大小，不具备完整鬼画能力，但可作为研究材料。',
+  '起拍价：黄金 30 克。价高者得，三日内有效。',
+  '风险提示：碎片仍保留微弱的"注视"特性，请勿长时间直视。'],
+ [['出价 35 克','reply','35 克，私信已发。'],
+  ['出价 40 克','reply','40 克，诚意收。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[4,'【讨论】','三大铁律到底是什么？新人求科普','新注册驭鬼者','2026-08-30 15:22',88,4203,
+ ['刚通过实名认证，看到总部文件里反复提到"三大铁律"，但具体内容没有公开。',
+  '有没有前辈能说说？这到底是指什么？违反了会怎么样？在线等，挺急的。'],
+ [['去看档案','reply','绝密档案 → 总部档案 → 三大铁律。自己看，别在这问。'],
+  ['求个大概','reply','大概就是：鬼杀不死、别直视、进鬼域守规矩。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[5,'【警告】','城南废旧医院区域已被划为禁区，请勿靠近','总部-接线员李梦琪','2026-08-29 09:05',6,612,
+ ['总部通告：城南废旧医院区域检测到持续异常的灵异波动，强度评级为A级。',
+  '目前该区域已被划为临时禁区，禁止一切非授权人员进入。',
+  '已派遣附近驭鬼者前往调查，进展将另行通报。'],
+ [['收到','reply','收到。'],
+  ['申请前往调查','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[6,'【经验】','记录一次镜中鬼的处置：千万别用手机屏幕当镜子','外勤-李阳','2026-08-27 21:03',23,1180,
+ ['分享一次不算成功的处置经验，希望能给后来者提个醒。',
+  '七月下旬，城西某写字楼报告镜面异常。我和搭档带了黑布前往，按照流程先封锁了所有明面镜子。',
+  '问题出在手机屏上。搭档在回消息时点亮了屏幕，屏幕里映出的不是他的脸，而是一张空白。',
+  '镜中鬼的"反射面"定义比我们想的宽：任何能够形成清晰倒影的表面都算。',
+  '最后我们用哑光漆把整层楼刷了一遍。代价是搭档在之后三天里，认不出镜子里的自己。'],
+ [['学到了','reply','这条得置顶，血的教训。'],
+  ['前往镜城商场','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[7,'【求助】','老小区半夜三下敲门声，没人开门但声音一直在','夜班保安','2026-08-27 03:41',34,1420,
+ ['我在老城区三号院值夜班，从上周开始，每天凌晨两点半左右，楼道里会响起三下敲门声。',
+  '我拿手电去照，走廊里空的，声控灯也不亮。声音是从三楼那户空房传来的。',
+  '我数过，每次都是三下，不早不晚。第四下从来没有过。'],
+ [['别开门','reply','三下是三下，第四下就是"进来"了。别开门，别应答。'],
+  ['去看看','mud',''],
+  ['上报总部','reply','已上报，接线员说保持距离，别应答。']]],
+
+[8,'【情报】','电梯鬼出现规律统计（近三个月 17 起）','分析组-统计员','2026-08-26 22:18',19,760,
+ ['近三个月共采集到 17 起电梯鬼目击报告，规律如下：',
+  '一、全部发生在夜间 23:00 - 04:00。二、全部发生在电梯超载报警后。',
+  '三、多出来的楼层按钮编号不固定，但每次都是最下面一排的第三格。',
+  '四、按下后电梯会持续下行约四分钟，之后门开，外面是没有窗户的走廊。',
+  '五、截至目前，进入者无一返回。'],
+ [['所以别按','reply','总结：别按不认识的按钮。'],
+  ['按下试试','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[9,'【讨论】','驭鬼者到底能不能结婚？','匿名潜入者','2026-08-26 14:07',56,3102,
+ ['纯粹好奇。驭鬼者身上带着厉鬼，普通人靠近会不会有影响？',
+  '如果有影响，那是不是意味着驭鬼者注定孤独终老？总部有没有相关规定？'],
+ [['有规定','reply','合同第九条：驭鬼者婚育需提前报备，配偶需接受灵异污染筛查。'],
+  ['别想了','reply','我见过三个驭鬼者的家庭，最后都散了。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[10,'【交易】','求购：隔音符箓三张，价格好谈','城东-小周','2026-08-25 23:50',8,430,
+ ['急用。家里老人晚上总说听见哭声，我怀疑是哭丧鬼残留。',
+  '总部物资科要审批，我等不及。黑市价我接受，只求尽快。有货的私信。'],
+ [['物资科有','reply','直接去总部物资科，12克三张，比黑市便宜。'],
+  ['我出 20 克','reply','20 克三张，今晚就能给。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[11,'【经验】','第一次收容鬼婴：哭声真的会钻墙','外勤-新人','2026-08-25 17:32',41,1890,
+ ['入行第一单就是鬼婴，记录一下。',
+  '现场是一间出租屋，屋主已经失踪四天。进门就听见很细的哭声，像是从墙里传出来的。',
+  '我戴了普通耳塞，没用。那种哭声不是从耳朵进去的，是从后脑勺进去的。',
+  '后来换了铅制耳罩才压住。鬼婴本体在衣柜最里面，一臂长，皮肤是半透明的。',
+  '我把它装进铅罐的时候，它还在哭。封盖之后，屋里安静得可怕。'],
+ [['辛苦了','reply','新人能活着回来就是胜利。'],
+  ['前往出租屋','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[12,'【警告】','深夜别接空号来电','匿名潜入者','2026-08-25 02:11',72,3560,
+ ['昨晚凌晨一点多，我手机响了，来电显示是"空号"。',
+  '我鬼使神差接了。对面没有声音，只有很轻的呼吸。',
+  '三秒后我挂了。然后我听见——听筒里又响起了铃声，是我自己的手机铃声。',
+  '我把手机电池拆了。今天早上装回去，未接来电记录里多了一条，时间显示是明天。'],
+ [['别接就对了','reply','空号鬼，接了就麻烦。总部有专门的处理组。'],
+  ['回拨试试','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[13,'【求助】','我的影子不跟着我走了','匿名潜入者','2026-08-24 21:45',29,1130,
+ ['从三天前开始，我发现我的影子动作会慢半拍。',
+  '我抬手，它过一秒才抬。我停下，它还在动。',
+  '昨天更奇怪，我在镜子前站着，影子是背对着我的。'],
+ [['影子鬼','reply','这是影子鬼附着的典型症状。立刻关掉所有光源，在绝对黑暗里待够十分钟。'],
+  ['去暗房','mud',''],
+  ['上报总部','reply','已上报，接线员建议立即就医。']]],
+
+[14,'【情报】','井鬼活动范围与封井记录','档案科-徐茗','2026-08-24 16:20',14,620,
+ ['已确认：井鬼共出现在本市 7 口古井中，其中 5 口已完成封井处理。',
+  '封井要点：一、井口必须完全无光；二、井盖需用铅制；三、封井后三个月内禁止任何人靠近。',
+  '提醒：井鬼只在有人向下看时发动。任何时候都不要往井里看。'],
+ [['收到','reply','已转城郊巡查组。'],
+  ['去井口看看','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[15,'【讨论】','关于黄金汇率的疑问：1克黄金真的等于三个月收入吗？','新注册驭鬼者','2026-08-24 10:08',37,2010,
+ ['合同上写"1 克黄金 ≈ 普通市民三个月收入"，可我看悬赏动不动就几十上百克。',
+  '那岂不是一次悬赏就能顶普通人一辈子？还是说驭鬼者的死亡率高到需要用这种价格来对冲？'],
+ [['你猜对了','reply','A级悬赏平均存活率不到六成。'],
+  ['别算这个','reply','算完你就不敢接单了。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[16,'【交易】','出售：镜面遮蔽布一卷，未拆封','黑市-匿名','2026-08-23 22:33',11,540,
+ ['总部物资科流出的货，未拆封，八克。不还价。城西自提。适合准备处置镜中鬼的队伍。'],
+ [['我要了','reply','私信，明天下午城西见。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[17,'【经验】','蜡像馆惊魂：温度救了我们的命','外勤-赵锐','2026-08-23 19:02',26,1350,
+ ['上周处置蜡像鬼，差点全军覆没。',
+  '蜡像馆里的温度常年维持在十二度，正好在蜡像鬼的活跃区间。',
+  '我们进去的时候没意识到，直到队员的手背开始泛出蜡质的光。',
+  '我立刻让人把空调全开，暖气拉到二十五度。十五分钟后，所有蜡像都"软"了下去。',
+  '结论：处置蜡像鬼，先看温度计。'],
+ [['细节决定生死','reply','这条得进培训手册。'],
+  ['前往蜡像馆','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[18,'【求助】','我朋友好像被夺面了，但他自己不觉得','匿名潜入者','2026-08-23 13:47',44,2210,
+ ['我朋友上周出差回来，我总觉得他哪里不对。',
+  '说不上来。长相没变，声音没变，但就是不对。最明显的是他不眨眼。',
+  '我试了以前只有我们俩知道的口令，他没反应。'],
+ [['纸人不是无脸鬼','reply','不眨眼是纸人。无脸鬼是模仿相貌，会说话。你朋友可能已经被替换了。'],
+  ['就是无脸鬼','reply','不，无脸鬼是模仿相貌，会说话。'],
+  ['上报总部','reply','已上报，接线员说会派人上门核实。']]],
+
+[19,'【情报】','血手印特征记录（附清除方法）','档案科-徐茗','2026-08-23 08:15',9,480,
+ ['血手印的特征：一、颜色为暗红，擦不掉、盖不住；二、被标记房间内所有人会在三日内出现失血症状；三、夜间会缓慢扩散，白天静止。',
+  '清除方法：用石灰粉完全覆盖，保持通风，找到来源墙面后整块铲除。'],
+ [['记下了','reply','已转后勤组。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[20,'【警告】','楼梯间的台阶数不对，千万别数','匿名潜入者','2026-08-22 23:59',53,2780,
+ ['我们这栋楼从一楼到三楼，正常是 36 级台阶。上周开始，我每次数都是 37 级。',
+  '多出来的那一级，踩上去感觉是空的。昨天我数到第 37 级的时候，抬头发现上面还有一级。'],
+ [['停止数数','reply','楼梯鬼。停止数数，闭眼扶墙直行，或者直接从窗口呼救。'],
+  ['继续往上走','mud',''],
+  ['上报总部','reply','已上报。接线员说立刻停止数数。']]],
+
+[21,'【讨论】','总部的接线员到底是不是真人？','新注册驭鬼者','2026-08-22 20:30',64,3320,
+ ['我接入 CH-07 三次，每次回复都很快，但语气几乎一模一样。',
+  '有没有一种可能，接线员也是某种灵异存在？'],
+ [['是真人','reply','李梦琪是真人，我见过她。别乱猜。'],
+  ['不一定','reply','总部地下九层有什么，谁也说不清。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[22,'【经验】','用收音机钓鬼：一次不算成功的实验','民间驭鬼者','2026-08-22 16:44',22,980,
+ ['我试过用两台收音机对着放，想"钓"出它的位置。',
+  '结果两台收音机同时报出了我的名字。我把电池拆了，但沙沙声还在。',
+  '后来是把整台机器泡进水里才停的。结论：不要试图和 C 级厉鬼玩花样。'],
+ [['作死','reply','C级也是鬼，别拿命开玩笑。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[23,'【求助】','照相机拍到了不该拍的东西','摄影爱好者','2026-08-22 11:12',31,1290,
+ ['我在旧货市场淘了一台老式胶卷相机。第一卷拍完洗出来，每张照片里都有一个多余的人影。',
+  '位置不固定，但总是在画面边缘，只露出半张脸。第二卷还没拍满，我已经不敢再拍了。'],
+ [['别拍满','reply','照相机鬼。每卷必须拍满三十六张，否则它会自己找目标。'],
+  ['销毁底片','reply','立刻销毁全部底片和相机本体，别留。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[24,'【情报】','双生鬼共生关系解析','分析组-统计员','2026-08-22 02:06',17,710,
+ ['双生鬼由两个个体组成，分工明确：一、"标记者"负责在目标身上留下手印；二、"收取者"负责追踪并收取被标记者。',
+  '三、两者始终手拉手，距离不会超过五米。四、若标记被破坏，收取者会在二十四小时后重新开始标记。',
+  '结论：被标记后必须立刻清洗。'],
+ [['有用','reply','已转给夜班巡查组。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[25,'【交易】','求购：棺材钉仿制品，高价','外勤-李阳','2026-08-21 22:50',15,660,
+ ['不是真货，仿制品就行。作用有限，但对A级以下厉鬼有威慑效果。',
+  '总部封印科有，但审批太慢。有渠道的私信。'],
+ [['有货','reply','仿制品，180 克，三天内到。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[26,'【讨论】','C级驭鬼者的生存率到底有多低？','民间驭鬼者','2026-08-21 19:18',48,2410,
+ ['我入行两年，同期认识的 C 级驭鬼者，现在还活着的不到一半。',
+  '大部分不是死在厉鬼手里，是死在"判断失误"上。'],
+ [['不至于','reply','总部装备是按等级配的，不是按人命配的。'],
+  ['是真的','reply','我认识一个C级，连探测仪都没有，最后死在井鬼手里。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[27,'【经验】','稻草人田间遭遇：白天动手是唯一选择','外勤-马骏','2026-08-21 15:02',20,870,
+ ['接到郊区农户报告，说田里有个稻草人晚上会走动。我们等到白天才动手。',
+  '队长直接砸了它头上的陶罐，里面是空的，只有一撮黑土。砸完之后整个田里安静了。',
+  '经验：对付这种"日出而息"的鬼，白天动手永远比晚上安全。'],
+ [['记下了','reply','这条实用。'],
+  ['前往田间','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[28,'【警告】','时间鬼出没时段统计：凌晨 3:00 是高峰','分析组-统计员','2026-08-21 09:33',27,1190,
+ ['汇总近半年 41 起"时间异常"报告：一、76% 发生在凌晨 2:50 - 3:10 之间。',
+  '二、异常表现为：电子钟停摆、录像出现重复帧、目击者主观时间感错乱。',
+  '三、所有目击者都提到同一个细节——看见一座钟，指针指向三点。',
+  '四、目前无有效对抗手段。建议在此时段保持清醒。'],
+ [['三点啊','reply','难怪总部电子钟一直停在三点。'],
+  ['去天台看看','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[29,'【求助】','我能听见别人听不到的声音，是不是出问题了','匿名潜入者','2026-08-21 01:27',39,1780,
+ ['从上个月开始，我偶尔能听见很轻的沙沙声，像是收音机没调好频道。',
+  '白天还好，晚上特别明显。我查过听力，正常。但我就是能听见。',
+  '昨晚那声音里好像有人在念名字。'],
+ [['收音机鬼残留','reply','你最近是不是接触过旧收音机？如果是，建议去总部做一次灵异污染筛查。'],
+  ['可能是耳虫','reply','也可能是你自己吓自己。先去做筛查吧，不贵。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[30,'【情报】','门鬼的开门条件：你必须先"想"打开它','档案科-徐茗','2026-08-20 23:41',13,590,
+ ['门鬼的触发条件已经确认：一、它只在你主动开门时生效。',
+  '二、如果你只是路过、看它一眼，不会触发。三、门后是无限重复的走廊，进入者会一直走，直到力竭。',
+  '四、唯一的脱困方法是"往回走"，但绝大多数人做不到。'],
+ [['往回走？','reply','往回走是什么意思？转身吗？'],
+  ['收藏此帖','info','已收藏。']]],
+
+[31,'【讨论】','厉鬼之间会互相吞噬吗？','新注册驭鬼者','2026-08-20 20:15',35,1620,
+ ['饿死鬼的档案里写"吞噬厉鬼并呈现其特征与能力"。那如果两只 S 级厉鬼碰上，会怎么样？'],
+ [['会','reply','饿死鬼就是靠这个成长起来的。别去研究这个。'],
+  ['不会','reply','鬼域不兼容，碰到一起只会互相排斥。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[32,'【经验】','无头鬼处置记录：帽子能救命','外勤-许峰','2026-08-20 17:08',18,780,
+ ['（本条由本人以纸笔记录，代发。）',
+  '无头鬼只在凌晨一点到三点活动，被它"摸过头顶"的人七日内会失去头部。',
+  '我们处置时全员戴了铅制头盔，全程没有被摸到。但它一直跟着我们。',
+  '最后是找到了它的头颅——在一户人家的米缸里，用红布包着。头颅归位后，它自己消散了。'],
+ [['头皮发麻','reply','米缸……这家人怎么想的。'],
+  ['去米缸看看','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[33,'【交易】','出售：铅罐一只，八成新','黑市-匿名','2026-08-20 14:22',7,320,
+ ['铅罐，八成新，可用于临时封存厉鬼气息样本或小型灵异物品。25 克，不还价。适合外勤备用。'],
+ [['便宜点','reply','20 克我就要。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[34,'【求助】','我的影子在笑','匿名潜入者','2026-08-20 11:45',61,2940,
+ ['我知道这话说出来很怪。但昨晚我在路灯下站着，低头看影子的时候，它在笑。',
+  '我没笑。我的表情是正常的。我拍下来了，照片里影子也是笑着的。'],
+ [['别看了','reply','影子鬼。关灯，在绝对黑暗里待十分钟。别再看影子了。'],
+  ['上传照片','reply','别上传。照片本身就是反射面，会扩大它的活动范围。'],
+  ['去暗处','mud','']]],
+
+[35,'【情报】','本市停尸间异常事件汇总（近三个月）','档案科-徐茗','2026-08-20 08:30',16,690,
+ ['近三个月全市停尸间共报告异常 12 起：一、尸体自行移动 4 起；二、停尸柜自行开启 3 起；三、监控画面出现空白帧 5 起。',
+  '所有异常均集中在凌晨 1:00 - 4:00。目前已加装铅制隔离门，并要求夜间双人值守。'],
+ [['双人值守有用吗','reply','有用，但前提是两个人都不能睡着。'],
+  ['去停尸间看看','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[36,'【警告】','焚化间夜班勿入','后勤-老张','2026-08-19 23:12',24,1020,
+ ['我在殡仪馆焚化间上了六年夜班，一直没事。但上个月开始，炉子会在没人操作的时候自己升温。',
+  '有一次我半夜听见炉子里有敲击声，像是有人在里面拍门。',
+  '我按了紧急停机，第二天早上打开炉门，里面是空的，只有一层灰。灰上面有个手印。'],
+ [['快上报','reply','焚化鬼。立刻上报，别再上夜班了。'],
+  ['进去看看','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[37,'【讨论】','"匿名潜入者"真的匿名吗？','新注册驭鬼者','2026-08-19 20:05',58,3120,
+ ['登录页写着"匿名潜入（体验）"。但暗网首页又写"暗网将记录您的每一次访问与操作，供鬼眼溯源"。那到底匿不匿名？'],
+ [['不匿名','reply','鬼眼能看到一切。所谓匿名，只是别的用户看不到你。'],
+  ['匿名','reply','终端编号是随机的，总部不会主动查。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[38,'【经验】','用一张符箓换了一条命','外勤-新人','2026-08-19 17:33',33,1460,
+ ['上周在地下室遇到饿死鬼残留的鬼奴，被围了。当时我身上只有一张隔音符箓。',
+  '我把它撕了，不是用，是撕——撕的声音盖过了它们的"呼唤"。就那一瞬间，我冲出去了。',
+  '符箓说明书上没写"可以撕"，但那时候没别的办法。'],
+ [['学到了','reply','关键时刻，物品的用法是活的。'],
+  ['去地下室','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[39,'【求助】','家里所有镜子都黑了','匿名潜入者','2026-08-19 14:20',42,2010,
+ ['不是脏，是黑。镜子里什么都照不出来，就是一片黑。',
+  '我用布盖住了，第二天掀开还是黑的。昨晚黑里好像有个轮廓。'],
+ [['别掀布','reply','镜中鬼。别掀布，别照镜子，立刻上报。'],
+  ['前往探查','mud',''],
+  ['上报总部','reply','已上报，接线员说会派人上门处理。']]],
+
+[40,'【情报】','监控室拍到的东西：汇总三例','总部-监控组','2026-08-19 11:08',21,880,
+ ['近一个月监控室捕捉到三例异常画面：一、长廊尽头，一个没有头的人形站了整整两小时；',
+  '二、档案室黑布下方，出现了呼吸般的起伏；三、天台边缘，有个人形一直在往下看。',
+  '所有画面均在凌晨三点前后出现。'],
+ [['三点定律','reply','又是三点。'],
+  ['去监控室','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[41,'【交易】','求购：灵异波动探测仪，外勤急用','民间驭鬼者','2026-08-19 08:45',5,260,
+ ['总部物资科要审批两周，我等不及。有闲置的私信，价格好谈。'],
+ [['总部有','reply','直接去总部，外勤标配，登记就能领。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[42,'【讨论】','关于"MUD频道"的传闻，有没有人验证过','匿名潜入者','2026-08-18 23:30',47,2260,
+ ['听说暗网里有个隐藏频道，叫 MUD。进去之后会进入一个模拟的总部大楼，要在里面找三枚封印钉封棺。',
+  '据说通关之后能拿一百克黄金。但我找不到入口。'],
+ [['我能进','reply','在侧边栏，叫"深夜探索"。不过别抱太大期望，挺瘆人的。'],
+  ['进去看看','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[43,'【经验】','我在总部地下迷路了四十分钟','外勤-马骏','2026-08-18 20:12',29,1240,
+ ['总部地下三层以下没有明确标识。我送东西下去，电梯只到负二，剩下的路要自己走。',
+  '楼梯间里的台阶数不对，我数着数着就乱了。后来我是靠着墙上的一道裂缝原路返回的。',
+  '提醒后来者：下地之前带粉笔，边走边做标记。'],
+ [['粉笔有用','reply','我用的荧光贴纸，更好。'],
+  ['去地下','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[44,'【警告】','井口别往下看，哪怕只是好奇','档案科-徐茗','2026-08-18 17:40',19,830,
+ ['再提醒一次：井鬼只在有人向下看时发动。城郊剩余两口未封的古井已加装临时围挡，但围挡挡不住好奇心。',
+  '上周有一名路过的少年翻过围挡往里看了一眼。目前人已找到，在医院。万幸。'],
+ [['万幸','reply','真的别看了。'],
+  ['去井口','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[45,'【求助】','有人认识档案科的徐茗吗？我想当面道谢','匿名潜入者','2026-08-18 14:55',23,940,
+ ['上个月我在城东遇到哭丧鬼，是档案科发的情报帖救了我一命。我想当面谢谢徐茗。有人知道怎么联系吗？'],
+ [['别想了','reply','档案科不外联。你的谢意她会看到的。'],
+  ['去档案室','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[46,'【情报】','旧硬币的用处：目前已知的三种用法','分析组-统计员','2026-08-18 11:20',15,700,
+ ['近期在多个灵异现场发现了同一种旧硬币，面值已不可辨。已知用法：',
+  '一、投入水鬼活动的水域，可短暂平息水面；二、贴在门框内侧，可延缓门鬼的触发；三、放入铅罐，可作为封印的"锚点"。',
+  '来源不明。总部正在追查铸造年代。'],
+ [['有意思','reply','这硬币我在镜城商场也见过。'],
+  ['去找找看','mud',''],
+  ['收藏此帖','info','已收藏。']]],
+
+[47,'【讨论】','驭鬼者之间能协作吗？还是只能单干','民间驭鬼者','2026-08-18 09:05',41,1880,
+ ['我发现一个规律：两个人一起处理灵异事件，成功率确实高，但死亡率也高。因为一个人出事，另一个往往会去救。',
+  '单干的话，至少不会拖累别人。你们怎么选？'],
+ [['组队','reply','组队。但提前说好撤退信号，谁都不许回头。'],
+  ['单干','reply','单干。我见过太多为了救人一起死的。'],
+  ['收藏此帖','info','已收藏。']]],
+
+[48,'【警告】','电梯别按负三层','匿名潜入者','2026-08-17 23:48',66,3050,
+ ['我们这栋写字楼的电梯，本来只有 B1 和 B2。上周开始，按钮面板最下面一排多了一个按钮，没有编号，只有一个凹下去的圆。',
+  '我同事按了。电梯下去了很久，门开了，外面是走廊，没有窗。他没回来。'],
+ [['拆掉按钮','reply','立刻上报总部，让他们拆掉那个按钮。别自己动手。'],
+  ['按下按钮','mud',''],
+  ['上报总部','reply','已上报，接线员说会立刻派人。']]],
+
+[49,'【警告】','凌晨三点的敲门声：如果你听见了，请看完这条','总部-接线员李梦琪','2026-08-17 20:22',92,4670,
+ ['总部通报：近期本市多个区域报告在凌晨三点前后出现规律性敲门声，每次三下，无人应答后停止。',
+  '经研判，此为敲门鬼活动特征。请注意：一、不要应答。二、不要开门。三、不要用猫眼观察。',
+  '四、如果已经被标记，请在四十八小时内前往总部接受隔离。本通告长期有效。'],
+ [['收到','reply','收到，已转告家人。'],
+  ['前往三号院','mud',''],
+  ['收藏此帖','info','已收藏。这是本月最重要的通告。']]],
+
+[50,'【情报】','封印钉的传闻：三枚，缺一不可','匿名潜入者','2026-08-17 16:10',37,1740,
+ ['传说总部地下封印间里有一口青铜棺，棺盖上原本有三枚封印钉。其中一枚已经遗失了。',
+  '据说只要凑齐三枚，就能钉死棺里的东西。也有人说，第三枚钉子就在总部大楼里，只是没人找得到。'],
+ [['别找了','reply','有些东西找齐了反而是灾难。'],
+  ['我去找找','mud',''],
+  ['收藏此帖','info','已收藏。']]]
+];
+
+const DEFAULT_OPTS = [
+  ['顶一下','reply','顶。'],
+  ['上报接线员','reply','已上报接线员，等待总部回复。'],
+  ['前往现场探查','mud',''],
+  ['收藏此帖','info','已收藏。']
+];
+
+const POSTS = RAW_POSTS.map(r => ({
+  id: r[0], cat: r[1], title: r[2], author: r[3], time: r[4],
+  replies: r[5], views: r[6], body: r[7],
+  opts: (r[8] || DEFAULT_OPTS).map(o => ({ t:o[0], k:o[1], v:o[2] }))
+}));
+
+/* ============================================================
+   4. 动态生成帖模板（用于论坛随时间刷新）
+============================================================ */
+const LIVE_POST_TEMPLATES = [
+  { cat:'【求助】', title:'刚才有人在楼下喊我的名字，我该不该答应',
+    author:'夜归人', replies:rnd(2,18),
+    body:['我住六楼，刚才大概两点半，楼下有人喊我的名字。声音很像我妈，但我妈昨天刚回老家。',
+      '我趴在窗边看了一眼，楼下没人。',
+      '然后那声音又响了一次，比上次近。'],
+    opts:[['不要答应','reply','千万别答应。不管像谁。'],['去楼下看看','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【情报】', title:'城南医院旁边那栋楼，最近晚上灯全亮着',
+    author:'夜跑-阿凯', replies:rnd(3,14),
+    body:['我每天夜里十一点左右路过，那栋楼早就废弃了。',
+      '但最近一周，每晚整栋楼的窗户都是亮的。不是某一户，是整栋。',
+      '昨天我停下来数了一下，一共 47 扇窗户。'],
+    opts:[['别数','reply','数窗户是很危险的习惯。'],['前往查看','mud',''],['上报总部','reply','已上报。接线员说保持距离。']] },
+
+  { cat:'【警告】', title:'今天路过城郊古井群，围挡被人推倒了',
+    author:'匿名潜入者', replies:rnd(5,20),
+    body:['我散步路过，看到围挡倒在地上。井口没盖。',
+      '我远远看了一眼，井口黑得不太对劲——不是那种"里面没光"的黑，是那种"黑本身在往外渗"的黑。',
+      '我已经上报了。发这条是想提醒后面的人，别路过。'],
+    opts:[['万分感谢','reply','谢谢提醒，我这就绕路。'],['去井口看看','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【讨论】', title:'我是不是被"标记"了？脖子上多了个手印',
+    author:'城东-小林', replies:rnd(8,25),
+    body:['今天早上照镜子，后颈多了一个淡红色的手印。我确定不是我自己弄的。',
+      '家里就我一个人住。昨晚我也没出门。'],
+    opts:[['快洗掉','reply','立刻洗掉。洗完之后二十四小时内不要独处。'],['去外面躲躲','mud',''],['上报总部','reply','已上报。']] },
+
+  { cat:'【情报】', title:'镜城商场地下二层昨晚又出事了',
+    author:'商场保安-老周', replies:rnd(4,16),
+    body:['昨晚值班，地下二层的镜子全都亮了——我是说，本来我们早就用布盖住了，但布全都自己掉了下来。',
+      '我进去看了一眼，镜子里的我动作是反的。不是镜像的那种反，是"他做动作，我跟着做"的那种反。'],
+    opts:[['快撤','reply','别进去，立刻撤离。'],['下去看看','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【求助】', title:'我家冰箱里传出咀嚼声，已经第三天了',
+    author:'不愿透露姓名', replies:rnd(3,12),
+    body:['大概上周开始。冰箱一直通着电，但里面冷得不太正常。',
+      '昨晚我贴近听了一下，里面有很清楚的咀嚼声。冰箱里除了几瓶水，什么都没有。'],
+    opts:[['断电','reply','断电，搬离。别打开。'],['打开看看','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【情报】', title:'关于"空号鬼"的最新观测：它开始用未接来电了',
+    author:'分析组-统计员', replies:rnd(6,22),
+    body:['以往空号鬼只在"接听"时触发。最近一周出现了新的模式：',
+      '一、你不需要接听，只要看到来电显示是空号，就会被记录。',
+      '二、被记录后三天内，你会收到一条来自"你自己"的短信。',
+      '三、短信内容为一行坐标。'],
+    opts:[['不看不接','reply','最稳妥的做法：不看不接，直接删除记录。'],['按坐标去看看','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【讨论】', title:'如果三大铁律都是真的，那我们凭什么还敢当驭鬼者',
+    author:'新注册驭鬼者', replies:rnd(20,60),
+    body:['厉鬼不死。不能直视。鬼域守规矩。',
+      '三条都是"不要对抗"的意思。那我们还干什么？'],
+    opts:[['因为没得选','reply','因为总得有人去做。'],['去看档案','reply','绝密档案 → 总部档案 → 三大铁律。'],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【警告】', title:'今晚路过殡仪馆，烟囱冒烟了，但今天没火化',
+    author:'出租车司机-老李', replies:rnd(4,18),
+    body:['我跑夜班，每天晚上都会经过那条路。今天烟囱在冒烟。',
+      '我今天下午特意去问过，今天没有安排火化。',
+      '烟是灰色的，很淡，从烟囱口往外飘，但风是往那个方向吹的。'],
+    opts:[['快走','reply','别停留，油门踩到底。'],['进去看看','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【经验】', title:'分享一个判断"纸人"的方法：不眨眼',
+    author:'外勤-李阳', replies:rnd(7,24),
+    body:['纸人复制体行为僵硬、不会说话，但最难辨认的是长相。',
+      '最简单的办法：盯着看五分钟。纸人不会眨眼。',
+      '这个办法我试过三次，三次都有效。'],
+    opts:[['收藏了','reply','实用。'],['前往验证','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【求助】', title:'楼道里的声控灯坏了，但脚步声还在',
+    author:'老小区住户', replies:rnd(5,20),
+    body:['声控灯坏了一个月了，物业一直没修。',
+      '但每天晚上十二点以后，楼道里都会有很规律的脚步声，从一楼走到六楼，再走下去。',
+      '灯不亮，我也不敢开手电看。'],
+    opts:[['别开灯','reply','别开。开了反而更危险。'],['上去看看','mud',''],['上报总部','reply','已上报。']] },
+
+  { cat:'【情报】', title:'幽灵航道目击记录更新：第二十八次',
+    author:'港口-老王', replies:rnd(4,14),
+    body:['昨晚一点左右，浓雾从海面压过来，一条船影从雾里穿出来。',
+      '没有灯。没有声音。船身很旧，但船头一点锈都没有。',
+      '我拍了一张照片，照片上是空的。'],
+    opts:[['别拍了','reply','拍照本身就是"记录"，别拍了。'],['前往港口','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【讨论】', title:'有没有人试过在鬼域里"反向走"',
+    author:'民间驭鬼者', replies:rnd(10,30),
+    body:['门鬼的档案里写"唯一脱困方法是往回走"。',
+      '我试过一次。不是转身，是"倒着走"。',
+      '门开了。我出来了。但我不知道我是怎么出来的。'],
+    opts:[['细说','reply','能详细说说吗？'],['去试试','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【警告】', title:'家里电视自己开了，画面是雪花，雪花里有个人形',
+    author:'匿名潜入者', replies:rnd(6,22),
+    body:['我一个人住。刚才电视自己开了。',
+      '屏幕全是雪花，但雪花里有个很淡的人形轮廓，站在正中间。',
+      '我拔了电源。屏幕黑了三秒，然后又亮了。'],
+    opts:[['断总闸','reply','断总闸。别关电视，直接断总闸。'],['继续看','mud',''],['上报总部','reply','已上报。']] },
+
+  { cat:'【经验】', title:'旧硬币的第四种用法，刚发现',
+    author:'外勤-赵锐', replies:rnd(8,26),
+    body:['把硬币立在桌面上，让它自己倒下。',
+      '如果倒下后正面朝上，说明房间安全。',
+      '如果反面朝上，立刻离开。',
+      '如果它不倒——别动。'],
+    opts:[['细思极恐','reply','最后一条太吓人了。'],['试一试','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【求助】', title:'我的影子今天没跟我出门',
+    author:'匿名潜入者', replies:rnd(9,28),
+    body:['出门的时候我发现，我的影子没有跟出来。',
+      '我站在大太阳底下，脚边什么都没有。',
+      '我现在不敢回家。'],
+    opts:[['别回家','reply','别回家。立刻去总部。'],['去找影子','mud',''],['上报总部','reply','已上报。']] },
+
+  { cat:'【情报】', title:'本市"三下敲门"事件分布图（近两周）',
+    author:'分析组-统计员', replies:rnd(5,18),
+    body:['近两周共收集到 34 起"三下敲门"报告，分布如下：',
+      '一、老城区占 21 起；二、城东 8 起；三、城南 5 起。',
+      '全部集中在凌晨 2:45 - 3:15 之间。',
+      '规律与敲门鬼档案完全吻合。'],
+    opts:[['感谢统计','reply','辛苦了。'],['前往老城区','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【讨论】', title:'如果有一天你发现自己是"复制体"，你会怎么做',
+    author:'匿名潜入者', replies:rnd(15,45),
+    body:['复写鬼的档案里写：复制体与原体无法从外部区分，只有原体自身能察觉"另一个自己"存在。',
+      '那如果有一天，你发现自己是复制体呢？',
+      '你会告诉别人吗？'],
+    opts:[['不会','reply','说了也没用。'],['会','reply','至少要有人知道。'],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【警告】', title:'今晚别走城西那条路，路灯全灭了',
+    author:'通勤-小张', replies:rnd(4,16),
+    body:['我每天下班都要走那条路。今天路灯一盏都没亮。',
+      '不是坏了，是"没了"——灯杆还在，灯泡也在，就是不亮。',
+      '我在路口站了五分钟，路上一个人都没有。'],
+    opts:[['绕路','reply','绕路，别犹豫。'],['走过去','mud',''],['收藏此帖','info','已收藏。']] },
+
+  { cat:'【经验】', title:'关于"门鬼"的一个小细节：不要回头',
+    author:'外勤-许峰', replies:rnd(6,20),
+    body:['（本条由本人以纸笔记录，代发。）',
+      '进入门鬼鬼域后，"往回走"是唯一的脱困方法。',
+      '但要注意：往回走的时候，绝对不能回头。',
+      '你只能倒着走。'],
+    opts:[['记下了','reply','这个细节太重要了。'],['去试试','mud',''],['收藏此帖','info','已收藏。']] }
+];
+
+/* ============================================================
+   5. 悬赏 / 交易 / 物品 / 通告
+============================================================ */
+const BOUNTIES = [
+  { id:'b1', rank:'S', level:'s', title:'大昌市饿死鬼事件后续调查', reward:'500',
+    desc:'查明饿死鬼事件源头，评估鬼域扩散风险，提交完整调查报告。' },
+  { id:'b2', rank:'A', level:'a', title:'城南废旧医院厉鬼清除', reward:'120',
+    desc:'该区域已被划为禁区，需清除或收容区域内厉鬼，恢复区域安全。' },
+  { id:'b3', rank:'A', level:'a', title:'城东哭丧鬼收容行动', reward:'90',
+    desc:'协助总部收容哭丧鬼，需具备隔音类灵异物品或鬼域隔绝能力。' },
+  { id:'b4', rank:'A', level:'a', title:'老城区三号院敲门鬼排查', reward:'110',
+    desc:'该区域连续出现凌晨三下敲门声，需确认来源并完成标记者隔离。' },
+  { id:'b5', rank:'B', level:'b', title:'镜中鬼残留镜像清理', reward:'45',
+    desc:'某商场镜面区域残留镜中鬼气息，需彻底清理全部反射面。' },
+  { id:'b6', rank:'B', level:'b', title:'无脸鬼目击情报收集', reward:'35',
+    desc:'近一周内城西出现多起无脸鬼目击报告，需核实并提交情报。' },
+  { id:'b7', rank:'B', level:'b', title:'殡仪馆焚化间异常处置', reward:'55',
+    desc:'焚化炉夜间自行升温并出现敲击声，需确认是否为焚化鬼活动。' },
+  { id:'b8', rank:'B', level:'b', title:'写字楼电梯异常按钮拆除', reward:'40',
+    desc:'某写字楼电梯面板出现未知楼层按钮，需协助总部完成拆除与封锁。' },
+  { id:'b9', rank:'C', level:'c', title:'水鬼水域排查', reward:'15',
+    desc:'对城郊三处水域进行例行排查，记录灵异波动数据。' },
+  { id:'b10', rank:'C', level:'c', title:'旧收音机回收行动', reward:'20',
+    desc:'旧货市场流入一批老式收音机，需逐一回收并集中销毁。' },
+  { id:'b11', rank:'C', level:'c', title:'血手印来源墙面排查', reward:'18',
+    desc:'某出租公寓连续出现血手印，需找到来源墙面并完成清除。' },
+  { id:'b12', rank:'S', level:'s', title:'幽灵航道第二十八次拦截尝试', reward:'600',
+    desc:'东海某段再次出现幽灵船目击记录，需尝试建立稳定观测点。' },
+  { id:'b13', rank:'A', level:'a', title:'城郊古井群封井作业', reward:'95',
+    desc:'剩余两口古井尚未封井，需完成铅制井盖安装与围挡加固。' },
+  { id:'b14', rank:'B', level:'b', title:'复写鬼目击线索核实', reward:'70',
+    desc:'近期出现多起"两个相同的人"报告，需核实是否为复写鬼活动。' },
+  { id:'b15', rank:'C', level:'c', title:'旧硬币来源追查', reward:'25',
+    desc:'多起灵异现场出现同一种旧硬币，需追查铸造来源。' }
+];
+
+const TRADE_ITEMS = [
+  { id:'t1',  name:'鬼画碎片（指甲盖大小）', price:30,  seller:'黑市-周琳',    risk:'中', desc:'保留微弱"注视"特性，可作研究材料或辅助媒介。禁止长时间直视。' },
+  { id:'t2',  name:'隔音符箓 · 三张',        price:12,  seller:'总部-物资科',  risk:'无', desc:'一次性消耗品，可在十分钟内隔绝A级以下厉鬼的听觉类能力。' },
+  { id:'t3',  name:'镜面遮蔽布 · 一卷',      price:8,   seller:'黑市-匿名',    risk:'低', desc:'哑光材质，可完全消除反射。覆盖面积约十二平方米。' },
+  { id:'t4',  name:'哭丧鬼残留气息样本',     price:55,  seller:'黑市-徐茗',    risk:'中', desc:'密封于铅罐中，用于研究A级厉鬼的哭声传播机制。开封需谨慎。' },
+  { id:'t5',  name:'无脸鬼面具（残）',       price:88,  seller:'黑市-匿名',    risk:'高', desc:'佩戴后可短暂改变面部特征，但每七日必须更换一次，否则形体会溃散。' },
+  { id:'t6',  name:'棺材钉（仿制品）',       price:200, seller:'总部-封印科',  risk:'低', desc:'无法压制无解级厉鬼，但对A级以下厉鬼有显著威慑效果。' },
+  { id:'t7',  name:'铅罐 · 一只',            price:25,  seller:'黑市-匿名',    risk:'低', desc:'临时封存厉鬼气息样本或小型灵异物品，可屏蔽外部感知。' },
+  { id:'t8',  name:'铅制耳罩 · 一副',        price:34,  seller:'总部-物资科',  risk:'无', desc:'可有效屏蔽鬼婴、哭丧鬼等听觉类厉鬼的哭声。' },
+  { id:'t9',  name:'灵异波动探测仪 · 手持',  price:60,  seller:'总部-物资科',  risk:'无', desc:'五十米内探测灵异波动强度，外勤标配，精度有限。' },
+  { id:'t10', name:'旧硬币 · 一枚',          price:45,  seller:'黑市-匿名',    risk:'低', desc:'来源不明。可平息水面、延缓门鬼触发、作为封印锚点。' },
+  { id:'t11', name:'哑光漆 · 一桶',          price:18,  seller:'黑市-周琳',    risk:'无', desc:'处置镜中鬼的必备品，可彻底消除墙面反射。' },
+  { id:'t12', name:'石灰粉 · 一袋',          price:6,   seller:'总部-物资科',  risk:'无', desc:'可覆盖血手印并抑制其夜间扩散。' },
+  { id:'t13', name:'黄纸替身 · 三张',        price:75,  seller:'总部-封印科',  risk:'低', desc:'以纸人替身承担一次致命伤害。制作工艺为总部机密。' },
+  { id:'t14', name:'空号拦截插件 · 授权',    price:15,  seller:'总部-技术科',  risk:'无', desc:'自动拦截显示为空的来电。可有效规避空号鬼。' },
+  { id:'t15', name:'无屏录音笔 · 一支',      price:52,  seller:'总部-技术科',  risk:'低', desc:'无屏幕无镜面反射的录音设备，可在镜中鬼活动区域安全使用。' },
+  { id:'t16', name:'荧光标记贴 · 一盒',      price:10,  seller:'总部-物资科',  risk:'无', desc:'地下空间导航必备，不受大多数鬼域干扰。' },
+  { id:'t17', name:'低温体温计 · 一支',      price:14,  seller:'总部-物资科',  risk:'无', desc:'可测量零下三十度至五十度区间，用于判断蜡像鬼等活动温度阈值。' },
+  { id:'t18', name:'广角镜 · 一面',          price:22,  seller:'总部-物资科',  risk:'无', desc:'用于在不开门的情况下观察门后情况，可规避门鬼触发。' },
+  { id:'t19', name:'红布 · 一卷',            price:5,   seller:'黑市-匿名',    risk:'无', desc:'用于包裹厉鬼头颅等关键部件，可暂时阻断其与其他部分的联系。' },
+  { id:'t20', name:'封印封条 · 三张',        price:40,  seller:'总部-封印科',  risk:'低', desc:'贴在门框或容器上，可延缓鬼域扩张，有效期约七十二小时。' }
+];
+
+const ITEM_LIB = [
+  { name:'棺材钉', level:'S级', type:'封印类', desc:'唯一已知可压制无解级厉鬼的物品。钉入厉鬼脑门后，其一切灵异手段失效。', acq:'总部封印科调拨，需S级授权。' },
+  { name:'鬼眼（驭鬼者器官）', level:'S级', type:'感知类', desc:'可洞察灵异本质、预判鬼域变化。代价是使用者将永久失去正常视觉。', acq:'无法获取，仅存在于特定驭鬼者体内。' },
+  { name:'黄纸替身', level:'B级', type:'替身类', desc:'以纸人替身承担一次致命伤害，制作工艺为总部机密。', acq:'需B级以上驭鬼者申请。' },
+  { name:'铅罐', level:'B级', type:'收容类', desc:'用于临时封存厉鬼气息样本或小型灵异物品，可屏蔽外部感知。', acq:'总部物资科，常规配发。' },
+  { name:'铅制耳罩', level:'B级', type:'防护类', desc:'可有效屏蔽鬼婴、哭丧鬼等听觉类厉鬼的哭声，普通耳塞无效。', acq:'总部物资科，34 克黄金 / 副。' },
+  { name:'隔音符箓', level:'C级', type:'防护类', desc:'一次性消耗品，十分钟内隔绝A级以下厉鬼的听觉类能力。', acq:'总部物资科，12 克黄金 / 三张。' },
+  { name:'镜面遮蔽布', level:'C级', type:'防护类', desc:'哑光材质织物，可完全消除反射面。处置镜中鬼的必备品。', acq:'黑市流通，8 克黄金 / 卷。' },
+  { name:'哑光漆', level:'C级', type:'防护类', desc:'大面积处理反射面的经济方案，一桶可覆盖约六十平方米。', acq:'黑市常见，18 克黄金 / 桶。' },
+  { name:'石灰粉', level:'C级', type:'处置类', desc:'覆盖血手印并抑制其夜间扩散，处理后需保持通风。', acq:'总部物资科，6 克黄金 / 袋。' },
+  { name:'灵异波动探测仪', level:'C级', type:'侦测类', desc:'手持设备，可在五十米内探测到灵异波动强度，精度有限。', acq:'总部物资科，外勤标配。' },
+  { name:'黄金密钥', level:'A级', type:'通行类', desc:'暗网身份凭证，同时可作为部分封印结界的钥匙使用。', acq:'实名认证后由总部发放。' },
+  { name:'旧硬币', level:'B级', type:'未知', desc:'来源不明的旧硬币，面值已不可辨。已知可平息水面、延缓门鬼触发、作为封印锚点。', acq:'灵异现场偶有发现，黑市流通。' },
+  { name:'空号拦截插件', level:'C级', type:'软件', desc:'安装于通讯终端，自动拦截显示为空的来电，可有效规避空号鬼。', acq:'总部技术科授权，15 克黄金。' },
+  { name:'封印封条', level:'B级', type:'封印类', desc:'贴在门框或容器上，可延缓鬼域扩张，有效期约七十二小时。', acq:'总部封印科，需报备用途。' },
+  { name:'荧光标记贴', level:'C级', type:'辅助类', desc:'地下空间导航必备，不受大多数鬼域干扰，可持续发光十二小时。', acq:'总部物资科，常规配发。' },
+  { name:'纸笔通讯套装', level:'C级', type:'辅助类', desc:'在声音被压制的区域内唯一可靠的沟通方式。', acq:'总部物资科，常规配发。' },
+  { name:'红布', level:'C级', type:'封存类', desc:'用于包裹厉鬼头颅等关键部件，可暂时阻断其与其他部分的联系。', acq:'黑市常见，价格低廉。' },
+  { name:'低温体温计', level:'C级', type:'侦测类', desc:'可测量零下三十度至五十度区间，用于判断蜡像鬼等活动温度阈值。', acq:'总部物资科，常规配发。' },
+  { name:'广角镜', level:'C级', type:'侦测类', desc:'用于在不开门的情况下观察门后情况，可规避门鬼触发。', acq:'总部物资科，常规配发。' },
+  { name:'无屏录音笔', level:'B级', type:'记录类', desc:'无屏幕、无镜面反射的录音设备，可在镜中鬼活动区域安全使用。', acq:'总部技术科，需申请。' },
+  { name:'密封铅盒', level:'B级', type:'收容类', desc:'尺寸比铅罐更小，用于封存指甲盖大小的灵异物品样本。', acq:'总部物资科，常规配发。' },
+  { name:'吸音棉 · 一卷', level:'C级', type:'防护类', desc:'可临时构建安静环境，对回声鬼、收音机鬼等有威慑效果。', acq:'黑市常见，价格低廉。' }
+];
+
+const NOTICES = [
+  { level:'danger', badge:'紧急', title:'关于近期多地灵异波动异常的通报',
+    desc:'近七日内，全国范围内检测到灵异波动异常上升，部分地区出现未登记厉鬼活动迹象。请各位驭鬼者提高警惕，非必要不前往陌生区域，发现异常立即上报。',
+    time:'2026-09-04 23:12' },
+  { level:'danger', badge:'紧急', title:'凌晨三点敲门声事件升级，已确认为敲门鬼活动',
+    desc:'本市多个区域报告规律性敲门声，每次三下。总部确认此为敲门鬼活动特征。请勿应答、勿开门、勿用猫眼观察。已被标记者请于四十八小时内前往总部接受隔离。',
+    time:'2026-09-04 03:00' },
+  { level:'warn', badge:'注意', title:'关于厉鬼交易的风险提示',
+    desc:'近期黑市出现多起"厉鬼复苏"交易纠纷，总部提醒：所有厉鬼交易均以黄金结算，交易标的若发生厉鬼复苏，风险由买家自行承担。请谨慎评估后再行交易。',
+    time:'2026-09-02 18:30' },
+  { level:'', badge:'通知', title:'总部档案库等级调整公告',
+    desc:'自本月起，S级档案的查阅权限将进一步提升，除总部核心成员外，其余驭鬼者需提交书面申请并经过三级审核。',
+    time:'2026-09-01 10:00' },
+  { level:'warn', badge:'注意', title:'城南废旧医院区域划为临时禁区',
+    desc:'该区域检测到持续异常灵异波动，强度评级A级。现已划为临时禁区，禁止一切非授权人员进入。',
+    time:'2026-08-29 09:05' },
+  { level:'danger', badge:'紧急', title:'幽灵航道新增目击记录，航运部门已发布禁航令',
+    desc:'本月第二十七次目击记录出现在东海某段。总部重申：发现幽灵船踪迹请立即上报，任何船只禁止靠近，违者后果自负。',
+    time:'2026-08-26 04:41' },
+  { level:'', badge:'通知', title:'总部地下三层至九层实行双人通行制度',
+    desc:'近期地下区域出现台阶计数异常与监控空白帧，即日起所有人员进入地下三层以下区域必须两人以上同行，并携带荧光标记贴。',
+    time:'2026-08-24 16:00' },
+  { level:'warn', badge:'注意', title:'旧货市场流入多台老式收音机，请勿购买使用',
+    desc:'该批收音机疑似与收音机鬼有关，午夜后会播放包含死者姓名的沙沙声。已购买者请勿通电，直接上交总部统一销毁。',
+    time:'2026-08-22 11:30' },
+  { level:'danger', badge:'紧急', title:'城郊剩余两口古井尚未封井，请勿靠近',
+    desc:'井鬼活动范围尚未完全确认，围挡无法阻止其触发。任何时候都不要向下看。已有一名少年因好奇被拖拽，目前正在医院观察。',
+    time:'2026-08-18 17:50' },
+  { level:'', badge:'通知', title:'关于"封印钉"传闻的官方说明',
+    desc:'总部确认：地下封印间确有青铜棺一口，棺盖三处钉孔。其余细节属绝密，不予公开。请勿在非授权频道讨论相关内容。',
+    time:'2026-08-17 18:00' },
+  { level:'warn', badge:'注意', title:'关于新增"深夜探索协议"的说明',
+    desc:'总部开放"深夜探索"演练频道，供在册驭鬼者演练封印作业。每次探索独立存档，可在探索记录中重新游玩。完成封棺者奖励 100 克黄金。',
+    time:'2026-08-16 12:00' },
+  { level:'', badge:'通知', title:'档案库厉鬼条目已更新至 50 条',
+    desc:'本次更新新增 S 级厉鬼 5 条、A 级 5 条、B 级 4 条、C 级 6 条。部分条目涉及未收容对象，请谨慎查阅。',
+    time:'2026-08-15 09:00' }
+];
+
+/* ---- 地图 ---- */
+const MAP_NODES = [
+  { id:'dachang',  name:'大昌市禁区', lv:'s', x:34, y:38, status:'永久封锁', desc:'饿死鬼事件发源地。半径十一公里鬼域残留，电子设备进入即失效。' },
+  { id:'hospital', name:'城南废旧医院', lv:'a', x:58, y:62, status:'临时禁区', desc:'A级灵异波动持续异常。已派遣驭鬼者调查，暂无进展。' },
+  { id:'eastblock',name:'城东旧居民区', lv:'a', x:72, y:44, status:'已收容', desc:'哭丧鬼出没地。现已收容，区域净化处理中。' },
+  { id:'yard3',    name:'老城区三号院', lv:'b', x:26, y:30, status:'观察中', desc:'夜间频繁出现三下敲门声，居民已疏散。' },
+  { id:'lane',     name:'幽灵航道', lv:'s', x:86, y:22, status:'无法封锁', desc:'坐标随潮汐变化，累计二十八次目击，无一例成功拦截。' },
+  { id:'mirror',   name:'镜城商场', lv:'b', x:46, y:72, status:'清理中', desc:'地下二层镜面异常。镜中鬼气息残留，遮蔽作业进行中。' },
+  { id:'reservoir',name:'城郊水库群', lv:'c', x:22, y:66, status:'例行排查', desc:'三处水库呈三角分布，水鬼活动低强度。' },
+  { id:'wells',    name:'城郊古井群', lv:'b', x:14, y:48, status:'封井中', desc:'七口古井中五口已完成封井，剩余两口待处理。' },
+  { id:'crem',     name:'市殡仪馆', lv:'b', x:64, y:78, status:'异常', desc:'焚化炉夜间自行升温，出现敲击声与灰烬手印。' },
+  { id:'hqnode',   name:'总部', lv:'b', x:50, y:50, status:'安全', desc:'暗网中枢。地上部分为普通写字楼，地下共九层。' },
+  { id:'sealroom', name:'地下封印间', lv:'s', x:50, y:60, status:'绝密', desc:'总部地下九层。三枚棺材钉固定着同一个存在。' },
+  { id:'oldstreet',name:'老城区夜路', lv:'c', x:32, y:20, status:'巡逻中', desc:'近期路灯频繁熄灭，已列入夜间巡逻范围。' }
+];
+
+/* ---- 动态流池（扩充） ---- */
+const FEED_POOL = [
+  { who:'外勤-李阳',    text:'城南医院的活干完了，比预想的干净。撤回总部。' },
+  { who:'档案科-徐茗',  text:'九月观测数据已上传，哭丧鬼残留哭声强度下降 40%。' },
+  { who:'黑市-周琳',    text:'鬼画碎片还有最后一块，出价 30 起，今晚结。' },
+  { who:'匿名潜入者',   text:'问一下，晚上路过老城区听到敲墙声，三下三下的，正常吗？' },
+  { who:'接线员李梦琪', text:'回复楼上：不要应答，不要开门，立刻上报坐标。' },
+  { who:'外勤-赵锐',    text:'收容队已抵达三号院，楼内声控灯全部失效，请求照明支援。' },
+  { who:'后勤-老张',    text:'殡仪馆的炉子又自己升温了。我今天请假。' },
+  { who:'分析组-统计员', text:'时间异常报告新增两例，均在凌晨 03:04。' },
+  { who:'外勤-马骏',    text:'物资已送达城郊，路上看见两口井的围挡被人翻过。' },
+  { who:'总部-封印科',  text:'提醒：地下九层今日封条更换作业，非授权人员请勿靠近电梯。' },
+  { who:'民间驭鬼者',   text:'井口那边又有人往下看了。真的求求了，别看了。' },
+  { who:'档案科-徐茗',  text:'血手印清除手册已更新至 v2.1，新增石灰粉用量建议。' },
+  { who:'外勤-许峰',    text:'（纸笔）地下三层台阶数恢复正常。已做荧光标记。' },
+  { who:'接线员李梦琪', text:'CH-07 目前负载正常。有紧急情况请直接说明坐标。' },
+  { who:'黑市-匿名',    text:'出一批旧硬币，来源不方便说，识货的私信。' },
+  { who:'分析组-统计员', text:'电梯异常按钮事件本月第三起。建议全市写字楼普查。' },
+  { who:'匿名潜入者',   text:'我朋友的影子今天又笑了。我该怎么办？' },
+  { who:'外勤-赵锐',    text:'三号院搜完了，三楼空房没有实体，只有声音。撤。' },
+  { who:'总部-监控组',  text:'天台摄像头拍到人形轮廓，持续四十分钟后消失。' },
+  { who:'档案科-徐茗',  text:'提醒各位：不要在非授权频道讨论封印钉。' },
+  { who:'外勤-孙晨',    text:'城西写字楼的电梯按钮已拆除，现场录像显示按钮是"自己长出来的"。' },
+  { who:'黑市-周琳',    text:'谁要铅制耳罩？总部流出的货，三十四克。' },
+  { who:'民间驭鬼者',   text:'城南医院的围挡被人剪了个洞。我上报了。' },
+  { who:'接线员李梦琪', text:'总部通报：今晚 02:45-03:15 加强值班，请外勤保持在线。' },
+  { who:'外勤-林雨',    text:'城郊开始下雨了。水鬼活动可能会增强，各组注意。' },
+  { who:'分析组-统计员', text:'"三下敲门"报告今日新增 6 起，全部集中在老城区。' },
+  { who:'总部-封印科',  text:'封印间第三钉孔状态：空。请勿讨论更多细节。' },
+  { who:'外勤-赵锐',    text:'城西夜路路灯全灭，我带了两组人分头巡查。' },
+  { who:'档案科-沈墨',  text:'新条目已录入：镜鬼、回声鬼、空棺鬼。均为S级，请谨慎查阅。' },
+  { who:'匿名潜入者',   text:'有人玩过深夜探索吗？我在值班室捡到一张值班记录，上面写着"不要应答"。' },
+  { who:'接线员李梦琪', text:'回复楼上：深夜探索协议是正式演练，不是游戏。请严肃对待。' },
+  { who:'黑市-匿名',    text:'求购无屏录音笔，价格好谈。' },
+  { who:'外勤-马骏',    text:'地下二层那扇没编号的门，我今天又路过了一次。雾比上次浓。' },
+  { who:'分析组-统计员', text:'注意：城郊古井群的围挡又被人翻过。已通知巡逻组加强。' },
+  { who:'总部-收容科',  text:'今日收容对象状态正常。提醒：不要与收容对象对视。' },
+  { who:'档案科-徐茗',  text:'五十条厉鬼档案已全部完成更新。感谢各位情报提供者。' },
+  { who:'外勤-李阳',    text:'镜城商场清理进度 60%，预计明日完成。' },
+  { who:'民间驭鬼者',   text:'我家电视今天自己开了，雪花里有个人形。已断总闸。' },
+  { who:'接线员李梦琪', text:'回复楼上：处理正确。请提交坐标，总部会派人核查。' },
+  { who:'匿名潜入者',   text:'我刚才在楼下听见有人喊我名字，声音像我妈。但我妈在老家。' },
+  { who:'外勤-许峰',    text:'（纸笔）建议各位练习纸笔通讯。关键时刻有用。' },
+  { who:'总部-技术科',  text:'空号拦截插件已更新至 v1.3，新增自动屏蔽功能。' },
+  { who:'黑市-周琳',    text:'最后一枚旧硬币出了，四十五克，先到先得。' },
+  { who:'外勤-赵锐',    text:'老城区收队。今晚没有收获，但也没有伤亡。' },
+  { who:'档案科-徐茗',  text:'提醒：复写鬼的目击线索请直接私信我，不要在论坛公开。' },
+  { who:'分析组-统计员', text:'近七日"时间异常"报告零新增。可能只是暂时的。' },
+  { who:'总部-监控组',  text:'地下三层摄像头今日出现 17 秒空白帧。正在排查。' },
+  { who:'接线员李梦琪', text:'CH-07 频道目前有 12 名驭鬼者在线。祝各位平安。' }
+];
+
+/* ---- 聊天回复池 ---- */
+const REPLIES = [
+  '收到。已记录本次通讯，相关信息将同步至总部档案库。',
+  '请保持通讯畅通，总部正在核实你所在区域的灵异波动数据。',
+  '建议立即撤离当前区域，附近的厉鬼信号强度已超过安全阈值。',
+  '你的驭鬼者编号尚未完成实名认证，部分情报暂无法调取。',
+  '已为你转接至绝密档案查询通道，请稍候……',
+  '根据总部条例第七条，禁止在非授权频道讨论A级以上厉鬼信息。',
+  '黄金结算已到账，感谢你对总部的贡献。',
+  '检测到你的通讯终端存在异常信号，请确认周围是否有未知灵异现象。',
+  '总部已派遣就近驭鬼者前往支援，预计十五分钟内抵达。',
+  '请勿在无防护状态下直视厉鬼，重复一遍，请勿直视。',
+  '通讯链路出现轻微干扰，可能是鬼域边缘效应。请确认你此刻的位置。',
+  '记录已归档。如果三十分钟内你不再回复，总部将按失联流程处理。',
+  '你提供的坐标已标记在地图上。请勿靠近，等待专业队伍接手。',
+  '提醒：如听见规律性的三下敲门声，无论来自何处，都不要应答。'
+];
+
+const KEYWORD_REPLIES = [
+  { keys:['铁律','三大铁律'], reply:'三大铁律属于绝密级内容，通讯频道不予播报。你可以在"绝密档案 → 总部档案"中查阅，前提是你的权限足够。' },
+  { keys:['饿死鬼'], reply:'饿死鬼档案为S级绝密。总部提示：不要靠近大昌市旧址，不要相信任何自称从那里走出来的人。' },
+  { keys:['档案','查询'], reply:'已为你开启档案查询通道。左侧"档案库"支持按分类与危险等级检索，当前可查阅厉鬼档案 50 条、驭鬼者档案 12 条。' },
+  { keys:['悬赏','任务'], reply:'悬赏大厅现有 15 条有效悬赏，最高奖励 600 克黄金。接取后请在四十八小时内提交进展，逾期将自动释放。' },
+  { keys:['厉鬼','怎么办','遇到'], reply:'标准处置流程：一、停止移动，评估周围反射面与声源；二、不要应答任何呼唤；三、立即上报坐标并撤离至有光照的开阔地带。切勿尝试独自对抗。' },
+  { keys:['黄金','结算','余额'], reply:'所有交易与悬赏均以黄金结算，总部与黑市共同担保。你的账户余额可在"个人中心"查看。' },
+  { keys:['签到'], reply:'每日签到可获得黄金奖励，连续签到七日有额外奖励。总部鼓励外勤驭鬼者保持活跃。' },
+  { keys:['敲门','三下'], reply:'无论敲门声来自哪里，都不要应答。不要开门，不要用猫眼看。如果你已经被标记，请在四十八小时内前往总部。' },
+  { keys:['井','往下看'], reply:'不要往井里看。这是重复提示，不是建议。' },
+  { keys:['影子'], reply:'如果影子动作迟缓或背对你，请立即关闭全部光源，在绝对黑暗中待满十分钟，然后上报总部。' },
+  { keys:['mud','MUD','探索'], reply:'深夜探索频道位于侧边栏。目标是在总部大楼中找到三枚封印钉。每次探索都会独立记录，可在"探索记录"中重新游玩。' },
+  { keys:['记录','重玩'], reply:'深夜探索的每次记录都会保存在探索记录面板中。点击"重新游玩"可以从同一来源重新开始。' },
+  { keys:['你好','在吗','在不在'], reply:'接线员李梦琪在线。请说明情况，频道已加密。' }
+];
+
+/* ============================================================
+   6. MUD 地图
+============================================================ */
+const MUD_ROOMS = {
+  hall: { name:'总部前厅', desc:'冷白的灯管在头顶嗡嗡作响，前台空无一人。\n墙上的电子钟停在 03:00 —— 从你进来起它就没走过。',
+    exits:[['east','office','值班室'],['north','corridor','长廊'],['west','locker','更衣室'],['down','stair','楼梯间']] },
+  office: { name:'值班室', desc:'桌上摊着一份没写完的值班记录，钢笔还在渗墨。\n抽屉半开着，里面似乎有东西。',
+    exits:[['west','hall','前厅']],
+    take:{ id:'file1', name:'值班记录残页', text:'“……它会在凌晨三点敲门。不要应答。”' } },
+  locker: { name:'更衣室', desc:'一排铁皮柜，大多上了锁。\n最里面那扇柜门虚掩着，挂着件洗得发白的外套。',
+    exits:[['east','hall','前厅']],
+    take:{ id:'torch', name:'手电筒', text:'电量还剩一半，光柱很稳。' } },
+  corridor: { name:'长廊', desc:'两侧是密密麻麻的房门，每一扇都贴着编号。\n走廊尽头那盏灯一直在闪，像是某种节拍。',
+    exits:[['south','hall','前厅'],['north','archive','档案室'],['east','cctv','监控室'],['west','canteen','食堂'],['down','cellar','地下室'],['up','roof','天台']] },
+  cctv: { name:'监控室', desc:'一整面墙的监视器，大部分是雪花点。\n唯一清晰的那一块，正对着你身后的门。',
+    exits:[['west','corridor','长廊']],
+    take:{ id:'radio', name:'对讲机', text:'频道旋钮停在 CH-07，但里面只有沙沙声。' } },
+  canteen: { name:'食堂', desc:'长桌上摆着几十副碗筷，每一副都盛着半碗冷掉的米饭。\n没有一个人。',
+    exits:[['east','corridor','长廊']] },
+  archive: { name:'档案室', desc:'一排排铁皮档案柜，编号一直排到你看不清的地方。\n最里面那一列被黑布罩住了，布下面传来极轻的呼吸声。',
+    exits:[['south','corridor','长廊'],['east','seal','封印间']],
+    take:{ id:'nail2', name:'封印钉 · 其二', text:'钉身上缠着褪色的红绳。' } },
+  cellar: { name:'地下室', desc:'台阶向下延伸，空气里全是铁锈味。\n角落里堆着几只上锁的铁箱，其中一只裂开了缝。',
+    exits:[['up','corridor','长廊'],['north','morgue','停尸间'],['south','incinerator','焚化间'],['down','b2','地下二层']],
+    take:{ id:'nail1', name:'封印钉 · 其一', text:'生锈的长钉，握在手里冰凉刺骨。' } },
+  morgue: { name:'停尸间', desc:'六张不锈钢台子，五张是空的。\n第六张上面盖着白布，布的边缘在轻轻起伏。',
+    exits:[['south','cellar','地下室']],
+    take:{ id:'talisman1', name:'符箓 · 清心', text:'黄纸朱砂，背面写着"贴于心口"。' } },
+  incinerator: { name:'焚化间', desc:'两台巨大的焚化炉，炉门紧闭。\n其中一台的温度表指针在缓慢上升，而它并没有通电。',
+    exits:[['north','cellar','地下室']],
+    take:{ id:'talisman2', name:'符箓 · 清心', text:'第二张。这一张边缘已经有些焦黑。' } },
+  b2: { name:'地下二层', desc:'这里的灯是红色的。\n走廊尽头有一扇没有编号的门，门缝里透着灰白色的雾。',
+    exits:[['up','cellar','地下室']] },
+  roof: { name:'天台', desc:'风很大。城市的灯在脚下铺开，但其中一片区域是纯黑的 —— 像被人抠掉了。\n你听见有人在很远的地方，喊你的编号。',
+    exits:[['down','corridor','长廊']],
+    take:{ id:'nail3', name:'封印钉 · 其三', text:'钉头刻着一个你认不出的字。' } },
+  seal: { name:'封印间', desc:'房间中央是一口青铜棺。\n棺盖上钉着两根长钉，第三处钉孔是空的 —— 它在等一根钉子。',
+    exits:[['west','archive','档案室']] },
+  stair: { name:'楼梯间', desc:'台阶向下延伸，看不到尽头。\n墙上有一道很长的裂缝，一直通到黑暗里。',
+    exits:[['up','hall','前厅'],['down','mirror','镜厅'],['north','well','井口'],['east','elevator','电梯']] },
+  mirror: { name:'镜厅', desc:'一整层的镜子，从地板铺到天花板。\n你走进来的时候，镜子里的"你"慢了半拍。',
+    exits:[['up','stair','楼梯间']],
+    take:{ id:'coin', name:'旧硬币', text:'面值已不可辨，边缘磨得发亮。' } },
+  well: { name:'井口', desc:'一口没有盖子的古井，井口边缘结着薄霜。\n下面很黑，非常黑。',
+    exits:[['south','stair','楼梯间']] },
+  elevator: { name:'电梯', desc:'面板上除了正常的楼层，最下面一排多了一个没有编号的按钮。\n圆形的，微微凹下去。',
+    exits:[['west','stair','楼梯间']] },
+  /* 新增房间 */
+  darkroom: { name:'暗房', desc:'一间没有窗户的小屋，四面墙都涂成了黑色。\n唯一的光源是你手里那支手电——如果你还有的话。',
+    exits:[['north','corridor','长廊']] },
+  observatory: { name:'观测台', desc:'一台老式天文望远镜指向窗外，但窗外的天是纯黑的。\n镜筒里传来很轻的呼吸声。',
+    exits:[['south','roof','天台']],
+    take:{ id:'lens', name:'旧镜片', text:'边缘磨得很圆。能看出自己模糊的倒影。' } }
+};
+const MUD_ITEMS = {};
+Object.values(MUD_ROOMS).forEach(r => { if(r.take) MUD_ITEMS[r.take.id] = r.take; });
+
+const DARK_ROOMS = ['cellar','morgue','incinerator','b2','mirror','well','darkroom'];
+
+/* 帖子 → MUD 起始房间的映射 */
+const POST_ENTRY_MAP = {
+  1:'morgue', 2:'eastblock', 5:'hospital', 6:'mirror',
+  7:'yard3', 8:'elevator', 12:'hall', 13:'mirror',
+  14:'well', 17:'archive', 20:'stair', 22:'cctv',
+  27:'roof', 32:'archive', 36:'incinerator', 39:'mirror',
+  40:'cctv', 42:'hall', 43:'stair', 44:'well',
+  45:'archive', 46:'mirror', 48:'elevator', 49:'yard3', 50:'seal'
+};
+
+/* ============================================================
+   7. 状态与持久化
+============================================================ */
+const STORE_KEY = 'ygguiser_darknet_v3';
+
+const state = {
+  user: { name:'匿名潜入者', anonymous:true, code:'', gold:0 },
+  chat: [],
+  sign: { last:'', streak:0, total:0 },
+  claimed: [],
+  purchased: [],
+  postReplies: {},
+  usedOpts: {},
+  livePosts: [],
+  livePostCounter: 0,
+  feed: [],
+  mud: { room:'hall', items:[], visited:[], log:[], done:false, san:100, moves:0, from:'', sessionId:'', startRoom:'hall' },
+  mudSessions: [],
+  register: null,
+
+  view:'home',
+  archiveCat:'ghost',
+  archiveIdx:0,
+  archiveQuery:'',
+  archiveLevel:'all',
+  postId:null,
+  mapSel:'hqnode'
+};
+
+function saveStore(){
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      user: state.user,
+      chat: state.chat.slice(-60),
+      sign: state.sign,
+      claimed: state.claimed,
+      purchased: state.purchased,
+      postReplies: state.postReplies,
+      usedOpts: state.usedOpts,
+      livePosts: state.livePosts.slice(-40),
+      livePostCounter: state.livePostCounter,
+      mud: state.mud,
+      mudSessions: state.mudSessions.slice(0, 20),
+      register: state.register
+    }));
+  }catch(e){}
+}
+
+function loadStore(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(d.user)         Object.assign(state.user, d.user);
+    if(d.chat)         state.chat = d.chat;
+    if(d.sign)         Object.assign(state.sign, d.sign);
+    if(d.claimed)      state.claimed = d.claimed;
+    if(d.purchased)    state.purchased = d.purchased;
+    if(d.postReplies)  state.postReplies = d.postReplies;
+    if(d.usedOpts)     state.usedOpts = d.usedOpts;
+    if(d.livePosts)    state.livePosts = d.livePosts;
+    if(d.livePostCounter) state.livePostCounter = d.livePostCounter;
+    if(d.mud)          Object.assign(state.mud, d.mud);
+    if(d.mudSessions)  state.mudSessions = d.mudSessions;
+    if(d.register)     state.register = d.register;
+  }catch(e){}
+}
+
+function resetMud(){
+  state.mud = { room:'hall', items:[], visited:[], log:[], done:false, san:100, moves:0, from:'', sessionId:'', startRoom:'hall' };
+  saveStore();
+}
+
+/* ============================================================
+   8. 登录 / 登出
+============================================================ */
+function doLogin(anonymous){
+  if(!anonymous){
+    const name = $('#loginName').value.trim();
+    const key  = $('#loginKey').value.trim();
+    if(!name){ shake($('#loginName')); toast('请输入驭鬼者代号', 'err'); return; }
+    if(key.length !== 6){ shake($('#loginKey')); toast('黄金密钥为六位', 'err'); return; }
+    state.user.anonymous = false;
+    state.user.name = name;
+    if(!state.user.code) state.user.code = 'GH-' + rnd(1000, 9999);
+  }else{
+    state.user.anonymous = true;
+    state.user.name = '匿名潜入者';
+  }
+  saveStore();
+  $('#loginPage').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  $('#userName').textContent = state.user.name;
+  $('#userStatus').textContent = state.user.anonymous
+    ? '暗网连接状态：已加密（匿名）' : '暗网连接状态：已加密（实名）';
+
+  initChat();
+  initFeed();
+  switchView('home');
+  startClock();
+  toast(anonymous ? '已以匿名身份接入暗网' : '身份校验通过，欢迎回来', 'ok');
+}
+
+function shake(el){
+  if(!el) return;
+  el.style.transition = 'transform .08s';
+  [6,-6,4,-4,0].forEach((v, i) =>
+    setTimeout(() => el.style.transform = `translateX(${v}px)`, i * 55));
+  el.style.borderColor = '#8f1d1d';
+  setTimeout(() => { el.style.borderColor = ''; el.style.transform = ''; }, 420);
+}
+
+function logout(){
+  $('#app').classList.add('hidden');
+  $('#loginPage').classList.remove('hidden');
+  $('#loginName').value = '';
+  $('#loginKey').value = '';
+  if(typingTimer) clearTimeout(typingTimer);
+  toast('已断开暗网连接', 'info');
+}
+
+/* ============================================================
+   9. 时钟
+============================================================ */
+let clockTimer = null;
+function startClock(){
+  if(clockTimer) return;
+  const tick = () => {
+    const d = new Date();
+    const el = $('#clock');
+    if(el) el.textContent =
+      `总部标准时间 ${d.getFullYear()}年${pad(d.getMonth()+1)}月${pad(d.getDate())}日 ` +
+      `${pad(d.getHours())}时${pad(d.getMinutes())}分${pad(d.getSeconds())}秒`;
+  };
+  tick();
+  clockTimer = setInterval(tick, 1000);
+}
+
+/* ============================================================
+   10. 论坛帖子：静态 + 动态合成
+============================================================ */
+function allPosts(){
+  return POSTS.concat(state.livePosts);
+}
+function findPost(id){
+  return POSTS.find(p => p.id === id) || state.livePosts.find(p => p.id === id);
+}
+
+function spawnLivePost(){
+  const tpl = LIVE_POST_TEMPLATES[state.livePostCounter % LIVE_POST_TEMPLATES.length];
+  state.livePostCounter++;
+  const id = 10000 + state.livePostCounter;
+  const now = new Date();
+  state.livePosts.unshift({
+    id,
+    cat: tpl.cat,
+    title: tpl.title,
+    author: tpl.author,
+    time: dateStr(now),
+    replies: tpl.replies || rnd(1, 15),
+    views: rnd(40, 500),
+    body: tpl.body.slice(),
+    opts: tpl.opts.map(o => ({ t:o[0], k:o[1], v:o[2] })),
+    isLive: true
+  });
+  if(state.livePosts.length > 40) state.livePosts.length = 40;
+  saveStore();
+  /* 若当前在论坛列表，刷新 */
+  if(state.view === 'forum' && state.postId === null){
+    const c = $('#content');
+    if(c) c.innerHTML = VIEWS.forum();
+  }
+}
+
+/* ============================================================
+   11. 视图路由
+============================================================ */
+function switchView(v){
+  state.view = v;
+  const c = $('#content');
+  if(!c) return;
+  const fn = VIEWS[v] || VIEWS.home;
+  c.innerHTML = fn();
+  c.scrollTop = 0;
+  if(v === 'chat') scrollChatBottom();
+  if(v === 'archive') syncArchiveInputs();
+  renderRightbar();
+  syncNav(v);
+  $('#sidebar')?.classList.remove('open');
+}
+
+function syncNav(v){
+  $$('#sidebar a[data-view]').forEach(a => a.classList.toggle('active', a.dataset.view === v));
+  $$('#topnav a[data-nav]').forEach(a => a.classList.toggle('active', a.dataset.nav === v));
+}
+function syncArchiveInputs(){
+  const s = $('#archSearch'), l = $('#archLevel');
+  if(s) s.value = state.archiveQuery;
+  if(l) l.value = state.archiveLevel;
+}
+
+/* ============================================================
+   12. 视图：总览
+============================================================ */
+function viewHome(){
+  const d = new Date();
+  const hour = d.getHours();
+  const onDuty = SCHED_NAMES[hour % SCHED_NAMES.length];
+  const daySeed = new Date().getDate();
+
+  let wave = '';
+  for(let i = 0; i < 24; i++){
+    const v = 18 + seeded(daySeed * 31 + i) * 70;
+    wave += `<div class="bar ${i === hour ? 'now' : ''}" style="height:${v.toFixed(1)}%"></div>`;
+  }
+
+  return `
+  <div class="view" style="padding:18px">
+    <div class="grid-4" style="margin-bottom:14px">
+      <div class="stat"><div class="sl">当前身份</div>
+        <div class="sv" style="font-size:15px">${esc(state.user.name)}</div></div>
+      <div class="stat"><div class="sl">黄金余额</div>
+        <div class="sv gold">${state.user.gold}</div></div>
+      <div class="stat"><div class="sl">已接悬赏</div>
+        <div class="sv red">${state.claimed.length}</div></div>
+      <div class="stat"><div class="sl">探索记录</div>
+        <div class="sv green">${state.mudSessions.length}</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">系统状态 · SYSTEM STATUS<span class="right">CH-07</span></div>
+      <div class="panel-body">
+        <div class="field"><span class="k">连接状态</span><span class="v hot">已加密 · AES-256 · 频道 CH-07</span></div>
+        <div class="field"><span class="k">当前值班</span><span class="v">${onDuty}（${pad(hour)}:00 - ${pad((hour+1)%24)}:00）</span></div>
+        <div class="field"><span class="k">灵异波动</span><span class="v warn">全国范围内轻微上升 · 建议提高警惕</span></div>
+        <div class="field"><span class="k">档案库</span><span class="v">厉鬼 ${ARCHIVES.ghost.length} 条 · 驭鬼者 ${ARCHIVES.driver.length} 条 · 国王 ${ARCHIVES.king.length} 条</span></div>
+        <div class="field"><span class="k">论坛</span><span class="v">${allPosts().length} 帖（含实时帖 ${state.livePosts.length}） · 通告 ${NOTICES.length} 条</span></div>
+        <div class="field"><span class="k">悬赏</span><span class="v">${BOUNTIES.length} 项 · 已接 ${state.claimed.length}</span></div>
+        <div class="field"><span class="k">终端编号</span><span class="v">${state.user.anonymous ? 'ANON-' + pad(hour) + '0' + pad(d.getMinutes()) : (state.user.code || '——')}</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">灵异波动 · 24H WAVEFORM</div>
+      <div class="panel-body">
+        <div class="wave">${wave}</div>
+        <div class="wave-axis"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">最新通告 · ANNOUNCEMENTS<span class="right">共 ${NOTICES.length} 条</span></div>
+      <div class="panel-body">
+        ${NOTICES.slice(0, 4).map(n => `
+          <div class="notice-item ${n.level}" style="margin-bottom:10px">
+            <div class="nt"><span class="badge">${n.badge}</span>${esc(n.title)}</div>
+            <div class="nd">${esc(n.desc)}</div>
+            <div class="nd-time">${n.time}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">快捷入口 · QUICK ACCESS</div>
+      <div class="panel-body" style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="quick" data-nav="chat">▶ 接入接线员通讯</button>
+        <button class="quick" data-nav="archive">▶ 查询灵异事件档案</button>
+        <button class="quick" data-view="forum">▶ 进入灵异论坛</button>
+        <button class="quick" data-view="bounty">▶ 查看悬赏大厅</button>
+        <button class="quick" data-nav="mud">▶ 深夜探索（MUD）</button>
+        <button class="quick" data-nav="sign">▶ 每日签到</button>
+        <button class="quick" data-nav="map">▶ 灵异地图</button>
+        <button class="quick" data-view="notice">▶ 全部通告</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   13. 视图：聊天
+============================================================ */
+function initChat(){
+  if(state.chat.length) return;
+  state.chat.push({ type:'sys', text:'CH-07 · 安全链路已建立 · AES-256' });
+  state.chat.push({
+    type:'op', name:'接线员李梦琪',
+    text:'接线员李梦琪在线。欢迎接入总部通讯频道 CH-07。通讯已加密，请说明情况。',
+    time: timeStr()
+  });
+  saveStore();
+}
+
+function viewChat(){
+  initChat();
+  return `
+  <div class="chat-wrap">
+    <div class="chat-head">
+      <span class="ch">CH-07 · SECURE LINK</span>
+      <span class="enc">ENCRYPTED · AES-256</span>
+    </div>
+    <div class="chat-body" id="chatBody">${renderChatMessages()}</div>
+    <div class="chat-foot">
+      <div class="quick-row">
+        <button class="quick" data-action="quick-chat" data-text="报告当前任务状态">报告当前任务状态</button>
+        <button class="quick" data-action="quick-chat" data-text="我遇到了厉鬼怎么办">我遇到了厉鬼怎么办</button>
+        <button class="quick" data-action="quick-chat" data-text="查询灵异事件档案">查询灵异事件档案</button>
+        <button class="quick" data-action="quick-chat" data-text="三大铁律是什么">三大铁律是什么</button>
+        <button class="quick" data-action="quick-chat" data-text="听见三下敲门声">听见三下敲门声</button>
+        <button class="quick" data-action="quick-chat" data-text="探索记录怎么重玩">探索记录怎么重玩</button>
+        <button class="quick" data-action="quick-chat" data-text="我的黄金余额是多少">查询黄金余额</button>
+      </div>
+      <div class="chat-input-row">
+        <input id="chatInput" type="text" placeholder="输入加密通讯内容…" autocomplete="off">
+        <button class="btn-send" data-action="send-chat">发送</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderChatMessages(){
+  let html = '';
+  state.chat.forEach(m => {
+    if(m.type === 'sys'){
+      html += `<div class="msg sys"><span class="bubble">${esc(m.text)}</span></div>`;
+    }else if(m.type === 'op'){
+      html += `<div class="msg">
+        <div class="who">${esc(m.name)}</div>
+        <div class="bubble">${esc(m.text)}</div>
+        <div class="time">${m.time || ''}</div></div>`;
+    }else{
+      html += `<div class="msg me">
+        <div class="who">${esc(state.user.name)}</div>
+        <div class="bubble">${esc(m.text)}</div>
+        <div class="time">${m.time || ''}</div></div>`;
+    }
+  });
+  return html;
+}
+
+function scrollChatBottom(){
+  const b = $('#chatBody');
+  if(b) requestAnimationFrame(() => { b.scrollTop = b.scrollHeight; });
+}
+function refreshChat(){
+  const body = $('#chatBody');
+  if(!body) return;
+  body.innerHTML = renderChatMessages();
+  scrollChatBottom();
+}
+
+let typingTimer = null;
+function sendMsg(text){
+  const input = $('#chatInput');
+  const val = (text ?? input?.value ?? '').trim();
+  if(!val) return;
+  if(input) input.value = '';
+
+  state.chat.push({ type:'me', text: val, time: timeStr() });
+  saveStore();
+  refreshChat();
+
+  if(typingTimer) clearTimeout(typingTimer);
+  const body = $('#chatBody');
+  if(body){
+    const t = document.createElement('div');
+    t.className = 'typing-row';
+    t.id = 'typingRow';
+    t.innerHTML = `<span class="typing-label">接线员李梦琪</span>
+                   <span class="typing-box"><span></span><span></span><span></span></span>`;
+    body.appendChild(t);
+    scrollChatBottom();
+  }
+
+  const reply = matchReply(val);
+  typingTimer = setTimeout(() => {
+    $('#typingRow')?.remove();
+    state.chat.push({ type:'op', name:'接线员李梦琪', text: reply, time: timeStr() });
+    saveStore();
+    refreshChat();
+  }, 1100 + Math.random() * 1100);
+}
+
+function matchReply(text){
+  const low = text.toLowerCase();
+  for(const rule of KEYWORD_REPLIES){
+    if(rule.keys.some(k => low.includes(k.toLowerCase()))) return rule.reply;
+  }
+  if(low.includes('余额') || low.includes('黄金')){
+    return `你的账户当前余额为 ${state.user.gold} 克黄金。所有结算均通过总部与黑市共同担保，可放心使用。`;
+  }
+  return pick(REPLIES);
+}
+
+/* ============================================================
+   14. 视图：档案库
+============================================================ */
+function archiveFields(a, cat){
+  if(a.fields) return a.fields;
+  const drv = cat === 'driver';
+  return [
+    { k: drv ? '人物描述' : '外形描述', v: a.appearance || '——' },
+    { k: drv ? '驾驭能力' : '能力 / 特性', v: a.ability || '——' },
+    { k: drv ? '备注' : '杀人规律', v: a.rule || '——', cls:'warn' },
+    { k:'应对方案', v: a.counter || '——' }
+  ];
+}
+function archiveList(cat = state.archiveCat){
+  let list = (ARCHIVES[cat] || []).slice();
+  const kw = state.archiveQuery.trim().toLowerCase();
+  if(kw){
+    list = list.filter(a =>
+      (a.name || '').toLowerCase().includes(kw) ||
+      (a.tag  || '').toLowerCase().includes(kw));
+  }
+  if(state.archiveLevel !== 'all'){
+    list = list.filter(a => (a.level || '').includes(state.archiveLevel));
+  }
+  return list;
+}
+function renderArchiveItems(list){
+  if(!list.length){
+    return `<div class="empty"><div class="big">▤</div><div>没有匹配的档案</div>
+      <div style="font-size:11px;color:#3a3a44">请调整关键词或危险等级</div></div>`;
+  }
+  return list.map((a, i) => `
+    <div class="arch-item ${i === state.archiveIdx ? 'active' : ''}"
+         data-action="arch" data-idx="${i}">
+      <div class="name">${esc(a.name)}</div>
+      <div class="meta">${esc(a.level)} · ${esc(a.tag)}</div>
+    </div>`).join('');
+}
+function renderArchiveDetail(){
+  const list = archiveList();
+  const a = list[state.archiveIdx];
+  if(!a){
+    return `<div class="empty"><div class="big">◈</div><div>请从左侧选择一份档案</div>
+      <div style="font-size:11px;color:#3a3a44">或切换分类与筛选条件</div></div>`;
+  }
+  const cat = state.archiveCat;
+  const isDriver = cat === 'driver';
+  const statusLabel = isDriver ? '在役状态' : (cat === 'ghost' ? '收容状态' : '当前状态');
+  const fields = archiveFields(a, cat);
+
+  return `
+    <div class="arch-tags">
+      <span class="tag">${esc(a.level)}</span>
+      <span class="tag gray">${statusLabel}：${esc(a.status)}</span>
+      <span class="tag gray">密级：${esc(a.secrecy)}</span>
+    </div>
+    <h2>${esc(a.name)}</h2>
+    <div class="arch-hash">${esc(a.tag)} · CLASSIFIED ARCHIVE</div>
+    <div class="field"><span class="k">危险等级</span><span class="v hot">${esc(a.level)}</span></div>
+    <div class="field"><span class="k">${statusLabel}</span><span class="v">${esc(a.status)}</span></div>
+    <div class="field"><span class="k">密级</span><span class="v">${esc(a.secrecy)}</span></div>
+    ${fields.map(f => `
+      <div class="field"><span class="k">${esc(f.k)}</span>
+      <span class="v ${f.cls || ''}">${esc(f.v)}</span></div>`).join('')}`;
+}
+function viewArchive(){
+  const cats = [
+    { key:'ghost',  label:'厉鬼档案',     n: ARCHIVES.ghost.length },
+    { key:'driver', label:'驭鬼者档案',   n: ARCHIVES.driver.length },
+    { key:'place',  label:'灵异之地档案', n: ARCHIVES.place.length },
+    { key:'power',  label:'势力档案',     n: ARCHIVES.power.length },
+    { key:'hq',     label:'总部档案',     n: ARCHIVES.hq.length },
+    { key:'king',   label:'国王档案',     n: ARCHIVES.king.length }
+  ];
+  const list = archiveList();
+  return `
+  <div class="view" style="display:flex;flex-direction:column;overflow:hidden">
+    <div class="arch-cats">
+      ${cats.map(c => `
+        <div class="arch-cat ${c.key === state.archiveCat ? 'active' : ''}"
+             data-action="arch-cat" data-cat="${c.key}">
+          ${c.label}<span class="cnt">[${c.n}]</span>
+        </div>`).join('')}
+    </div>
+    <div class="arch-toolbar">
+      <input class="arch-search" id="archSearch" placeholder="搜索档案代号 / 名称…"
+             value="${esc(state.archiveQuery)}">
+      <select class="arch-sel" id="archLevel">
+        <option value="all">全部危险等级</option>
+        <option value="S级">S 级</option>
+        <option value="A级">A 级</option>
+        <option value="B级">B 级</option>
+        <option value="C级">C 级</option>
+      </select>
+    </div>
+    <div class="arch-body">
+      <div class="arch-list">
+        <div class="arch-list-head">档案索引 · ${list.length} 条</div>
+        <div id="archItems">${renderArchiveItems(list)}</div>
+      </div>
+      <div class="arch-detail" id="archDetail">${renderArchiveDetail()}</div>
+    </div>
+  </div>`;
+}
+function refreshArchiveParts(){
+  const list = archiveList();
+  const items = $('#archItems');
+  const detail = $('#archDetail');
+  if(items)  items.innerHTML  = renderArchiveItems(list);
+  if(detail) detail.innerHTML = renderArchiveDetail();
+  const head = document.querySelector('.arch-list-head');
+  if(head) head.textContent = `档案索引 · ${list.length} 条`;
+}
+
+/* ============================================================
+   15. 视图：论坛
+============================================================ */
+function viewForum(){
+  if(state.postId !== null){
+    const p = findPost(state.postId);
+    if(!p){ state.postId = null; return viewForum(); }
+
+    const myReplies = state.postReplies[p.id] || [];
+    const used = state.usedOpts[p.id] || [];
+
+    return `
+    <div class="view" style="padding:18px">
+      <button class="back-btn" data-action="forum-back">← 返回列表</button>
+      <div class="post-detail">
+        <h2>${esc(p.title)}</h2>
+        <div class="pmeta">
+          <span class="cat" style="color:#8a6a2a">${esc(p.cat)}</span>
+          <span>楼主：${esc(p.author)}</span>
+          <span>${esc(p.time)}</span>
+          <span>回复 ${p.replies + myReplies.length}</span>
+          <span>浏览 ${p.views}</span>
+        </div>
+        ${p.body.map((para, i) =>
+          `<p class="${i === p.body.length - 1 ? 'hl' : ''}">${esc(para)}</p>`).join('')}
+
+        <div class="reply-box">
+          <div class="rb-title">› 固定回复选项（可触发后续行动）</div>
+          <div class="reply-opts">
+            ${p.opts.map((o, i) => {
+              const done = used.includes(i);
+              const cls = o.k === 'mud' ? 'btn-red btn-sm' : (o.k === 'gold' ? 'btn-gold btn-sm' : 'btn-dark btn-sm');
+              return `<button class="${cls}" ${done ? 'disabled' : ''}
+                data-action="post-opt" data-pid="${p.id}" data-idx="${i}">
+                ${done ? '✓ ' : ''}${esc(o.t)}</button>`;
+            }).join('')}
+          </div>
+
+          <div class="rb-title">› 回帖记录（${myReplies.length}）</div>
+          ${myReplies.length ? myReplies.map(r => `
+            <div class="reply-item">
+              <div class="rw"><span>${esc(r.who)}</span><span>${esc(r.time)}</span></div>
+              <div class="rt">${esc(r.text)}</div>
+            </div>`).join('')
+            : `<div class="reply-empty">—— 暂无你的回帖 ——</div>`}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const list = allPosts();
+  return `
+  <div class="view" style="padding:18px">
+    <div class="panel">
+      <div class="panel-head">灵异论坛 · SUPERNATURAL FORUM
+        <span class="right">${list.length} 帖 · 实时 ${state.livePosts.length}</span></div>
+      <div class="panel-body" style="padding:0">
+        ${list.map(p => {
+          const extra = (state.postReplies[p.id] || []).length;
+          return `
+          <div class="post" data-action="post" data-id="${p.id}"
+               style="margin:0;border-left:none;border-right:none;border-top:none">
+            ${p.isLive ? '<span class="badge-live">LIVE</span>' : ''}
+            <div class="ptitle">${esc(p.title)}</div>
+            <div class="pmeta">
+              <span class="cat">${esc(p.cat)}</span>
+              <span>楼主：${esc(p.author)}</span>
+              <span>${esc(p.time)}</span>
+              <span>回复 ${p.replies + extra}</span>
+              <span>浏览 ${p.views}</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div style="text-align:center;font-size:11.5px;color:#3a3a44;padding:6px">
+      —— 此处没有谎言的容身之地 · 帖子会随时间自动刷新 ——
+    </div>
+  </div>`;
+}
+
+function doPostOpt(p, opt, idx){
+  const key = p.id;
+  if(!state.usedOpts[key]) state.usedOpts[key] = [];
+  if(state.usedOpts[key].includes(idx)){ toast('该选项已触发过', 'info'); return; }
+  state.usedOpts[key].push(idx);
+
+  switch(opt.k){
+    case 'reply':
+      if(!state.postReplies[p.id]) state.postReplies[p.id] = [];
+      state.postReplies[p.id].push({
+        who: state.user.name, text: opt.v || '（无内容）', time: timeStr()
+      });
+      toast('已回帖', 'ok');
+      saveStore();
+      switchView('forum');
+      break;
+
+    case 'mud': {
+      const room = POST_ENTRY_MAP[p.id] || pickMudRoomForPost(p.id);
+      startMudSession(`论坛帖 #${p.id} · ${p.title}`, room);
+      toast('已进入深夜探索 · 来源：论坛帖 #' + p.id, 'gold');
+      switchView('mud');
+      break;
+    }
+
+    case 'gold':
+      state.user.gold += 20;
+      saveStore();
+      toast('获得 20 克黄金', 'gold');
+      switchView('forum');
+      break;
+
+    default:
+      toast(opt.v || '已记录', 'info');
+      saveStore();
+      switchView('forum');
+  }
+}
+
+function pickMudRoomForPost(pid){
+  const rooms = Object.keys(MUD_ROOMS);
+  return rooms[(pid * 7) % rooms.length];
+}
+
+/* ============================================================
+   16. MUD 会话管理
+============================================================ */
+function archiveCurrentMud(){
+  const m = state.mud;
+  if(!m || !m.sessionId) return;
+  if(m.moves === 0 && (m.visited || []).length <= 1 && !m.done && !(m.items || []).length) return;
+  if(state.mudSessions.some(s => s.id === m.sessionId)) return;
+  state.mudSessions.unshift({
+    id: m.sessionId,
+    from: m.from || '总部前厅',
+    startRoom: m.startRoom || 'hall',
+    room: m.room,
+    items: (m.items || []).slice(),
+    visited: (m.visited || []).slice(),
+    log: (m.log || []).slice(-24),
+    done: !!m.done,
+    san: m.san ?? 100,
+    moves: m.moves || 0,
+    endedAt: timeStr()
+  });
+  if(state.mudSessions.length > 20) state.mudSessions.length = 20;
+}
+
+function startMudSession(from, startRoom){
+  archiveCurrentMud();
+  if(!MUD_ROOMS[startRoom]) startRoom = 'hall';
+  const room = MUD_ROOMS[startRoom];
+  state.mud = {
+    room: startRoom,
+    items: [],
+    visited: [startRoom],
+    log: [`进入【${room.name}】`],
+    done: false,
+    san: 100,
+    moves: 0,
+    from: from || '总部前厅',
+    startRoom: startRoom,
+    sessionId: 'MS-' + Date.now() + '-' + rnd(100, 999)
+  };
+  if(room.take){
+    state.mud.items.push(room.take.id);
+    state.mud.log.push(`拾取：${room.take.name} —— ${room.take.text}`);
+  }
+  saveStore();
+}
+
+function replayMudSession(id){
+  const s = state.mudSessions.find(x => x.id === id);
+  if(!s){ toast('记录不存在', 'err'); return; }
+  startMudSession(s.from, s.startRoom);
+  toast('重新开始：' + s.from, 'ok');
+  switchView('mud');
+}
+
+function deleteMudSession(id){
+  state.mudSessions = state.mudSessions.filter(x => x.id !== id);
+  saveStore();
+  toast('记录已删除', 'info');
+  switchView('mud');
+}
+
+/* ============================================================
+   17. 视图：MUD 游戏
+============================================================ */
+function viewMud(){
+  const m = state.mud;
+  if(!MUD_ROOMS[m.room]) m.room = 'hall';
+  const room = MUD_ROOMS[m.room];
+  const items = m.items || [];
+
+  if(!m.visited.includes(m.room)){
+    m.visited.push(m.room);
+    m.log.push(`进入【${room.name}】`);
+    if(room.take && !items.includes(room.take.id)){
+      items.push(room.take.id);
+      m.log.push(`拾取：${room.take.name} —— ${room.take.text}`);
+      toast(`拾取 ${room.take.name}`, 'gold');
+    }
+    saveStore();
+  }
+
+  const canSeal = m.room === 'seal' && !m.done &&
+    ['nail1','nail2','nail3'].every(id => items.includes(id));
+
+  const san = Math.round(m.san ?? 100);
+  const sanColor = san > 60 ? '#3ddc84' : (san > 30 ? '#e0b060' : '#e03030');
+  const exitArrow = { north:'↑', south:'↓', east:'→', west:'←', up:'⇧', down:'⇩' };
+  const allItems = items.map(id => MUD_ITEMS[id]?.name || id);
+
+  /* 探索记录：排除当前会话 */
+  const history = (state.mudSessions || []).filter(s => s.id !== m.sessionId);
+
+  return `
+  <div class="view" style="padding:18px">
+    <div class="mud-layout">
+      <!-- 主区域 -->
+      <div>
+        <div class="panel">
+          <div class="panel-head">MUD · 总部深夜探索
+            <span class="right">${m.done ? '已通关' : '进行中'} · 步数 ${m.moves || 0}</span></div>
+          <div class="panel-body">
+            ${m.from ? `<div style="font-size:11.5px;color:#5a5a68;margin-bottom:12px">
+              来源：${esc(m.from)}</div>` : ''}
+
+            <div class="mud-stage">
+              <div class="mud-title">${esc(room.name)}</div>
+              <div class="mud-desc">${esc(room.desc)}</div>
+
+              ${canSeal ? `
+                <div style="margin-top:20px">
+                  <button class="btn btn-red" style="max-width:240px" data-action="mud-seal">
+                    以三枚封印钉封棺</button>
+                </div>` : ''}
+
+              ${m.room === 'seal' && !canSeal && !m.done ? `
+                <div style="margin-top:18px;font-size:12.5px;color:#e0b060">
+                  棺盖上的第三处钉孔仍然空着。你还需要更多的封印钉。</div>` : ''}
+
+              ${m.done && m.room === 'seal' ? `
+                <div style="margin-top:18px;font-size:12.5px;color:#3ddc84">
+                  棺盖已经钉死。房间里的呼吸声停止了。你可以离开这里了。</div>` : ''}
+
+              <div class="mud-exits">
+                ${room.exits.map(([dir, to, label]) =>
+                  `<button class="quick" data-action="mud-move" data-to="${to}">
+                    ${exitArrow[dir] || '→'} ${esc(label)}</button>`).join('')}
+              </div>
+            </div>
+
+            <div style="margin-top:14px">
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;
+                   color:#5a5a68;font-family:Consolas,monospace;margin-bottom:5px">
+                <span>理智值</span><span style="color:${sanColor}">${san} / 100</span>
+              </div>
+              <div class="mud-san"><i style="width:${san}%"></i></div>
+            </div>
+
+            <div style="margin-top:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+              <span style="font-size:11.5px;color:#5a5a68;font-family:Consolas,monospace">
+                封印钉 ${['nail1','nail2','nail3'].filter(id => items.includes(id)).length}/3 ·
+                共 ${allItems.length} 件物品
+              </span>
+              ${items.includes('talisman1') || items.includes('talisman2')
+                ? `<button class="quick" data-action="mud-use-talisman">使用符箓（+40 理智）</button>` : ''}
+              <button class="quick" style="margin-left:auto" data-action="mud-new">开始新探索</button>
+              <button class="quick" data-action="mud-reset">重置当前</button>
+            </div>
+
+            ${allItems.length ? `
+              <div style="margin-top:10px;font-size:11.5px;color:#6b8b78;
+                   font-family:Consolas,monospace;line-height:1.9">
+                持有：${allItems.map(esc).join(' / ')}</div>` : ''}
+
+            ${m.log.length ? `
+              <div class="mud-log">
+                ${m.log.slice(-18).map(l => `<div>${esc(l)}</div>`).join('')}
+              </div>` : ''}
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">目标 · OBJECTIVE</div>
+          <div class="panel-body" style="font-size:12.5px;color:#6b6b78;line-height:2">
+            在总部大楼中寻找三枚封印钉，前往【封印间】钉死青铜棺的第三处钉孔。<br>
+            完成后可获得 <span style="color:#d4af37">100 克黄金</span> 奖励。<br>
+            <span style="color:#e0b060">提示：值班室、更衣室、监控室、地下室、档案室、天台、停尸间、焚化间、镜厅、暗房、观测台都值得看看。</span><br>
+            <span style="color:#e08080">警告：地下室及以下的黑暗区域，没有手电筒会大幅消耗理智。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 侧栏：探索记录 -->
+      <div>
+        <div class="panel">
+          <div class="panel-head">探索记录 · HISTORY
+            <span class="right">${history.length} 条</span></div>
+          <div class="panel-body" style="padding:11px">
+            ${history.length ? history.map(s => `
+              <div class="hist-item" data-action="mud-replay" data-id="${s.id}">
+                <div class="ht">${esc(s.from)}</div>
+                <div class="hm">
+                  <span>${esc(s.endedAt)}</span>
+                  <span class="${s.done ? 'done' : 'prog'}">
+                    ${s.done ? '✓ 已封棺' : '步数 ' + s.moves}
+                  </span>
+                </div>
+                <div class="hm" style="margin-top:4px">
+                  <span>物品 ${(s.items||[]).length} · 房间 ${(s.visited||[]).length}</span>
+                  <span style="color:#e08080" data-action="mud-del" data-id="${s.id}">删除</span>
+                </div>
+              </div>
+            `).join('') : `<div class="hist-empty">
+              暂无探索记录<br><span style="color:#2f2f38;font-size:11px">从论坛帖或上方"开始新探索"进入</span>
+            </div>`}
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">已探索房间 · VISITED</div>
+          <div class="panel-body" style="padding:11px;font-size:11.5px;color:#6b8b78;
+               font-family:Consolas,monospace;line-height:2">
+            ${(m.visited || []).map(r => MUD_ROOMS[r] ? esc(MUD_ROOMS[r].name) : r).join(' · ') || '——'}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   18. 视图表
+============================================================ */
+const VIEWS = {
+  home: viewHome, chat: viewChat, archive: viewArchive, forum: viewForum,
+  bounty: viewBounty, trade: viewTrade, notice: viewNotice,
+  driverPanel: viewDriverPanel, register: viewRegister, contract: viewContract,
+  item: viewItem, map: viewMap, sign: viewSign, social: viewSocial,
+  me: viewMe, mud: viewMud
+};
+
+/* ============================================================
+   19. 悬赏 / 交易 / 通告 视图
+============================================================ */
+function viewBounty(){
+  return `
+  <div class="view" style="padding:18px">
+    <div class="panel">
+      <div class="panel-head">悬赏大厅 · BOUNTY HALL
+        <span class="right">已接 ${state.claimed.length} / ${BOUNTIES.length}</span></div>
+      <div class="panel-body">
+        ${BOUNTIES.map(b => {
+          const claimed = state.claimed.includes(b.id);
+          return `
+          <div class="bounty">
+            <div class="bounty-rank ${b.level}">${b.rank}</div>
+            <div class="bounty-main">
+              <div class="bt">${esc(b.title)}</div>
+              <div class="bd">${esc(b.desc)}</div>
+            </div>
+            <div class="bounty-reward">
+              <div class="num">${b.reward}</div>
+              <div class="unit">黄金 / 克</div>
+            </div>
+            <div class="bounty-act">
+              ${claimed
+                ? `<span class="pill">进行中</span>
+                   <button class="quick" data-action="bounty-drop" data-id="${b.id}">放弃</button>`
+                : `<button class="btn btn-red btn-sm" data-action="bounty-claim" data-id="${b.id}">接取</button>`}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div style="text-align:center;font-size:11.5px;color:#3a3a44;padding:6px">
+      —— 所有悬赏均以黄金结算，总部与黑市共同担保 ——
+    </div>
+  </div>`;
+}
+
+function viewTrade(){
+  return `
+  <div class="view" style="padding:18px">
+    <div class="panel">
+      <div class="panel-head">厉鬼交易 · BLACK MARKET
+        <span class="right">余额 ${state.user.gold} 克</span></div>
+      <div class="panel-body">
+        ${TRADE_ITEMS.map(it => {
+          const owned = state.purchased.includes(it.id);
+          return `
+          <div class="bounty">
+            <div class="bounty-rank c">⚖</div>
+            <div class="bounty-main">
+              <div class="bt">${esc(it.name)}</div>
+              <div class="bd">${esc(it.desc)}<br>卖家：${esc(it.seller)} ｜ 风险等级：${esc(it.risk)}</div>
+            </div>
+            <div class="bounty-reward">
+              <div class="num">${it.price}</div>
+              <div class="unit">黄金 / 克</div>
+            </div>
+            <div class="bounty-act">
+              ${owned ? `<span class="pill">已购入</span>`
+                : `<button class="btn btn-gold btn-sm" data-action="buy" data-id="${it.id}">购入</button>`}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">交易须知 · TERMS</div>
+      <div class="panel-body" style="font-size:12.5px;color:#6b6b78;line-height:2">
+        · 所有厉鬼交易均以黄金结算，总部与黑市共同担保；<br>
+        · 交易标的若发生"厉鬼复苏"，风险由买家自行承担；<br>
+        · 暗网将记录您的每一次访问与操作，供"鬼眼"溯源；<br>
+        · 黄金可通过悬赏、签到或任务奖励获取。
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewNotice(){
+  return `
+  <div class="view" style="padding:18px">
+    <div class="panel">
+      <div class="panel-head">暗网通告 · NOTICE BOARD
+        <span class="right">共 ${NOTICES.length} 条</span></div>
+      <div class="panel-body">
+        ${NOTICES.map(n => `
+          <div class="notice-item ${n.level}">
+            <div class="nt"><span class="badge">${n.badge}</span>${esc(n.title)}</div>
+            <div class="nd">${esc(n.desc)}</div>
+            <div class="nd-time">${n.time}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   20. 其他视图
+============================================================ */
+function viewDriverPanel(){
+  const list = ARCHIVES.driver;
+  return `
+  <div class="view" style="padding:18px">
+    <div class="panel">
+      <div class="panel-head">驭鬼者面板 · DRIVER PANEL</div>
+      <div class="panel-body">
+        <div class="field"><span class="k">当前身份</span><span class="v">${esc(state.user.name)}</span></div>
+        <div class="field"><span class="k">认证状态</span>
+          <span class="v ${state.user.anonymous ? 'warn' : 'hot'}">
+            ${state.user.anonymous ? '未认证（匿名）' : '已实名认证'}</span></div>
+        <div class="field"><span class="k">登记编号</span>
+          <span class="v">${state.user.anonymous ? '——' : esc(state.user.code || '——')}</span></div>
+        <div class="field"><span class="k">黄金余额</span><span class="v warn">${state.user.gold} 克</span></div>
+        <div class="field"><span class="k">在役状态</span>
+          <span class="v">${state.user.anonymous ? '未登记' : '在役'}</span></div>
+        <div class="field"><span class="k">已接悬赏</span>
+          <span class="v">${state.claimed.length ? state.claimed.map(id => {
+            const b = BOUNTIES.find(x => x.id === id);
+            return b ? esc(b.title) : id;
+          }).join('、') : '——'}</span></div>
+        <div class="field"><span class="k">深夜探索</span>
+          <span class="v">${state.mud.done ? '已封棺（完成）' : `探索中 · 已收集 ${state.mud.items.length} 件物品`} ·
+            历史记录 ${state.mudSessions.length} 条</span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">已登记驭鬼者 · ${list.length} 人</div>
+      <div class="panel-body" style="padding:0">
+        ${list.map(d => `
+          <div class="arch-item" style="cursor:default">
+            <div class="name">${esc(d.name)}</div>
+            <div class="meta">${esc(d.tag)} · ${esc(d.level)} · ${esc(d.status)}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewRegister(){
+  if(state.register){
+    const r = state.register;
+    return `
+    <div class="view" style="padding:18px">
+      <div class="panel">
+        <div class="panel-head">注册完成 · REGISTRATION COMPLETE</div>
+        <div class="panel-body">
+          <div class="field"><span class="k">代号</span><span class="v hot">${esc(r.name)}</span></div>
+          <div class="field"><span class="k">登记编号</span><span class="v">${esc(r.code)}</span></div>
+          <div class="field"><span class="k">驾驭厉鬼</span><span class="v">${esc(r.ghost)}</span></div>
+          <div class="field"><span class="k">评定等级</span><span class="v warn">${esc(r.level)}</span></div>
+          <div class="field"><span class="k">初始配给</span><span class="v">50 克黄金 · 隔音符箓 ×3 · 探测仪 ×1</span></div>
+          <div class="field"><span class="k">注意事项</span>
+            <span class="v warn">请严格遵守三大铁律。任何违规行为将被记录在案。</span></div>
+          <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="quick" data-nav="archive">前往查阅档案</button>
+            <button class="quick" data-nav="chat">联系接线员</button>
+            <button class="quick" data-nav="mud">深夜探索</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+  return `
+  <div class="view" style="padding:18px">
+    <div class="panel">
+      <div class="panel-head">驭鬼者注册 · DRIVER REGISTRATION</div>
+      <div class="panel-body">
+        <p style="font-size:12.5px;color:#6b6b78;line-height:2;margin-bottom:14px">
+          本表仅用于总部内部登记。注册成功后，你将获得暗网完整权限、一枚登记编号，以及初始物资配给。请如实填写。</p>
+        <div class="form-row"><span class="k">驭鬼者代号</span>
+          <input id="regName" type="text" placeholder="例：鬼眼杨间" autocomplete="off"></div>
+        <div class="form-row"><span class="k">驾驭厉鬼</span>
+          <select id="regGhost">
+            <option>鬼眼</option><option>无脸鬼（残）</option><option>纸人</option>
+            <option>镜中鬼（残）</option><option>敲门鬼（残）</option>
+            <option>影子鬼（残）</option><option>其他（保密）</option>
+          </select></div>
+        <div class="form-row"><span class="k">自评等级</span>
+          <select id="regLevel">
+            <option>C级驭鬼者</option>
+            <option selected>B级驭鬼者</option>
+            <option>A级驭鬼者</option>
+          </select></div>
+        <div style="margin-top:20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-red" style="max-width:200px" data-action="register-submit">提交注册</button>
+          <span style="font-size:11.5px;color:#4a4a56">提交即代表你已阅读并同意《驭鬼者守则》</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewContract(){
+  return `
+  <div class="view" style="padding:18px">
+    <div class="panel">
+      <div class="panel-head">驭鬼者合同 · CONTRACT</div>
+      <div class="panel-body" style="font-size:13px;color:#a8a8b4;line-height:2.1">
+        <p style="margin-bottom:14px;color:#e0a0a0">甲方：总部（国际网站）<br>乙方：在册驭鬼者</p>
+        <p style="margin-bottom:14px"><b style="color:#dcdce6">第一条 · 职责</b><br>
+          乙方接受总部调度，处置其管辖范围内的灵异事件，并如实上报全部观测记录。</p>
+        <p style="margin-bottom:14px"><b style="color:#dcdce6">第二条 · 报酬</b><br>
+          所有报酬以黄金结算，按任务等级与完成度发放。S级悬赏最高可达 600 克。</p>
+        <p style="margin-bottom:14px"><b style="color:#dcdce6">第三条 · 风险承担</b><br>
+          乙方在执行任务过程中发生的一切身心损伤，由乙方自行承担。总部仅在能力范围内提供医疗与封印支持。</p>
+        <p style="margin-bottom:14px"><b style="color:#dcdce6">第四条 · 保密义务</b><br>
+          乙方不得向任何非在册人员泄露档案内容、任务细节及总部位置。违反者按泄密处理，最高处以永久隔离。</p>
+        <p style="margin-bottom:0"><b style="color:#dcdce6">第五条 · 终止</b><br>
+          乙方可随时申请退出，但退出后须接受为期三十日的观察期，期间不得离开总部指定区域。</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">待遇等级 · COMPENSATION</div>
+      <div class="panel-body">
+        <div class="bounty"><div class="bounty-rank">S</div>
+          <div class="bounty-main"><div class="bt">S级驭鬼者</div>
+            <div class="bd">无限额物资配给 · 独立封印间 · 优先医疗 · 档案绝密权限</div></div>
+          <div class="bounty-reward"><div class="num">∞</div><div class="unit">配给</div></div></div>
+        <div class="bounty"><div class="bounty-rank a">A</div>
+          <div class="bounty-main"><div class="bt">A级驭鬼者</div>
+            <div class="bd">每月 80 克黄金 · 灵异物品优先分配 · 机密档案权限</div></div>
+          <div class="bounty-reward"><div class="num">80</div><div class="unit">黄金 / 月</div></div></div>
+        <div class="bounty"><div class="bounty-rank b">B</div>
+          <div class="bounty-main"><div class="bt">B级驭鬼者</div>
+            <div class="bd">每月 40 克黄金 · 常规物资配给 · 秘密档案权限</div></div>
+          <div class="bounty-reward"><div class="num">40</div><div class="unit">黄金 / 月</div></div></div>
+        <div class="bounty"><div class="bounty-rank c">C</div>
+          <div class="bounty-main"><div class="bt">C级驭鬼者</div>
+            <div class="bd">每月 15 克黄金 · 基础物资配给 · 内部档案权限</div></div>
+          <div class="bounty-reward"><div class="num">15</div><div class="unit">黄金 / 月</div></div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewItem(){
+  return `
+  <div class="view" style="padding:18px">
+    <div class="panel">
+      <div class="panel-head">灵异物品库 · ANOMALOUS ITEMS
+        <span class="right">${ITEM_LIB.length} 项</span></div>
+      <div class="panel-body">
+        <div class="grid-2">
+          ${ITEM_LIB.map(it => `
+            <div class="item-card">
+              <div class="in">${esc(it.name)}</div>
+              <div class="id">${esc(it.desc)}</div>
+              <div class="im">
+                <span style="color:#e08080">${esc(it.level)}</span>
+                <span>${esc(it.type)}</span>
+              </div>
+              <div style="font-size:11.5px;color:#5a5a68;margin-top:8px;
+                   border-top:1px solid #1a1a22;padding-top:8px">
+                获取：${esc(it.acq)}
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewMap(){
+  const nodes = MAP_NODES.map(n => `
+    <div class="map-node lv-${n.lv} ${state.mapSel === n.id ? 'sel' : ''}"
+         style="left:${n.x}%;top:${n.y}%"
+         data-action="map-node" data-id="${n.id}">
+      <div class="pt"></div><div class="lb">${esc(n.name)}</div>
+    </div>`).join('');
+  const sel = MAP_NODES.find(n => n.id === state.mapSel) || MAP_NODES[0];
+  return `
+  <div class="view" style="padding:18px">
+    <div class="panel">
+      <div class="panel-head">灵异地图 · ANOMALY MAP<span class="right">实时同步</span></div>
+      <div class="panel-body" style="padding:0">
+        <div class="map-canvas">${nodes}</div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head">节点详情 · ${esc(sel.name)}</div>
+        <div class="panel-body">
+          <div class="field"><span class="k">危险等级</span>
+            <span class="v hot">${sel.lv.toUpperCase()} 级</span></div>
+          <div class="field"><span class="k">当前状态</span>
+            <span class="v warn">${esc(sel.status)}</span></div>
+          <div class="field"><span class="k">情报摘要</span>
+            <span class="v">${esc(sel.desc)}</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">图例 · LEGEND</div>
+        <div class="panel-body">
+          <div class="notice-line"><i style="color:#ff3a3a">●</i><span>S 级 · 无解级 / 永久封锁</span></div>
+          <div class="notice-line"><i style="color:#e0a030">●</i><span>A 级 · 临时禁区 / 高危</span></div>
+          <div class="notice-line"><i style="color:#3d9cdc">●</i><span>B 级 · 警戒 / 清理中</span></div>
+          <div class="notice-line"><i style="color:#5c8a6a">●</i><span>C 级 · 例行排查</span></div>
+          <div class="freq">坐标系统：总部内部加密网格 · 共 ${MAP_NODES.length} 个节点</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewSign(){
+  const today = dateKey();
+  const signed = state.sign.last === today;
+  const streak = state.sign.streak || 0;
+  let grid = '';
+  for(let i = 1; i <= 7; i++){
+    const done = i <= streak;
+    const isToday = !signed && i === streak + 1;
+    grid += `
+      <div class="sign-day ${done ? 'done' : ''} ${isToday ? 'today' : ''}">
+        <div class="d">DAY ${i}</div>
+        <div class="g">${i === 7 ? '+20' : '+5'}</div>
+      </div>`;
+  }
+  return `
+  <div class="view" style="padding:18px">
+    <div class="panel">
+      <div class="panel-head">每日签到 · DAILY CHECK-IN
+        <span class="right">累计 ${state.sign.total || 0} 天</span></div>
+      <div class="panel-body">
+        <div class="grid-3" style="margin-bottom:16px">
+          <div class="stat"><div class="sl">连续签到</div><div class="sv green">${streak}</div></div>
+          <div class="stat"><div class="sl">今日状态</div>
+            <div class="sv" style="font-size:16px;color:${signed ? '#3ddc84' : '#e08080'}">
+              ${signed ? '已签到' : '未签到'}</div></div>
+          <div class="stat"><div class="sl">黄金余额</div><div class="sv gold">${state.user.gold}</div></div>
+        </div>
+        <div class="sign-grid">${grid}</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button class="btn ${signed ? 'btn-dark' : 'btn-red'}" style="max-width:220px"
+                  data-action="sign" ${signed ? 'disabled' : ''}>
+            ${signed ? '今日已签到' : '签到领取黄金'}</button>
+          <span style="font-size:11.5px;color:#4a4a56">
+            每日 +5 克，连续第七日额外 +20 克。中断则连续天数归零。</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---- 社交中心（动态流） ---- */
+function initFeed(){
+  if(state.feed.length) return;
+  for(let i = 0; i < 12; i++){
+    const it = FEED_POOL[i % FEED_POOL.length];
+    state.feed.push({ who: it.who, text: it.text, time: timeStr() });
+  }
+  saveStore();
+}
+function pushFeed(){
+  const it = pick(FEED_POOL);
+  state.feed.push({ who: it.who, text: it.text, time: timeStr() });
+  if(state.feed.length > 80) state.feed.shift();
+}
+function renderFeedItem(f){
+  return `<div class="feed-item">
+    <div class="fw"><span>${esc(f.who)}</span><span class="ft">${esc(f.time)}</span></div>
+    <div class="fx">${esc(f.text)}</div>
+  </div>`;
+}
+function refreshFeed(){
+  const el = $('#feedList');
+  if(!el) return;
+  el.innerHTML = state.feed.slice().reverse().map(renderFeedItem).join('');
+  const cnt = $('#feedCount');
+  if(cnt) cnt.textContent = state.feed.length + ' 条';
+}
+
+function viewSocial(){
+  const channels = [
+    { name:'CH-07 公开频道',  online: rnd(110, 150), desc:'接线员值守，日常通报与求助' },
+    { name:'CH-012 外勤频道', online: rnd(30, 60),  desc:'任务协同与实时坐标同步' },
+    { name:'CH-088 黑市频道', online: rnd(70, 120), desc:'非官方交易，风险自负' },
+    { name:'CH-3656 绝密频道',online: rnd(3, 12),   desc:'权限不足，需三级审核' }
+  ];
+  return `
+  <div class="view" style="padding:18px">
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head">频道列表 · CHANNELS</div>
+        <div class="panel-body" style="padding:0">
+          ${channels.map(c => `
+            <div class="arch-item" style="cursor:default">
+              <div class="name">${esc(c.name)}</div>
+              <div class="meta">${esc(c.desc)}</div>
+              <div class="meta" style="margin-top:5px;color:#2d5c40">● ${c.online} 人在线</div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="live-dot"></span>动态流 · LIVE FEED
+          <span class="right" id="feedCount">${state.feed.length} 条</span>
+        </div>
+        <div class="panel-body" style="max-height:560px;overflow-y:auto" id="feedList">
+          ${state.feed.slice().reverse().map(renderFeedItem).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">本机状态 · PRESENCE</div>
+      <div class="panel-body">
+        <div class="field"><span class="k">可见性</span>
+          <span class="v">${state.user.anonymous
+            ? '匿名（仅显示终端编号）' : '实名（代号对其他驭鬼者可见）'}</span></div>
+        <div class="field"><span class="k">默认频道</span><span class="v">CH-07 公开频道</span></div>
+        <div class="field"><span class="k">最近活动</span>
+          <span class="v">${new Date().toLocaleString('zh-CN')}</span></div>
+        <div class="field"><span class="k">动态刷新</span>
+          <span class="v warn">每 5 秒自动同步一条（仅在本页面生效）</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewMe(){
+  const replyCount = Object.values(state.postReplies).reduce((s, a) => s + a.length, 0);
+  return `
+  <div class="view" style="padding:18px">
+    <div class="grid-4" style="margin-bottom:14px">
+      <div class="stat"><div class="sl">代号</div>
+        <div class="sv" style="font-size:15px">${esc(state.user.name)}</div></div>
+      <div class="stat"><div class="sl">黄金余额</div><div class="sv gold">${state.user.gold}</div></div>
+      <div class="stat"><div class="sl">累计签到</div><div class="sv green">${state.sign.total || 0}</div></div>
+      <div class="stat"><div class="sl">回帖数</div><div class="sv red">${replyCount}</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">账户信息 · PROFILE</div>
+      <div class="panel-body">
+        <div class="field"><span class="k">身份类型</span>
+          <span class="v ${state.user.anonymous ? 'warn' : 'hot'}">
+            ${state.user.anonymous ? '匿名潜入者' : '实名注册驭鬼者'}</span></div>
+        <div class="field"><span class="k">登记编号</span>
+          <span class="v">${state.user.anonymous ? '——' : esc(state.user.code || '——')}</span></div>
+        <div class="field"><span class="k">已接悬赏</span><span class="v">${state.claimed.length} 项</span></div>
+        <div class="field"><span class="k">已购物品</span><span class="v">${state.purchased.length} 件</span></div>
+        <div class="field"><span class="k">深夜探索</span>
+          <span class="v">${state.mud.done ? '已封棺（完成）' : `探索中 · 物品 ${state.mud.items.length} 件 · 理智 ${Math.round(state.mud.san)}`}</span></div>
+        <div class="field"><span class="k">探索记录</span>
+          <span class="v">${state.mudSessions.length} 条（可在深夜探索中重玩）</span></div>
+        <div class="field"><span class="k">数据存储</span>
+          <span class="v">本地浏览器（localStorage）</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">危险操作 · DANGER ZONE</div>
+      <div class="panel-body">
+        <p style="font-size:12.5px;color:#6b6b78;line-height:1.9;margin-bottom:14px">
+          清除本地数据将删除你的黄金余额、签到记录、聊天记录、悬赏进度、论坛回帖、探索记录与 MUD 进度。此操作不可撤销。</p>
+        <button class="btn btn-dark" style="max-width:200px" data-action="clear-data">清除本地数据</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   21. 右侧栏
+============================================================ */
+function renderRightbar(){
+  const bar = $('#rightbar');
+  if(!bar) return;
+  const d = new Date();
+  const hour = d.getHours();
+
+  let cells = '';
+  for(let i = 0; i < 24; i++){
+    const name = SCHED_NAMES[i % SCHED_NAMES.length];
+    cells += `
+      <div class="sched-cell ${i === hour ? 'now' : ''}">
+        <span class="h">${pad(i)}</span><span class="n">${name}</span>
+      </div>`;
+  }
+
+  const extra = state.view === 'chat' ? `
+    <div class="panel">
+      <div class="panel-head">通讯提示</div>
+      <div class="panel-body" style="padding:11px 13px">
+        <div class="notice-line danger"><i>▲</i><span>通讯内容可能被灵异力量监听</span></div>
+        <div class="notice-line"><i>▲</i><span>敏感信息请使用加密频道</span></div>
+        <div class="freq">频道号：CH-3656</div>
+      </div>
+    </div>` : '';
+
+  const mudExtra = state.view === 'mud' ? `
+    <div class="panel">
+      <div class="panel-head">探索状态</div>
+      <div class="panel-body" style="padding:11px 13px">
+        <div class="notice-line"><i>·</i><span>封印钉：${
+          ['nail1','nail2','nail3'].filter(id => (state.mud.items||[]).includes(id)).length}/3</span></div>
+        <div class="notice-line"><i>·</i><span>理智：${Math.round(state.mud.san ?? 100)}/100</span></div>
+        <div class="notice-line"><i>·</i><span>历史记录：${state.mudSessions.length} 条</span></div>
+        <div class="notice-line danger"><i>▲</i><span>不要应答任何呼唤</span></div>
+        <div class="freq">已探索房间：${(state.mud.visited||[]).length} / ${Object.keys(MUD_ROOMS).length}</div>
+      </div>
+    </div>` : '';
+
+  bar.innerHTML = `
+    <div class="panel">
+      <div class="panel-head">今日排班</div>
+      <div class="panel-body" style="padding:11px">
+        <div class="sched-grid">${cells}</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">系统提示</div>
+      <div class="panel-body" style="padding:11px 13px">
+        <div class="notice-line"><i>·</i><span>当前身份：${esc(state.user.name)}</span></div>
+        <div class="notice-line"><i>·</i><span>黄金余额：${state.user.gold} 克</span></div>
+        <div class="notice-line"><i>·</i><span>实时帖：${state.livePosts.length} 条</span></div>
+        <div class="notice-line danger"><i>▲</i><span>非必要不前往陌生区域</span></div>
+        <div class="freq">终端：${state.user.anonymous
+          ? 'ANON-' + pad(hour) + '0' + pad(d.getMinutes())
+          : (state.user.code || 'GH-' + pad(hour) + pad(d.getMinutes()))}</div>
+      </div>
+    </div>
+    ${extra}
+    ${mudExtra}
+  `;
+}
+
+/* ============================================================
+   22. 业务动作
+============================================================ */
+function claimBounty(id){
+  if(state.claimed.includes(id)) return;
+  state.claimed.push(id);
+  saveStore();
+  toast('已接取悬赏，请在四十八小时内提交进展', 'ok');
+  switchView('bounty');
+}
+function dropBounty(id){
+  state.claimed = state.claimed.filter(x => x !== id);
+  saveStore();
+  toast('已放弃该悬赏', 'info');
+  switchView('bounty');
+}
+function buyItem(id){
+  const it = TRADE_ITEMS.find(x => x.id === id);
+  if(!it) return;
+  if(state.purchased.includes(id)){ toast('你已购入该物品', 'info'); return; }
+  if(state.user.gold < it.price){
+    toast(`黄金不足，还差 ${it.price - state.user.gold} 克`, 'err');
+    return;
+  }
+  state.user.gold -= it.price;
+  state.purchased.push(id);
+  saveStore();
+  toast(`已购入：${it.name}`, 'gold');
+  switchView('trade');
+}
+function doSign(){
+  const today = dateKey();
+  if(state.sign.last === today){ toast('今日已签到', 'info'); return; }
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  const yesterday = dateKey(y);
+  state.sign.streak = (state.sign.last === yesterday) ? (state.sign.streak || 0) + 1 : 1;
+  state.sign.last = today;
+  state.sign.total = (state.sign.total || 0) + 1;
+  let gain = 5, msg = '签到成功，获得 5 克黄金';
+  if(state.sign.streak >= 7){
+    gain += 20; state.sign.streak = 0;
+    msg = '连续签到七日达成！额外获得 20 克黄金';
+  }
+  state.user.gold += gain;
+  saveStore();
+  toast(msg, 'gold');
+  switchView('sign');
+}
+function registerDriver(){
+  const name  = ($('#regName')?.value || '').trim();
+  const ghost = $('#regGhost')?.value || '其他（保密）';
+  const level = $('#regLevel')?.value || 'B级驭鬼者';
+  if(!name){ shake($('#regName')); toast('请填写驭鬼者代号', 'err'); return; }
+  state.register = { name, ghost, level, code: 'GH-' + rnd(1000, 9999) };
+  state.user.name = name;
+  state.user.anonymous = false;
+  state.user.code = state.register.code;
+  state.user.gold += 50;
+  saveStore();
+  $('#userName').textContent = state.user.name;
+  $('#userStatus').textContent = '暗网连接状态：已加密（实名）';
+  toast('注册成功，已发放 50 克黄金初始配给', 'ok');
+  switchView('register');
+}
+function clearData(){
+  if(!confirm('确认清除全部本地数据？此操作不可撤销。')) return;
+  try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  state.user = { name:'匿名潜入者', anonymous:true, code:'', gold:0 };
+  state.chat = [];
+  state.sign = { last:'', streak:0, total:0 };
+  state.claimed = [];
+  state.purchased = [];
+  state.postReplies = {};
+  state.usedOpts = {};
+  state.livePosts = [];
+  state.livePostCounter = 0;
+  state.feed = [];
+  resetMud();
+  state.mudSessions = [];
+  state.register = null;
+  initChat();
+  initFeed();
+  $('#userName').textContent = state.user.name;
+  $('#userStatus').textContent = '暗网连接状态：已加密（匿名）';
+  toast('本地数据已清除', 'ok');
+  switchView('home');
+}
+
+/* ---- MUD 动作 ---- */
+function mudMove(to){
+  const m = state.mud;
+  if(!MUD_ROOMS[to]) return;
+  m.room = to;
+  m.moves = (m.moves || 0) + 1;
+
+  let cost = 4;
+  const hasTorch = m.items.includes('torch');
+  if(DARK_ROOMS.includes(to) && !hasTorch) cost += 8;
+  m.san = Math.max(0, (m.san ?? 100) - cost);
+
+  if(m.san <= 0){
+    m.san = 60;
+    m.room = 'hall';
+    m.log.push('理智耗尽。你在一阵耳鸣中被推回前厅，手电筒的光晃了晃。');
+    toast('理智耗尽，已被强制送回前厅', 'err');
+    saveStore();
+    switchView('mud');
+    return;
+  }
+
+  if(!m.visited.includes(to)){
+    m.visited.push(to);
+    const room = MUD_ROOMS[to];
+    m.log.push(`进入【${room.name}】`);
+    if(room.take && !m.items.includes(room.take.id)){
+      m.items.push(room.take.id);
+      m.log.push(`拾取：${room.take.name} —— ${room.take.text}`);
+      toast(`拾取 ${room.take.name}`, 'gold');
+    }
+  }
+  saveStore();
+  switchView('mud');
+}
+
+function mudUseTalisman(){
+  const m = state.mud;
+  const idx = m.items.indexOf('talisman1') >= 0 ? m.items.indexOf('talisman1')
+            : m.items.indexOf('talisman2');
+  if(idx < 0){ toast('没有可用的符箓', 'info'); return; }
+  const id = m.items[idx];
+  m.items.splice(idx, 1);
+  m.san = Math.min(100, (m.san ?? 100) + 40);
+  m.log.push(`使用【${MUD_ITEMS[id]?.name || '符箓'}】，理智恢复。`);
+  saveStore();
+  toast('理智 +40', 'ok');
+  switchView('mud');
+}
+
+function mudSeal(){
+  const m = state.mud;
+  const has = ['nail1','nail2','nail3'].every(id => m.items.includes(id));
+  if(!has){ toast('封印钉不足三枚', 'err'); return; }
+  if(m.done){ toast('封棺已完成', 'info'); return; }
+  m.done = true;
+  m.log.push('三枚封印钉依次钉入，棺盖合拢。房间里的呼吸声停止了。');
+  state.user.gold += 100;
+  saveStore();
+  toast('封棺完成，获得 100 克黄金', 'gold');
+  switchView('mud');
+}
+
+/* ============================================================
+   23. 全局事件委托
+============================================================ */
+document.addEventListener('click', e => {
+  const t = e.target;
+
+  const nav = t.closest('#topnav a[data-nav]');
+  if(nav){ switchView(nav.dataset.nav); return; }
+
+  const side = t.closest('#sidebar a[data-view]');
+  if(side){ switchView(side.dataset.view); return; }
+
+  const anyView = t.closest('[data-view]:not(#sidebar a)');
+  if(anyView){ switchView(anyView.dataset.view); return; }
+
+  const anyNav = t.closest('[data-nav]:not(#topnav a)');
+  if(anyNav){ switchView(anyNav.dataset.nav); return; }
+
+  const act = t.closest('[data-action]');
+  if(!act) return;
+
+  switch(act.dataset.action){
+    case 'login': doLogin(act.dataset.anon === '1'); break;
+    case 'logout': logout(); break;
+    case 'toggle-menu': $('#sidebar')?.classList.toggle('open'); break;
+
+    case 'arch-cat':
+      state.archiveCat = act.dataset.cat;
+      state.archiveIdx = 0;
+      state.archiveQuery = '';
+      state.archiveLevel = 'all';
+      switchView('archive');
+      break;
+
+    case 'arch': {
+      state.archiveIdx = parseInt(act.dataset.idx, 10) || 0;
+      $$('.arch-item').forEach(el => el.classList.remove('active'));
+      act.classList.add('active');
+      const d = $('#archDetail');
+      if(d) d.innerHTML = renderArchiveDetail();
+      break;
+    }
+
+    case 'post':
+      state.postId = parseInt(act.dataset.id, 10);
+      switchView('forum');
+      break;
+
+    case 'forum-back':
+      state.postId = null;
+      switchView('forum');
+      break;
+
+    case 'post-opt': {
+      const pid = parseInt(act.dataset.pid, 10);
+      const idx = parseInt(act.dataset.idx, 10);
+      const p = findPost(pid);
+      if(!p) break;
+      const opt = (p.opts || DEFAULT_OPTS)[idx];
+      if(!opt) break;
+      doPostOpt(p, opt, idx);
+      break;
+    }
+
+    case 'bounty-claim': claimBounty(act.dataset.id); break;
+    case 'bounty-drop':  dropBounty(act.dataset.id); break;
+    case 'buy':          buyItem(act.dataset.id); break;
+
+    case 'quick-chat': sendMsg(act.dataset.text); break;
+    case 'send-chat':  sendMsg(); break;
+
+    case 'register-submit': registerDriver(); break;
+    case 'sign':            doSign(); break;
+
+    case 'map-node':
+      state.mapSel = act.dataset.id;
+      switchView('map');
+      break;
+
+    case 'mud-move':         mudMove(act.dataset.to); break;
+    case 'mud-seal':         mudSeal(); break;
+    case 'mud-use-talisman': mudUseTalisman(); break;
+    case 'mud-new':
+      startMudSession('手动开始 · ' + timeStr(), 'hall');
+      toast('已开始新的探索', 'ok');
+      switchView('mud');
+      break;
+    case 'mud-reset':
+      resetMud();
+      toast('当前探索已重置', 'info');
+      switchView('mud');
+      break;
+    case 'mud-replay':
+      replayMudSession(act.dataset.id);
+      break;
+    case 'mud-del': {
+      e.stopPropagation();
+      const id = act.dataset.id;
+      if(confirm('删除该探索记录？')) deleteMudSession(id);
+      break;
+    }
+
+    case 'clear-data': clearData(); break;
+  }
+});
+
+document.addEventListener('input', e => {
+  if(e.target.id === 'archSearch'){
+    state.archiveQuery = e.target.value;
+    state.archiveIdx = 0;
+    refreshArchiveParts();
+  }
+});
+document.addEventListener('change', e => {
+  if(e.target.id === 'archLevel'){
+    state.archiveLevel = e.target.value;
+    state.archiveIdx = 0;
+    refreshArchiveParts();
+  }
+});
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Enter') return;
+  if(e.target.id === 'chatInput'){ e.preventDefault(); sendMsg(); }
+  else if(e.target.id === 'loginKey'){ e.preventDefault(); doLogin(false); }
+  else if(e.target.id === 'loginName'){ e.preventDefault(); $('#loginKey')?.focus(); }
+  else if(e.target.id === 'regName'){ e.preventDefault(); registerDriver(); }
+});
+
+/* ============================================================
+   24. 启动
+============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  loadStore();
+
+  $('#loginName')?.addEventListener('keydown', e => {
+    if(e.key === 'Enter') $('#loginKey')?.focus();
+  });
+  $('#loginKey')?.addEventListener('keydown', e => {
+    if(e.key === 'Enter') doLogin(false);
+  });
+  $('#loginName')?.focus();
+
+  /* 排班高亮 */
+  setInterval(() => {
+    if(!$('#app')?.classList.contains('hidden')) renderRightbar();
+  }, 60000);
+
+  /* 动态流自动增长（每 5 秒） */
+  setInterval(() => {
+    if($('#app')?.classList.contains('hidden')) return;
+    pushFeed();
+    if(state.view === 'social') refreshFeed();
+  }, 5000);
+
+  /* 论坛实时帖自动刷新（每 22 秒） */
+  setInterval(() => {
+    if($('#app')?.classList.contains('hidden')) return;
+    spawnLivePost();
+    if(state.view === 'forum' && state.postId === null){
+      /* 已在 spawnLivePost 内部刷新 */
+    }
+  }, 22000);
+
+  /* 移动端侧栏 */
+  document.addEventListener('click', e => {
+    const sb = $('#sidebar');
+    if(!sb || !sb.classList.contains('open')) return;
+    if(e.target.closest('#sidebar') || e.target.closest('[data-action="toggle-menu"]')) return;
+    sb.classList.remove('open');
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if(!document.hidden && !$('#app')?.classList.contains('hidden')) renderRightbar();
+  });
+});
+</script>
+</body>
+</html>
